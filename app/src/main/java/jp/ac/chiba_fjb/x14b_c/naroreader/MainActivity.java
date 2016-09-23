@@ -105,6 +105,11 @@ public class MainActivity extends AppCompatActivity {
         public Fragment getItem(int position) {
             if(position == 0)
                 return new BlankFragment();
+            else if(position == 1)
+                return new ranking();
+            else if(position == 2)
+                return new BlankFragment2();
+
             return PlaceholderFragment.newInstance(position + 1);
         }
 
@@ -118,11 +123,11 @@ public class MainActivity extends AppCompatActivity {
         public CharSequence getPageTitle(int position) {
             switch (position) {
                 case 0:
-                    return "ああああ";
+                    return "ブックマーク";
                 case 1:
-                    return "SECTION 2";
+                    return "ランキング";
                 case 2:
-                    return "SECTION 3";
+                    return "しおり";
             }
             return null;
         }
