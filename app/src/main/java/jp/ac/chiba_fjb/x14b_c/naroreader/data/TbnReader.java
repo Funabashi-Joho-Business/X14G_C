@@ -1,4 +1,4 @@
-package jp.ac.chiba_fjb.x14b_c.naroreader;
+package jp.ac.chiba_fjb.x14b_c.naroreader.data;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 
 
 public class TbnReader {
@@ -97,6 +96,29 @@ public class TbnReader {
         }
         return null;
     }
+    public static String getContent(String adr){
+        try {
+            URL url = new URL(adr);
+            HttpURLConnection con = (HttpURLConnection)url.openConnection();
+            con.setDoOutput(true);
+            con.setRequestMethod("GET");
+
+            StringBuilder sb = new StringBuilder();
+            BufferedReader	br = new BufferedReader(new InputStreamReader(con.getInputStream()));
+            String str;
+            while ( null != ( str = br.readLine() ) ) {
+                sb.append(str+"\n");
+            }
+            br.close();
+            con.disconnect();
+
+            return sb.toString();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public static String getHashToId(String hash){
         Pattern p = Pattern.compile("(\\d+)");
         Matcher m = p.matcher(hash);
@@ -261,7 +283,18 @@ public class TbnReader {
         return list;
     }
 
+    public static boolean setBookmark(String hash,String ncode){
+        String address = String.format("http://ncode.syosetu.com/novelview/infotop/ncode/%s/",ncode);
+        String content = getContent(address,hash);
+        Pattern p = Pattern.compile("<li class=\"booklist\"><a href=\"(.*?)\">ブックマークに追加</a>");
+        Matcher m = p.matcher(content);
+        if(m.find()) {
+            content = getContent(m.group(1),hash);
+            return true;
+        }
+        return false;
 
+    }
     public static List<NovelBookmark> getBookmark(String hash) {
         try {
             int[] marks = new int[10];
@@ -311,5 +344,68 @@ public class TbnReader {
 
         }
         return null;
+    }
+    public static NovelInfo getNovelInfo(String ncode){
+        String address = String.format("http://api.syosetu.com/novelapi/api/?out=json&ncode=%s",ncode);
+        NovelInfo[] info = Json.send(address,null,NovelInfo[].class);
+        if(info != null && info.length > 1)
+            return info[1];
+        return null;
+    }
+    public static NovelBody getNovelBody(String ncode,int index) {
+
+        String address;
+        if(index == 0)
+            address = String.format("http://ncode.syosetu.com/%s/", ncode);
+        else
+            address = String.format("http://ncode.syosetu.com/%s/%d/", ncode, index);
+        String content = getContent(address);
+        if (content == null)
+            return null;
+
+
+        Pattern p = Pattern.compile("(?:<p class=\"novel_title\">(.*?)</p>|<p class=\"novel_subtitle\">(.*?)</p>).*?<div id=\"novel_honbun\" class=\"novel_view\">(.*?)</div>.*?<!--novel_color-->\n\n\n(.*?)\n\n<div class=\"koukoku_auto\">", Pattern.DOTALL);
+        Matcher m = p.matcher(content);
+        if (!m.find())
+            return null;
+
+        NovelBody body = new NovelBody();
+        body.title = m.group(1)!=null?m.group(1):m.group(2);
+        body.body =  m.group(3);
+        body.ranking = m.group(4);
+
+//        System.out.println(m.group(1));
+//        System.out.println("-----------------------------");
+//        System.out.println(m.group(2));
+//        System.out.println("-----------------------------");
+//        System.out.println(m.group(3));
+//        System.out.println("-----------------------------");
+//        System.out.println(m.group(4));
+//        System.out.println("-----------------------------");
+
+
+        return body;
+    }
+    public static int convertNcode(String ncode) {
+        //小文字に変換
+        ncode = ncode.toLowerCase();
+
+        int length = ncode.length();
+        int value = 0;
+        int i;
+        //整数部分の計算
+        for(i=1;i<length;i++){
+            char c = ncode.charAt(i);
+            if(c >='0' && c<='9')
+                value = value*10+ c - '0';
+            else
+                break;
+        }
+        for(;i<length;i++){
+            char c = ncode.charAt(i);
+            int v = (9999 * (int)Math.pow(26,length-i-1) * (c - 'a'));
+            value += v;
+        }
+        return value;
     }
 }
