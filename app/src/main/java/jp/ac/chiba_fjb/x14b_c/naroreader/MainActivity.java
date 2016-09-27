@@ -105,11 +105,11 @@ public class MainActivity extends AppCompatActivity {
         public Fragment getItem(int position) {
 
             if(position == 0)
-                return new BlankFragment();
-           // else if(position == 1)
-             //   return new ranking();
+                return new ranking();
+            else if(position == 1)
+                return new search();
             else if(position == 2)
-                return new BlankFragment2();
+                return new BlankBookmark();
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
             return PlaceholderFragment.newInstance(position + 1);
@@ -125,11 +125,11 @@ public class MainActivity extends AppCompatActivity {
         public CharSequence getPageTitle(int position) {
             switch (position) {
                 case 0:
-                    return "ブックマーク";
-                case 1:
                     return "ランキング";
+                case 1:
+                    return "検索";
                 case 2:
-                    return "しおり";
+                    return "ブックマーク";
       }
             return null;
         }
