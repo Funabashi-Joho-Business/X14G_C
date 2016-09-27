@@ -103,6 +103,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public Fragment getItem(int position) {
+<<<<<<< HEAD
             if(position == 0)
                 return new BlankFragment();
             else if(position == 1)
@@ -110,6 +111,10 @@ public class MainActivity extends AppCompatActivity {
             else if(position == 2)
                 return new BlankFragment2();
 
+=======
+            // getItem is called to instantiate the fragment for the given page.
+            // Return a PlaceholderFragment (defined as a static inner class below).
+>>>>>>> parent of 6fe3a2d... 基盤　復元ポイント１
             return PlaceholderFragment.newInstance(position + 1);
         }
 
@@ -123,11 +128,19 @@ public class MainActivity extends AppCompatActivity {
         public CharSequence getPageTitle(int position) {
             switch (position) {
                 case 0:
+<<<<<<< HEAD
                     return "ブックマーク";
                 case 1:
                     return "ランキング";
                 case 2:
                     return "しおり";
+=======
+                    return "SECTION 1";
+                case 1:
+                    return "SECTION 2";
+                case 2:
+                    return "SECTION 3";
+>>>>>>> parent of 6fe3a2d... 基盤　復元ポイント１
             }
             return null;
         }

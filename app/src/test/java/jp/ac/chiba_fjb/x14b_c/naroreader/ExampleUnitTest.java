@@ -18,8 +18,8 @@ import static org.junit.Assert.*;
 public class ExampleUnitTest {
     @Test
     public void addition_isCorrect() throws Exception {
-        String userId = "904973";
-        String userPass = "sakura39";
+        String userId = "";
+        String userPass = "";
 
         String hash = TbnReader.getLoginHash(userId,userPass);
         if(hash == null){
