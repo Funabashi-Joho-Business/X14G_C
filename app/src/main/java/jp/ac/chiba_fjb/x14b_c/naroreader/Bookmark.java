@@ -11,10 +11,10 @@ import android.view.ViewGroup;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class BlankBookmark extends Fragment {
+public class Bookmark extends Fragment {
 
 
-    public BlankBookmark() {
+    public Bookmark() {
         // Required empty public constructor
     }
 
@@ -23,7 +23,7 @@ public class BlankBookmark extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_blank_bookmark, container, false);
+        return inflater.inflate(R.layout.fragment_bookmark, container, false);
     }
 
 }

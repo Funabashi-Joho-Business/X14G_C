@@ -109,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
             else if(position == 1)
                 return new search();
             else if(position == 2)
-                return new BlankBookmark();
+                return new Bookmark();
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
             return PlaceholderFragment.newInstance(position + 1);

@@ -2,10 +2,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="jp.ac.chiba_fjb.x14b_c.naroreader.ranking">
+    tools:context="jp.ac.chiba_fjb.x14b_c.naroreader.Bookmark">
 
     <!-- TODO: Update blank fragment layout -->
-
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -16,10 +15,10 @@
             android:orientation="vertical" >
 
             <TextView
-                android:text="TextView"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/textView3" />
+                android:layout_height="match_parent"
+                android:text="ようこそ"
+                android:id="@+id/BookmarkText" />
         </LinearLayout>
     </ScrollView>
 
