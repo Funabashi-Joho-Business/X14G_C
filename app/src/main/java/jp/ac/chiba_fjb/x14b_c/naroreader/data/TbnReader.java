@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -29,7 +30,7 @@ public class TbnReader {
             return null;
         List<String> cookiesHeader = headers.get("Set-Cookie");
         Map<String,String> cookie = new HashMap<String,String>();
-        Iterator it = cookiesHeader.iterator();
+        //Iterator it = cookiesHeader.iterator();
 
         Pattern p = Pattern.compile("([^=]+)=(.*?);.*");
         for(String c : cookiesHeader){
@@ -73,6 +74,63 @@ public class TbnReader {
         }
         return null;
     }
+    static class WebData{
+        public String content;
+        public Map<String,String> cookie;
+    }
+
+    public static WebData getContent2(String adr,String hash,Map<String,String> param,Map<String,String> cookie){
+        try {
+            URL url = new URL(adr);
+            HttpURLConnection con = (HttpURLConnection)url.openConnection();
+            con.setDoOutput(true);
+            con.setRequestMethod("POST");
+
+
+            String cookieString = "";
+            if(cookie != null){
+                for(String name : cookie.keySet()){
+                    cookieString += name+"="+cookie.get(name)+";";
+                }
+            }
+            else
+                cookieString += "userl="+hash;
+            con.setRequestProperty("Cookie",cookieString);
+
+            OutputStreamWriter os = new OutputStreamWriter(con.getOutputStream());
+            if(param != null) {
+                for (String index : param.keySet()) {
+                    String value = index + "=" + param.get(index);
+                    os.write(value);
+                }
+            }
+            os.flush();
+            os.close();
+
+            StringBuilder sb = new StringBuilder();
+            BufferedReader	br = new BufferedReader(new InputStreamReader(con.getInputStream()));
+            String str;
+            while ( null != ( str = br.readLine() ) ) {
+                sb.append(str+"\n");
+            }
+            br.close();
+            con.disconnect();
+
+
+
+            WebData webData = new WebData();
+            webData.content = sb.toString();
+
+            Map<String, List<String>>  headers = con.getHeaderFields();
+            webData.cookie = getCookie(con);
+
+
+            return webData;
+        } catch (IOException e) {
+            //e.printStackTrace();
+        }
+        return null;
+    }
     public static String getContent(String adr,String hash){
         try {
             URL url = new URL(adr);
@@ -81,6 +139,38 @@ public class TbnReader {
             con.setRequestMethod("GET");
             con.setRequestProperty("Cookie","userl="+hash);
 
+            StringBuilder sb = new StringBuilder();
+            BufferedReader	br = new BufferedReader(new InputStreamReader(con.getInputStream()));
+            String str;
+            while ( null != ( str = br.readLine() ) ) {
+                sb.append(str+"\n");
+            }
+            br.close();
+            con.disconnect();
+
+            return sb.toString();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    public static String getContentPost(String adr,String hash,HashMap<String,String> param){
+        try {
+            URL url = new URL(adr);
+            HttpURLConnection con = (HttpURLConnection)url.openConnection();
+            con.setDoOutput(true);
+            con.setRequestMethod("POST");
+            con.setRequestProperty("Cookie","userl="+hash);
+
+            OutputStreamWriter os = new OutputStreamWriter(con.getOutputStream());
+            if(param != null) {
+                 for (String index : param.keySet()) {
+                    String value = index + "=" + param.get(index);
+                    os.write(value);
+                }
+            }
+            os.flush();
+            os.close();
             StringBuilder sb = new StringBuilder();
             BufferedReader	br = new BufferedReader(new InputStreamReader(con.getInputStream()));
             String str;
@@ -293,7 +383,22 @@ public class TbnReader {
             return true;
         }
         return false;
-
+    }
+    public static boolean clearBookmark(String hash,String ncode){
+        int code = convertNcode(ncode);
+        String address = String.format("http://syosetu.com/favnovelmain/deleteconfirm/favncode/%d/",code);
+        WebData webData = getContent2(address,hash,null,null);
+        if(webData == null)
+            return false;
+        Pattern p = Pattern.compile("\\[ID:(.*?)\\] でログイン中</li>.*?<input type=\"hidden\" name=\"token\" value=\"(.*?)\"",Pattern.DOTALL);
+        Matcher m = p.matcher(webData.content);
+        if(m.find()) {
+            HashMap<String,String> param = new HashMap<String,String>();
+            param.put("token",m.group(2));
+            webData = getContent2("http://syosetu.com/favnovelmain/delete/",hash,param,webData.cookie);
+            return true;
+        }
+        return false;
     }
     public static List<NovelBookmark> getBookmark(String hash) {
         try {
@@ -374,16 +479,6 @@ public class TbnReader {
         body.body =  m.group(3);
         body.ranking = m.group(4);
 
-//        System.out.println(m.group(1));
-//        System.out.println("-----------------------------");
-//        System.out.println(m.group(2));
-//        System.out.println("-----------------------------");
-//        System.out.println(m.group(3));
-//        System.out.println("-----------------------------");
-//        System.out.println(m.group(4));
-//        System.out.println("-----------------------------");
-
-
         return body;
     }
     public static int convertNcode(String ncode) {
@@ -407,5 +502,36 @@ public class TbnReader {
             value += v;
         }
         return value;
+    }
+    public static List<NovelSubTitle> getSubTitle(String ncode){
+        String address;
+        address = String.format("http://ncode.syosetu.com/%s/", ncode);
+
+        String content = getContent(address);
+        if (content == null)
+            return null;
+
+        ArrayList<NovelSubTitle> list = new ArrayList<NovelSubTitle>();
+
+        SimpleDateFormat format = new SimpleDateFormat("yyyy年 MM月 dd日");
+
+        Pattern p = Pattern.compile("<dd class=\"subtitle\"><a href=\".*?\">(.*?)</a></dd>.*?<dt class=\"long_update\">\n(.*?)\n.*?(?=<span title=\"(.*?) 改稿\">)?.*?</dl>", Pattern.DOTALL);
+        Matcher m = p.matcher(content);
+        try {
+            while (m.find()){
+                NovelSubTitle subTitle = new NovelSubTitle();
+                subTitle.title = m.group(1);
+                subTitle.date = format.parse(m.group(2));
+                if(m.group(3) != null)
+                subTitle.update = format.parse(m.group(3));
+
+                list.add(subTitle);
+            }
+        } catch (ParseException e) {
+            return null;
+        }
+        if(list.size() == 0)
+            return null;
+        return list;
     }
 }

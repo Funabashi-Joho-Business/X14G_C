@@ -8,7 +8,10 @@ import java.util.List;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelBody;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelBookmark;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelInfo;
+import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelSubTitle;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.TbnReader;
+
+import static android.R.id.list;
 
 /**
  * Example local unit test, which will execute on the development machine (host).
@@ -73,12 +76,29 @@ public class ExampleUnitTest {
         System.out.println("-----------------------------");
 
     }
+   // @Test
+    public void testClearBookmark(){
+        String userId = "";
+        String userPass = "";
+
+        String hash = TbnReader.getLoginHash(userId,userPass);
+        if(hash == null){
+            System.out.println("ログイン失敗");
+        }else {
+            System.out.format("ハッシュコード: %s\n", hash);
+
+            if (TbnReader.clearBookmark(hash, "n6576dm"))
+                System.out.println("ブックマーク成功");
+            else
+                System.out.println("ブックマーク失敗");
+        }
+
+    }
     @Test
-    public void testCode(){
-
-        System.out.println(TbnReader.convertNcode("n7733dl"));
-        //897644
-        //2869914
-
+    public void testSubTitle(){
+        List<NovelSubTitle> list = TbnReader.getSubTitle("n1027cz");
+        for(NovelSubTitle item : list){
+            System.out.format("%s %s %s\n",item.title,item.date.toString(),item.update!=null?item.update.toString():"-");
+        }
     }
 }
