@@ -8,6 +8,7 @@ import java.util.List;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelBody;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelBookmark;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelInfo;
+import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelSeries;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelSubTitle;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.TbnReader;
 
@@ -94,11 +95,26 @@ public class ExampleUnitTest {
         }
 
     }
-    @Test
+   // @Test
     public void testSubTitle(){
         List<NovelSubTitle> list = TbnReader.getSubTitle("n1027cz");
         for(NovelSubTitle item : list){
             System.out.format("%s %s %s\n",item.title,item.date.toString(),item.update!=null?item.update.toString():"-");
+        }
+    }
+    @Test
+    public void testSeries(){
+        String s = TbnReader.getSeries("n1027cz");
+        if(s == null)
+            System.out.println("シリーズ無し");
+        else {
+            System.out.println(s);
+            NovelSeries info = TbnReader.getSeriesInfo(s);
+            System.out.println(info.title);
+            System.out.println(info.info);
+            for(String n : info.novelList){
+                System.out.println(n);
+            }
         }
     }
 }

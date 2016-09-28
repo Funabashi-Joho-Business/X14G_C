@@ -534,4 +534,44 @@ public class TbnReader {
             return null;
         return list;
     }
+    public static String getSeries(String ncode){
+        String address;
+        address = String.format("http://ncode.syosetu.com/%s/", ncode);
+
+        String content = getContent(address);
+        if (content == null)
+            return null;
+
+        Pattern p = Pattern.compile("<p class=\"series_title\"><a href=\"/(.*?)/\">");
+        Matcher m = p.matcher(content);
+        if (!m.find())
+            return null;
+        return m.group(1);
+    }
+
+    public static NovelSeries getSeriesInfo(String scode){
+        String address;
+        address = String.format("http://ncode.syosetu.com/%s/", scode);
+
+        String content = getContent(address);
+        if (content == null)
+            return null;
+
+        NovelSeries series = new NovelSeries();
+
+        Pattern p = Pattern.compile("<div class=\"series_title\">(.*?)</div>.*?作成ユーザ：<a href=\"http://mypage.syosetu.com/(.*?)/\">.*?<div class=\"novel_ex\">(.*?)</div>", Pattern.DOTALL);
+        Matcher m = p.matcher(content);
+        if(!m.find())
+            return null;
+        series.title = m.group(1);
+        series.info = m.group(2);
+        series.novelList = new ArrayList<String>();
+
+        p = Pattern.compile("<div class=\"title\"><a href=\"/(.*?)/\">");
+        m = p.matcher(content);
+        while (m.find()){
+            series.novelList.add(m.group(1));
+        }
+        return series;
+    }
 }
