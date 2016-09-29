@@ -12,13 +12,30 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" >
+            android:orientation="vertical"
+            android:id="@+id/BookmarkLayout">
 
-            <TextView
+            <LinearLayout
+                android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="ようこそ"
-                android:id="@+id/BookmarkText" />
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:text="できればブックマークした件数表示したい"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/textView"
+                    android:layout_weight="1" />
+
+                <Button
+                    android:text="更新ボタン"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/BookmarkButton1"
+                    android:layout_weight="1" />
+
+            </LinearLayout>
+
         </LinearLayout>
     </ScrollView>
 

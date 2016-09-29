@@ -22,6 +22,9 @@ public class search extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        ///////////////////検索条件を受け取り、検索・抽出を実行させる（要SQL）//////////////////////
+
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_search, container, false);
     }

@@ -7,6 +7,8 @@ public class Appliconfig extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        //////////////////アプリ設定画面の処理////////////////////
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_appliconfig);
     }
