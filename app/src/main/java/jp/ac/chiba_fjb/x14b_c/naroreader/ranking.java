@@ -26,7 +26,8 @@ public class ranking extends Fragment {
         //////////////////抽出条件を書き、ソートさせる文を作る（要SQL）;////////////////////////////
 
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_ranking, container, false);
+        View view =  inflater.inflate(R.layout.fragment_ranking, container, false);
+        return view;
     }
 
 }
