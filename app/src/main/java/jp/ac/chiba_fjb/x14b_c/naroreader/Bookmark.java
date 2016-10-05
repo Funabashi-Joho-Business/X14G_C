@@ -76,12 +76,13 @@ public class Bookmark extends Fragment implements View.OnClickListener {
         LinearLayout layout = (LinearLayout) view.findViewById(R.id.BookmarkLayout);
         //動的なコントロールの生成
         int MaxBookmark;
-        MaxBookmark = db.execSQL("select count() from DB");             //ブックマーク数を入れたい
+        /*MaxBookmark = db.execSQL("select count() from DB");             //ブックマーク数を入れたい
         //TextViewを100個
         for (int i = 0; i < MaxBookmark; i++) {
             TextView textView = new TextView(getContext());             //インスタンスの生成(引数はActivityのインスタンス)
             textView.setId(i);                     //テキストの設定
             layout.addView(textView);
         }
+        */
     }
 }

@@ -1,5 +1,6 @@
 package jp.ac.chiba_fjb.x14b_c.naroreader;
 
+import android.content.Intent;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -82,6 +83,8 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            Intent intent = new Intent(this,Appliconfig.class);
+            startActivity(intent);
             return true;
         }
 

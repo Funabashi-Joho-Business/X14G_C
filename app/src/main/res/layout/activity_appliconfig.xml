@@ -12,7 +12,10 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -23,19 +26,19 @@
                 android:text="文字のフォントサイズ"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/textView2" />
+                android:id="@+id/config1" />
 
             <TextView
                 android:text="文字色"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/textView6" />
+                android:id="@+id/config2" />
 
             <TextView
                 android:text="背景色"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/textView5" />
+                android:id="@+id/config3" />
 
             <TextView
                 android:text="ステータスバー"
@@ -47,7 +50,7 @@
                 android:text="戻る"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/button" />
+                android:id="@+id/exitconfigration" />
 
         </LinearLayout>
     </ScrollView>
