@@ -14,6 +14,7 @@ public class NovelItem {
     }
     public NovelItem(){}
 
+    //いらない
     public int ncodeI;
     public String ncodeS;
     public String name;

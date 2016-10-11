@@ -9,10 +9,10 @@ import java.util.Calendar;
 public class NovelBookmark {
     public NovelBookmark(String ncode,String name,int category,Calendar update){
         //書籍情報を取り込む
-        mNCode = ncode;
-        mName = name;
-        mUpdate = update;
-        mCategory = category;
+        mNCode = ncode;         //作品コード
+        mName = name;           //作品名
+        mUpdate = update;       //更新日
+        mCategory = category;   //カテゴリ
     }
     String mNCode;
     String mName;

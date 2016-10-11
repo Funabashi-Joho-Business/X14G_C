@@ -5,9 +5,32 @@
     tools:context="jp.ac.chiba_fjb.x14b_c.naroreader.search">
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
 
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/wordsearch">
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:inputType="textPersonName"
+                android:ems="10"
+                android:id="@+id/wordsearch"
+                android:layout_weight="1" />
+
+            <Button
+                android:text="検索"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/searchbutton"
+                android:layout_weight="1" />
+        </LinearLayout>
+    </LinearLayout>
 </FrameLayout>

@@ -2,6 +2,7 @@ package jp.ac.chiba_fjb.x14b_c.naroreader;
 
 
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -16,6 +17,8 @@ import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
+
+import static jp.ac.chiba_fjb.x14b_c.naroreader.R.id.textView;
 
 
 /**
@@ -75,14 +78,31 @@ public class Bookmark extends Fragment implements View.OnClickListener {
         //インスタンスの取得
         LinearLayout layout = (LinearLayout) view.findViewById(R.id.BookmarkLayout);
         //動的なコントロールの生成
-        int MaxBookmark;
-        /*MaxBookmark = db.execSQL("select count() from DB");             //ブックマーク数を入れたい
-        //TextViewを100個
-        for (int i = 0; i < MaxBookmark; i++) {
-            TextView textView = new TextView(getContext());             //インスタンスの生成(引数はActivityのインスタンス)
-            textView.setId(i);                     //テキストの設定
-            layout.addView(textView);
-        }
-        */
+        new NovelBookmark().method();
+
+        TextView sikiri = new TextView(getContext());
+        sikiri.setText("------------------------");
+        //TextViewをBookmark数ぶんだけ生成（予定）
+        //データベースに接続
+        TestDB db = new TestDB(this);
+        //データの挿入
+        db.exec("insert into test values('あいうえお');");
+
+        //クエリーの発行
+        Cursor res = db.query("select * from test;");
+        //データがなくなるまで次の行へ
+        while(res.moveToNext())
+            {
+            //0列目を取り出し
+            textView.append(res.getInt(0)+"\n");
+            }
+
+
+
+        //カーソルを閉じる
+        res.close();
+        //データベースを閉じる
+        db.close();
+
     }
 }
