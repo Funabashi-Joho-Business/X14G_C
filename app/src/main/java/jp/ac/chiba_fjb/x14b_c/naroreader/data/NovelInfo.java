@@ -5,6 +5,9 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.util.Date;
 
+/**
+ * なろうAPIによる小説データ保存用
+ */
 @JsonIgnoreProperties(ignoreUnknown=true)
 public class NovelInfo {
     public Integer allcount;

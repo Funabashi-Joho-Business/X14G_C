@@ -3,7 +3,7 @@ package jp.ac.chiba_fjb.x14b_c.naroreader.data;
 import java.util.List;
 
 /**
- * Created by oikawa on 2016/09/28.
+ * シリーズデータ保存用
  */
 
 public class NovelSeries {
