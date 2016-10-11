@@ -20,7 +20,6 @@ public class ExampleInstrumentedTest {
     public void useAppContext() throws Exception {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
-
         assertEquals("jp.ac.chiba_fjb.x14b_c.naroreader", appContext.getPackageName());
     }
 }

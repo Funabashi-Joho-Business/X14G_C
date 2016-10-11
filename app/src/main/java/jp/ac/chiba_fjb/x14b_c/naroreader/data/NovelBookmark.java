@@ -1,9 +1,9 @@
-package jp.ac.chiba_fjb.x14b_c.naroreader;
+package jp.ac.chiba_fjb.x14b_c.naroreader.data;
 
 import java.util.Calendar;
 
 /**
- * Created by oikawa on 2016/09/20.
+ * ブックマークデータ保存用
  */
 
 public class NovelBookmark {
