@@ -326,6 +326,21 @@ public class TbnReader {
             return info[1];
         return null;
     }
+    public static NovelInfo getKeyword(String word){
+        String address = String.format("http://api.syosetu.com/novelapi/api/?out=json&word=%s",word);
+        NovelInfo[] wordinfo = Json.send(address,null,NovelInfo[].class);
+        if(wordinfo != null && wordinfo.length > 1)
+            return wordinfo[1];
+        return null;
+    }
+
+    public static NovelInfo getOrder(String order){
+        String address = String.format("http://api.syosetu.com/novelapi/api/?out=json&order=hyoka=%s",order);
+        NovelInfo[] evorder = Json.send(address,null,NovelInfo[].class);
+        if(evorder != null && evorder.length > 1)
+            return evorder[1];
+        return null;
+    }
 
     //本文の取得
     //ncode ノベルコード

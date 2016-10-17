@@ -78,7 +78,7 @@ public class Bookmark extends Fragment implements View.OnClickListener {
         //インスタンスの取得
         LinearLayout layout = (LinearLayout) view.findViewById(R.id.BookmarkLayout);
         //動的なコントロールの生成
-        new NovelBookmark().method();
+
 
         TextView sikiri = new TextView(getContext());
         sikiri.setText("------------------------");
@@ -103,6 +103,7 @@ public class Bookmark extends Fragment implements View.OnClickListener {
         res.close();
         //データベースを閉じる
         db.close();
+
 
     }
 }
