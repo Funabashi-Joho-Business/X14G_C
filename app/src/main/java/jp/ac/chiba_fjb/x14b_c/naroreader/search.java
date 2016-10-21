@@ -2,12 +2,15 @@ package jp.ac.chiba_fjb.x14b_c.naroreader;
 
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.TbnReader;
 
@@ -39,15 +42,32 @@ public class search extends Fragment implements View.OnClickListener {
 
     @Override
     public void onClick(View view) {
-        EditText Setext = (EditText)getView().findViewById(R.id.wordsearch);
+        LinearLayout layout = (LinearLayout) view.findViewById(R.id.answer);    //検索結果を表示するところ
+
+        EditText Setext = (EditText)getView().findViewById(R.id.wordsearch);    //検索したい文字を格納
         String s;
         s = Setext.getText().toString();
-        sub.start();
+        sub.start();    //サブスレッド開始
+
+
+        TextView sikiri = new TextView(getContext());
+        sikiri.setText("------------------------");
+        System.out.println(sikiri);
     }
 }
 
 class subSearch extends Thread{
         public void Subclass001(String s){
-            TbnReader.getKeyword(s);            // サブスレッドで実行するもの
+            //super.Subclass001;
+            Handler mHandler = new Handler(); //Android.os
+            mHandler.post(new Runnable(){
+                public void run(){
+                    String sort;
+                    sort = "hyoka";
+                    //TbnReader.getKeyword();            // サブスレッドで実行するもの
+                    TbnReader.getOrder(sort);
+                    return;
+                }
+            });
         }
 }

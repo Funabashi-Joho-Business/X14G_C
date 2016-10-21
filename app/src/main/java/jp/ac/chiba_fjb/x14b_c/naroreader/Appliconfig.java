@@ -30,12 +30,16 @@ public class Appliconfig extends AppCompatActivity implements View.OnClickListen
     public void onClick(View view) {
         switch(view.getId()){
             case R.id.config1:
+                //文字サイズの設定
                 break;
             case R.id.config2:
+                //文字色の設定
                 break;
             case R.id.config3:
+                //背景の設定
                 break;
             case R.id.exitconfigration:
+                //ホーム画面に戻る
                 Intent intent = new Intent(this,MainActivity.class);
                 startActivity(intent);
                 break;

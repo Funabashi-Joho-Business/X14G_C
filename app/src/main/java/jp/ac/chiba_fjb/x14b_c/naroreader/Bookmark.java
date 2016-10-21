@@ -80,7 +80,7 @@ public class Bookmark extends Fragment implements View.OnClickListener {
         //動的なコントロールの生成
 
 
-        TextView sikiri = new TextView(getContext());
+        /*TextView sikiri = new TextView(getContext());
         sikiri.setText("------------------------");
         //TextViewをBookmark数ぶんだけ生成（予定）
         //データベースに接続
@@ -102,7 +102,7 @@ public class Bookmark extends Fragment implements View.OnClickListener {
         //カーソルを閉じる
         res.close();
         //データベースを閉じる
-        db.close();
+        db.close();*/
 
 
     }

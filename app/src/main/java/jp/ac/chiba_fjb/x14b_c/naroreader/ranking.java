@@ -7,6 +7,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import jp.ac.chiba_fjb.x14b_c.naroreader.data.TbnReader;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -27,6 +29,9 @@ public class ranking extends Fragment {
 
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_ranking, container, false);
+        String sort;
+        sort = "hyoka";           // サブスレッドで実行するもの
+        TbnReader.getOrder(sort);
 
         return view;
     }

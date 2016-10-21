@@ -20,17 +20,15 @@ import static android.R.id.list;
  * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
  */
 public class ExampleUnitTest {
-<<<<<<< HEAD
+
     @Test
     public void addition_isCorrect() throws Exception {
         String userId = "904973";
         String userPass = "sakura39";
-=======
     //@Test
     public void testBookmark() throws Exception {
         String userId = "";
         String userPass = "";
->>>>>>> master
 
         String hash = TbnReader.getLoginHash(userId,userPass);
         if(hash == null){
