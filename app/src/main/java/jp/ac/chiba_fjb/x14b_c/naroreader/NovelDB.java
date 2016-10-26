@@ -33,7 +33,7 @@ public class NovelDB extends SQLite {
 
     }
 
-    void addBookmark(String ncode, String name, Date update, int category){
+    public void addBookmark(String ncode, String name, Date update, int category){
         String d = new java.sql.Timestamp(update.getTime()).toString();
         String sql;
         //ブックマークデータの追加
@@ -46,15 +46,16 @@ public class NovelDB extends SQLite {
         System.out.println(sql);
 
     }
-    List<NovelBookmark> getBookmark(){
+    public List<NovelBookmark> getBookmark(){
         String sql;
         sql = "select * from t_bookmark natural join t_novel";
         Cursor r = query(sql);
 
         List<NovelBookmark> list = new ArrayList<NovelBookmark>();
         while(r.moveToNext()){
+            String d = r.getString(1);
             Calendar cal = Calendar.getInstance();
-            cal.setTime(java.sql.Date.valueOf(r.getString(1)));
+            cal.setTime(java.sql.Timestamp.valueOf(r.getString(1)));
             NovelBookmark b = new NovelBookmark(r.getString(0),r.getString(3),r.getInt(2),cal);
             list.add(b);
         }
