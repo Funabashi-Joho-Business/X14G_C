@@ -2,7 +2,6 @@ package jp.ac.chiba_fjb.x14b_c.naroreader;
 
 
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -49,25 +48,28 @@ public class search extends Fragment implements View.OnClickListener {
         s = Setext.getText().toString();
         sub.start();    //サブスレッド開始
 
+        TextView textView = new TextView(MainActivity.this);
+        textView.setId("test");
+
 
         TextView sikiri = new TextView(getContext());
         sikiri.setText("------------------------");
-        System.out.println(sikiri);
+        layout.addView(sikiri);
     }
 }
 
 class subSearch extends Thread{
-        public void Subclass001(String s){
-            //super.Subclass001;
-            Handler mHandler = new Handler(); //Android.os
-            mHandler.post(new Runnable(){
-                public void run(){
-                    String sort;
-                    sort = "hyoka";
-                    //TbnReader.getKeyword();            // サブスレッドで実行するもの
-                    TbnReader.getOrder(sort);
-                    return;
-                }
-            });
-        }
+    public void Subclass001() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                String sort;
+                sort = "hyoka";
+                TbnReader.getKeyword();            // サブスレッドで実行するもの
+                TbnReader.getOrder(sort);
+                return;
+            }
+        })
+    }
 }
+
