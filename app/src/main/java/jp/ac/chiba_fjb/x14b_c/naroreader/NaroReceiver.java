@@ -8,6 +8,7 @@ import java.util.List;
 
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelBookmark;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.TbnReader;
+import to.pns.lib.LogService;
 
 /*
 色々な通信系の処理をこのクラスで実装すること
@@ -28,13 +29,15 @@ public class NaroReceiver extends BroadcastReceiver {
                 new Thread(){
                     @Override
                     public void run() {
+
                         //ログイン処理
                         String hash = TbnReader.getLoginHash("","");
                         if(hash == null) {
                             context.sendBroadcast(new Intent().setAction(NOTIFI_BOOKMARK).putExtra("result",false));
+                            LogService.output(context,"ログイン失敗");
                             return;
                         }
-
+                        LogService.output(context,"ブックマーク情報の読み込み開始");
                         //取得したブックマーク情報をDBに保存
                         List<NovelBookmark> bookmarks = TbnReader.getBookmark(hash);
                         //DBを利用
@@ -43,6 +46,7 @@ public class NaroReceiver extends BroadcastReceiver {
                             db.addBookmark(b.getCode(),b.getName(),b.getUpdate().getTime(),b.getCategory());
                         }
                         db.close();
+                        LogService.output(context,"ブックマーク情報の読み込み完了");
                         //更新完了通知
                         context.sendBroadcast(new Intent().setAction(NOTIFI_BOOKMARK).putExtra("result",true));
                     }
