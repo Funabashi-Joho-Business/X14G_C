@@ -48,17 +48,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
     void changeFragment(Class c){
-        Bundle bundle = new Bundle();
-        Fragment f = getSupportFragmentManager().getFragment(bundle,c.getName());
         try {
-            if(f == null)
-                f = (Fragment) c.newInstance();
+            Fragment f = (Fragment) c.newInstance();
+            //フラグ面tのの切り替え処理
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.setCustomAnimations(
+                    R.anim.fragment_in,
+                    R.anim.fragment_out);
+            ft.replace(R.id.fragment_area,f);
+            ft.commit();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.fragment_area,f);
-        ft.commit();
+
     }
 
 
