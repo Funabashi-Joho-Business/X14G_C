@@ -34,10 +34,11 @@ public class NaroReceiver extends BroadcastReceiver {
                             context.sendBroadcast(new Intent().setAction(NOTIFI_BOOKMARK).putExtra("result",false));
                             return;
                         }
-                        //DBを利用
-                        NovelDB db = new NovelDB(context);
+
                         //取得したブックマーク情報をDBに保存
                         List<NovelBookmark> bookmarks = TbnReader.getBookmark(hash);
+                        //DBを利用
+                        NovelDB db = new NovelDB(context);
                         for(NovelBookmark b : bookmarks){
                             db.addBookmark(b.getCode(),b.getName(),b.getUpdate().getTime(),b.getCategory());
                         }
