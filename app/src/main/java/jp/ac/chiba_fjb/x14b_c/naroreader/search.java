@@ -18,7 +18,7 @@ import jp.ac.chiba_fjb.x14b_c.naroreader.data.TbnReader;
  * A simple {@link Fragment} subclass.
  */
 public class search extends Fragment implements View.OnClickListener {
-    subSearch sub = new subSearch();
+    //subSearch sub = new subSearch();
 
 
     public search() {
@@ -46,10 +46,10 @@ public class search extends Fragment implements View.OnClickListener {
         EditText Setext = (EditText)getView().findViewById(R.id.wordsearch);    //検索したい文字を格納
         String s;
         s = Setext.getText().toString();
-        sub.start();    //サブスレッド開始
+        //sub.start();    //サブスレッド開始
 
-        TextView textView = new TextView(MainActivity.this);
-        textView.setId("test");
+        //TextView textView = new TextView(MainActivity.this);
+        //textView.setId("test");
 
 
         TextView sikiri = new TextView(getContext());
@@ -57,7 +57,7 @@ public class search extends Fragment implements View.OnClickListener {
         layout.addView(sikiri);
     }
 }
-
+/*
 class subSearch extends Thread{
     public void Subclass001() {
         runOnUiThread(new Runnable() {
@@ -72,4 +72,5 @@ class subSearch extends Thread{
         })
     }
 }
+*/
 

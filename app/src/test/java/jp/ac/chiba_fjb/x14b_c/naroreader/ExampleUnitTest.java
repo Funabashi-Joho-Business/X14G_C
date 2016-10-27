@@ -24,7 +24,7 @@ public class ExampleUnitTest {
     @Test
     public void addition_isCorrect() throws Exception {
         String userId = "904973";
-        String userPass = "sakura39";
+        String userPass = "";//"sakura39";
     //@Test
     public void testBookmark() throws Exception {
         String userId = "";
