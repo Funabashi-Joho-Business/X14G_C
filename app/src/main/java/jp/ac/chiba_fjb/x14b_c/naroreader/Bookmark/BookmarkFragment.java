@@ -8,6 +8,7 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -31,6 +32,8 @@ public class BookmarkFragment extends Fragment {
         public void onReceive(Context context, Intent intent) {
             switch(intent.getAction()){
                 case NaroReceiver.NOTIFI_BOOKMARK:
+                    ((SwipeRefreshLayout)getView().findViewById(R.id.swipe_refresh)).setRefreshing(false);
+
                     if(intent.getBooleanExtra("result",false))
                         Snackbar.make(getView(), "ブックマークデータの受信完了", Snackbar.LENGTH_SHORT).show();
                     else
@@ -67,13 +70,15 @@ public class BookmarkFragment extends Fragment {
 
 
         //ボタンが押され場合の処理
-        view.findViewById(R.id.imageButton).setOnClickListener(new View.OnClickListener() {
+        ((SwipeRefreshLayout)view.findViewById(R.id.swipe_refresh)).setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
-            public void onClick(View v) {
+            public void onRefresh() {
                 Snackbar.make(getView(), "ブックマークデータの要求", Snackbar.LENGTH_SHORT).show();
                 //受信要求
                 getContext().sendBroadcast(new Intent(getContext(),NaroReceiver.class).setAction(NaroReceiver.ACTION_BOOKMARK));
             }
+
+
         });
 
         //イベント通知受け取りの宣言
