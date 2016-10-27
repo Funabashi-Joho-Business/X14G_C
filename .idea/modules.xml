@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/NaroReader.iml" filepath="$PROJECT_DIR$/NaroReader.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ShareLib/ShareLib.iml" filepath="$PROJECT_DIR$/ShareLib/ShareLib.iml" />
       <module fileurl="file://$PROJECT_DIR$/X14G_C.iml" filepath="$PROJECT_DIR$/X14G_C.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>

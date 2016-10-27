@@ -21,14 +21,11 @@ import static android.R.id.list;
  */
 public class ExampleUnitTest {
 
-    @Test
-    public void addition_isCorrect() throws Exception {
-        String userId = "904973";
-        String userPass = "";//"sakura39";
+
+        static String userPass="sakura39";
+        static String userId = "904973";
     //@Test
     public void testBookmark() throws Exception {
-        String userId = "";
-        String userPass = "";
 
         String hash = TbnReader.getLoginHash(userId,userPass);
         if(hash == null){
