@@ -27,13 +27,6 @@
                     android:id="@+id/textView"
                     android:layout_weight="1" />
 
-                <Button
-                    android:text="更新ボタン"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/BookmarkButton1"
-                    android:layout_weight="1" />
-
             </LinearLayout>
 
         </LinearLayout>

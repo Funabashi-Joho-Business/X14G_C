@@ -17,7 +17,7 @@ import jp.ac.chiba_fjb.x14b_c.naroreader.data.TbnReader;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class search extends Fragment implements View.OnClickListener {
+public class search extends Fragment implements View.OnClickListener{
     //subSearch sub = new subSearch();
 
 
