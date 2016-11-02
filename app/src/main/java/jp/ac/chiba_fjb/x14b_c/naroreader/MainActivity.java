@@ -48,6 +48,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
     void changeFragment(Class c){
+
         try {
             Fragment f = (Fragment) c.newInstance();
             //フラグ面tのの切り替え処理
@@ -60,7 +61,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
 
