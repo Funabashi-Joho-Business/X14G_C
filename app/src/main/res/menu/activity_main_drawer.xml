@@ -10,17 +10,12 @@
         <item
             android:id="@+id/nav_ranking"
             android:title="ランキング" />
+
         <item
             android:id="@+id/nav_search"
+            android:icon="@android:drawable/ic_menu_search"
             android:title="検索" />
-        <item
-            android:id="@+id/nav_gallery"
-            android:icon="@drawable/ic_menu_gallery"
-            android:title="Gallery" />
-        <item
-            android:id="@+id/nav_slideshow"
-            android:icon="@drawable/ic_menu_slideshow"
-            android:title="Slideshow" />
+
         <item
             android:id="@+id/nav_log"
             android:icon="@drawable/ic_menu_manage"
@@ -28,9 +23,8 @@
 
         <item
             android:id="@+id/nav_appriconfig"
+            android:icon="@drawable/ic_menu_manage"
             android:title="設定" />
     </group>
-
-
 
 </menu>
