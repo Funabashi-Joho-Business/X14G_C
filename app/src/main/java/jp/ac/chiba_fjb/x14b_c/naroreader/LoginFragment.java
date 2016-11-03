@@ -23,7 +23,7 @@ import jp.ac.chiba_fjb.x14b_c.naroreader.data.TbnReader;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class login extends Fragment implements View.OnClickListener {
+public class LoginFragment extends Fragment implements View.OnClickListener {
 
     static String userPass="sakura39";
     static String userId = "904973";
@@ -124,7 +124,7 @@ public class login extends Fragment implements View.OnClickListener {
     }
 
 
-    public login() {
+    public LoginFragment() {
         // Required empty public constructor
     }
 

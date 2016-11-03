@@ -41,6 +41,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_log:
                 changeFragment(FragmentLog.class);
                 break;
+            case R.id.nav_ranking:
+                changeFragment(RankingFragment.class);
+                break;
+
         }
        ((DrawerLayout) findViewById(R.id.drawer_layout)).closeDrawers();
         return true;

@@ -17,11 +17,11 @@ import jp.ac.chiba_fjb.x14b_c.naroreader.data.TbnReader;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class search extends Fragment implements View.OnClickListener{
+public class SearchFragment extends Fragment implements View.OnClickListener{
     //subSearch sub = new subSearch();
 
 
-    public search() {
+    public SearchFragment() {
         // Required empty public constructor
     }
 

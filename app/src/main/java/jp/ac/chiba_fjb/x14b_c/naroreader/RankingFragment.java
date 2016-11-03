@@ -13,10 +13,10 @@ import jp.ac.chiba_fjb.x14b_c.naroreader.data.TbnReader;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ranking extends Fragment {
+public class RankingFragment extends Fragment {
 
 
-    public ranking() {
+    public RankingFragment() {
         // Required empty public constructor
     }
 
