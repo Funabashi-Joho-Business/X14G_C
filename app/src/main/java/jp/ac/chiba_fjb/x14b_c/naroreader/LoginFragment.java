@@ -25,8 +25,8 @@ import jp.ac.chiba_fjb.x14b_c.naroreader.data.TbnReader;
  */
 public class LoginFragment extends Fragment implements View.OnClickListener {
 
-    static String userPass="sakura39";
-    static String userId = "904973";
+    static String userPass="chibafjb01";
+    static String userId = "x14g006@ciba-fjb.ac.jp";
     //@Test
     public void testBookmark() throws Exception {
 

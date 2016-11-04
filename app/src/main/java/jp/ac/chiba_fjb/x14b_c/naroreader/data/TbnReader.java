@@ -47,8 +47,6 @@ public class TbnReader {
         try {
             URL url = new URL("https://ssl.syosetu.com/login/login/");
             HttpURLConnection con = (HttpURLConnection)url.openConnection();
-            con.setConnectTimeout(3000);
-            con.setReadTimeout(3000);
             con.setRequestMethod("POST");
             con.setDoOutput(true);
            // con.connect();
@@ -96,8 +94,7 @@ public class TbnReader {
             HttpURLConnection con = (HttpURLConnection)url.openConnection();
             con.setDoOutput(true);
             con.setRequestMethod("POST");
-            con.setConnectTimeout(3000);
-            con.setReadTimeout(3000);
+
 
             String cookieString = "";
             if(cookie != null){
@@ -154,8 +151,6 @@ public class TbnReader {
             con.setDoOutput(true);
             con.setRequestMethod("GET");
             con.setRequestProperty("Cookie","userl="+hash);
-            con.setConnectTimeout(3000);
-            con.setReadTimeout(3000);
 
             StringBuilder sb = new StringBuilder();
             BufferedReader	br = new BufferedReader(new InputStreamReader(con.getInputStream()));
@@ -184,9 +179,6 @@ public class TbnReader {
             HttpURLConnection con = (HttpURLConnection)url.openConnection();
             con.setDoOutput(true);
             con.setRequestMethod("POST");
-            con.setConnectTimeout(3000);
-            con.setReadTimeout(3000);
-
             con.setRequestProperty("Cookie","userl="+hash);
 
             OutputStreamWriter os = new OutputStreamWriter(con.getOutputStream());
@@ -222,8 +214,6 @@ public class TbnReader {
             HttpURLConnection con = (HttpURLConnection)url.openConnection();
             con.setDoOutput(true);
             con.setRequestMethod("GET");
-            con.setConnectTimeout(3000);
-            con.setReadTimeout(3000);
 
             StringBuilder sb = new StringBuilder();
             BufferedReader	br = new BufferedReader(new InputStreamReader(con.getInputStream()));
