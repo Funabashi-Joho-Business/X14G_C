@@ -3,6 +3,7 @@ package jp.ac.chiba_fjb.x14b_c.naroreader;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +30,10 @@ public class SearchFragment extends Fragment implements View.OnClickListener{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        Toolbar toolbar = (Toolbar)getActivity().findViewById(R.id.toolbar);
+        // タイトルを設定
+        toolbar.setTitle("検索");
 
         ///////////////////検索条件を受け取り、検索・抽出を実行させる（要SQL）//////////////////////
 

@@ -11,6 +11,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,6 +56,9 @@ public class BookmarkFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+        Toolbar toolbar = (Toolbar)getActivity().findViewById(R.id.toolbar);
+        // タイトルを設定
+        toolbar.setTitle("ブックマーク");
 
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_bookmark, container, false);
