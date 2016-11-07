@@ -4,31 +4,26 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_bookmark"
-            android:icon="@android:drawable/ic_lock_idle_alarm"
+            android:icon="@drawable/ic_book_black"
             android:title="ブックマーク" />
+
         <item
             android:id="@+id/nav_ranking"
             android:title="ランキング" />
+
         <item
             android:id="@+id/nav_search"
+            android:icon="@drawable/ic_search_black"
             android:title="検索" />
-        <item
-            android:id="@+id/nav_gallery"
-            android:icon="@drawable/ic_menu_gallery"
-            android:title="Gallery" />
-        <item
-            android:id="@+id/nav_slideshow"
-            android:icon="@drawable/ic_menu_slideshow"
-            android:title="Slideshow" />
         <item
             android:id="@+id/nav_log"
             android:icon="@drawable/ic_menu_manage"
             android:title="ログ表示" />
+
         <item
             android:id="@+id/nav_appriconfig"
+            android:icon="@drawable/ic_settings_black"
             android:title="設定" />
     </group>
-
-
 
 </menu>

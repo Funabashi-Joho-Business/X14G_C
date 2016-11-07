@@ -6,7 +6,9 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.MenuItem;
 
@@ -23,7 +25,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
         ((DrawerLayout) findViewById(R.id.drawer_layout)).openDrawer(Gravity.LEFT);
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.setDrawerListener(toggle);
+        toggle.syncState();
 
         mBundle = new Bundle();
 
@@ -41,6 +52,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_log:
                 changeFragment(FragmentLog.class);
                 break;
+            case R.id.nav_ranking:
+                changeFragment(RankingFragment.class);
+                break;
+            case R.id.nav_search:
+                changeFragment(SearchFragment.class);
+                break;
         }
        ((DrawerLayout) findViewById(R.id.drawer_layout)).closeDrawers();
         return true;
@@ -48,17 +65,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
     void changeFragment(Class c){
-        Bundle bundle = new Bundle();
-        Fragment f = getSupportFragmentManager().getFragment(bundle,c.getName());
+
         try {
-            if(f == null)
-                f = (Fragment) c.newInstance();
+            Fragment f = (Fragment) c.newInstance();
+            //フラグ面tのの切り替え処理
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.setCustomAnimations(
+                    R.anim.fragment_in,
+                    R.anim.fragment_out);
+            ft.replace(R.id.fragment_area,f);
+            ft.commit();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.fragment_area,f);
-        ft.commit();
     }
 
 
