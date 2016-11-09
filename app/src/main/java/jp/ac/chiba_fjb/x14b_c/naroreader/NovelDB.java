@@ -10,9 +10,9 @@ import java.util.Date;
 import java.util.List;
 
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelBookmark;
-import to.pns.lib.SQLite;
+import to.pns.lib.AppDB;
 
-public class NovelDB extends SQLite {
+public class NovelDB extends AppDB {
     public NovelDB(Context context) {
         super(context, "novel.db", 1);
     }
