@@ -17,41 +17,80 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical" >
-
-            <TextView
-                android:text="文字のフォントサイズ"
+            <TableLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/config1" />
+                android:layout_height="match_parent">
 
-            <TextView
-                android:text="文字色"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/config2" />
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" >
 
-            <TextView
-                android:text="背景色"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/config3" />
+                    <TextView
+                        android:text="TextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/textView5" />
 
-            <TextView
-                android:text="ステータスバー"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/textView4" />
+                    <CheckBox
+                        android:text="CheckBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/checkBox2" />
+                </TableRow>
 
-            <Button
-                android:text="戻る"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/exitconfigration" />
 
-        </LinearLayout>
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" >
+
+                    <TextView
+                        android:text="TextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/textView6" />
+
+                    <CheckBox
+                        android:text="CheckBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/checkBox3" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" >
+
+                    <TextView
+                        android:text="TextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/textView7" />
+
+                    <CheckBox
+                        android:text="CheckBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/checkBox4" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" >
+
+                    <TextView
+                        android:text="TextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/textView8" />
+
+                    <CheckBox
+                        android:text="CheckBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/checkBox5" />
+                </TableRow>
+            </TableLayout>
+
+
     </ScrollView>
 </RelativeLayout>
