@@ -56,9 +56,6 @@ public class SearchFragment extends Fragment implements View.OnClickListener{
             }
         }.start();
 
-        TextView sikiri = new TextView(getContext());
-        sikiri.setText("------------------------");
-        layout.addView(sikiri);
     }
 }
 
