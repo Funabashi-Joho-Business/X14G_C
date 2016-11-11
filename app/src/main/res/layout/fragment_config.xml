@@ -35,28 +35,38 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/config1"
-                    android:padding="10dp" />
+                    android:padding="10dp"
+                    android:layout_weight="1" />
 
                 <TextView
                     android:text="文字の色"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/config2"
-                    android:padding="10dp" />
+                    android:padding="10dp"
+                    android:layout_weight="1" />
 
                 <TextView
                     android:text="背景の色"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/config3"
-                    android:padding="10dp" />
+                    android:padding="10dp"
+                    android:layout_weight="1" />
 
-                <TextView
+                <Button
+                    android:text="ログイン"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/config4"
-                    android:text="ログイン"
-                    android:padding="10dp" />
+                    android:layout_weight="1" />
+
+                <Button
+                    android:text="保存"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/config5"
+                    android:layout_weight="1" />
 
             </LinearLayout>
 
@@ -73,19 +83,19 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/spinner"
                     android:entries="@array/fontSize"
-                    android:layout_weight="0.17" />
+                    android:layout_weight="0.10" />
 
                 <Spinner
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/spinner3"
-                    android:layout_weight="0.17" />
+                    android:layout_weight="0.10" />
 
                 <Spinner
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/spinner4"
-                    android:layout_weight="0.17" />
+                    android:layout_weight="0.08" />
 
             </LinearLayout>
         </LinearLayout>

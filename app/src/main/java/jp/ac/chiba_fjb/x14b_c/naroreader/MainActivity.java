@@ -63,6 +63,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 changeFragment(ConfigFragment.class);
                 break;
         }
+
        ((DrawerLayout) findViewById(R.id.drawer_layout)).closeDrawers();
         return true;
     }

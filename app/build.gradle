@@ -43,18 +43,11 @@ dependencies {
 dependencies {
     compile 'com.android.support:support-v4:24.+'
 }
-dependencies {
-    compile 'com.android.support:support-v4:24.+'
-}
-dependencies {
-    compile 'com.android.support:support-v4:24.+'
-}
-dependencies {
-    compile 'com.android.support:support-v4:24.+'
-}
+
 dependencies {
     compile 'com.fasterxml.jackson.core:jackson-core:2.8.3@jar'
     compile 'com.fasterxml.jackson.core:jackson-annotations:2.8.3@jar'
     compile 'com.fasterxml.jackson.core:jackson-databind:2.8.3@jar'
     compile project(path: ':ShareLib')
+    compile 'com.android.support.constraint:constraint-layout:1.0.+'
 }
