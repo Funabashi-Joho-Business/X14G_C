@@ -50,10 +50,15 @@ public class ConfigFragment extends Fragment implements View.OnClickListener {
                 // ダイアログを表示する
                 DialogFragment newFragment = new LoginFragment();
                 newFragment.show(getFragmentManager(),null);
-            break;
-
+                break;
+            case R.id.config5: //設定の保存
+                settingSave();
+                break;
         }
     }
 
+    public void settingSave(){
+
+    }
 
 }

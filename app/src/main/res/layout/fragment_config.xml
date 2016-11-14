@@ -89,13 +89,18 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/spinner3"
-                    android:layout_weight="0.10" />
+                    android:layout_weight="0.10"
+                    android:elevation="0dp"
+                    android:entries="@array/fontColor"
+                    android:spinnerMode="dialog" />
 
                 <Spinner
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/spinner4"
-                    android:layout_weight="0.08" />
+                    android:layout_weight="0.08"
+                    android:entries="@array/fontColor"
+                    android:spinnerMode="dialog" />
 
             </LinearLayout>
         </LinearLayout>
