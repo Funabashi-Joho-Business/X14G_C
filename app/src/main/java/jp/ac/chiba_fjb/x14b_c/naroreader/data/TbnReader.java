@@ -13,9 +13,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -482,5 +480,50 @@ public class TbnReader {
             series.novelList.add(m.group(1));
         }
         return series;
+    }
+    public static List<NovelRanking> getRanking(String url){
+        String address;
+        address = url;
+
+        String content = getContent(address);
+        if (content == null)
+            return null;
+
+        SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd HH:mm");
+
+        ArrayList<NovelRanking> list = new ArrayList<NovelRanking>();
+
+
+        Pattern p = Pattern.compile(
+                "<a class=\"tl\" id=\"best\\d*?\" target=\"_blank\" href=\"http://ncode.syosetu.com/(.*?)/\">(.*?)</a>.*?"+
+                "小説情報</a>／作者：<a href=\"http://mypage.syosetu.com/(\\d*?)/\">(.*?)</a>.*?" +
+                "<span class=\"attention\">(.*?)</span>.*?"+
+                "<br />\\(全(\\d*?)部分\\).*?" +
+                "<td class=\"ex\">\n(.*?)\n</td>.*?" +
+                "<td>\n(.*?)\n</td>.*?" +
+                "<td>\n最終更新日：(.*?)\n.*?" +
+                "<span class=\"marginleft\">(.*?)文字</span>", Pattern.DOTALL);
+        Matcher m = p.matcher(content);
+        try {
+            while (m.find()){
+                NovelRanking ranking = new NovelRanking();
+                ranking.ncode = m.group(1);
+                ranking.title = m.group(2);
+                ranking.writerId = Integer.parseInt(m.group(3));
+                ranking.writerName = m.group(4);
+                ranking.point = NumberFormat.getInstance().parse(m.group(5)).intValue();
+                ranking.novelCount = Integer.parseInt(m.group(6));
+                ranking.info = m.group(7);
+                ranking.genle = m.group(8);
+                ranking.update = format.parse(m.group(9));
+                ranking.textCount = NumberFormat.getInstance().parse(m.group(10)).intValue();
+                list.add(ranking);
+            }
+        } catch (Exception e) {
+            return null;
+        }
+
+        return list;
+
     }
 }
