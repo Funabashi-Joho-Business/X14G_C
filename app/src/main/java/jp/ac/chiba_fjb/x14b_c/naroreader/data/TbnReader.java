@@ -339,39 +339,17 @@ public class TbnReader {
     }
 
     //キーワード検索用
-    public static List<NovelSearch> getKeyword(String word){
-        int[] marks = new int[10];
-        String content = getContent("http://api.syosetu.com/novelapi/api/?word=%s",word);       //生データ
-        //int[] count = content[allcount];
-        Pattern p = Pattern.compile("<ul class=\"category_box\">(.+?)</ul>",Pattern.DOTALL);
-        Matcher m = p.matcher(content);
-        List<NovelSearch> list = new ArrayList<NovelSearch>();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm");
-        for(int i=0;i<10;i++)
-        {
-            if(marks[i] == 0)
-                continue;
-            if(i > 0)
-                content = getContent("http://api.syosetu.com/novelapi/api/?word=%s",word);
-
-            p = Pattern.compile("<a class=\"title\" href=\"http://ncode.syosetu.com/(.+?)/\">(.+?)</a>.+?更新日：(.+?)\n",Pattern.DOTALL);
-            m = p.matcher(content);
-
-            while(m.find()){
-
-                Calendar cal = Calendar.getInstance();
-                //cal.setTime(sdf.parse(m.group(3)));
-                NovelSearch Scashdata = new NovelSearch(m.group(1),m.group(2),i+1,cal,m.group(4));
-                list.add(Scashdata);
-            }
-
-        }
-        return list;
+    public static NovelInfo[] getKeyword(String word){
+        String address = String.format("http://api.syosetu.com/novelapi/api/?out=json&word=%s",word);
+        NovelInfo[] Keyword = Json.send(address,null,NovelInfo[].class);
+        if(Keyword != null && Keyword.length > 1)
+            return Keyword;
+        return null;
     }
 
     //評価ソート用
     public static NovelInfo getOrder(String order){
-        String address = String.format("http://api.syosetu.com/novelapi/api/?out=json&order=hyoka=%s",order);
+        String address = String.format("http://api.syosetu.com/novelapi/api/?out=json&order=%s",order);
         NovelInfo[] evorder = Json.send(address,null,NovelInfo[].class);
         if(evorder != null && evorder.length > 1)
             return evorder[1];

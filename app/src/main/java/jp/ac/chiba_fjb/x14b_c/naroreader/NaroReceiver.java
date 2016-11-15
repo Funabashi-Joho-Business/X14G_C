@@ -9,7 +9,6 @@ import java.util.List;
 
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelBookmark;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelInfo;
-import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelSearch;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.TbnReader;
 import to.pns.lib.LogService;
 
@@ -68,11 +67,11 @@ public class NaroReceiver extends BroadcastReceiver {
                         String word = intent.getStringExtra("data");
                         LogService.output(context,"検索開始");
                         //取得した検索情報をDBに保存
-                        List<NovelSearch> Snovels = TbnReader.getKeyword(word);
+                        NovelInfo[] Snovels = TbnReader.getKeyword(word);
                         //DBを利用
                         NovelDB db = new NovelDB(context);
-                        for(NovelSearch b : Snovels){
-                            db.addSearch(b.getCode(),b.getName(),b.getUpdate().getTime(),b.getCategory(),b.getKeyword(word));
+                        for(NovelInfo b : Snovels){
+                            db.addSearch(b.ncode,b.title,b.general_lastup,b.biggenre);
                         }
                         db.close();
                         LogService.output(context,"検索終了");

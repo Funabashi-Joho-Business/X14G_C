@@ -13,6 +13,7 @@ import android.view.Gravity;
 import android.view.MenuItem;
 
 import jp.ac.chiba_fjb.x14b_c.naroreader.Bookmark.BookmarkFragment;
+import jp.ac.chiba_fjb.x14b_c.naroreader.SearchPack.SearchFragment;
 import to.pns.lib.LogService;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {

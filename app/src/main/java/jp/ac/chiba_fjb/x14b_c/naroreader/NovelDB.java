@@ -10,7 +10,6 @@ import java.util.Date;
 import java.util.List;
 
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelBookmark;
-import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelSearch;
 import to.pns.lib.SQLite;
 
 public class NovelDB extends SQLite {
@@ -65,7 +64,7 @@ public class NovelDB extends SQLite {
         return list;
     }
 
-    public void addSearch(String ncode, String name, Date update, int category,String keyword){
+    public void addSearch(String ncode, String name, Date update, int category){
         String d = new java.sql.Timestamp(update.getTime()).toString();
         String sql;
         //ブックマークデータの追加
@@ -79,7 +78,7 @@ public class NovelDB extends SQLite {
 
     }
 
-    public List<NovelSearch> getSearch(){
+/*    public List<NovelSearch> getSearch(){
         String sql;
         sql = "select * from t_bookmark natural join t_novel";
         Cursor r = query(sql);
@@ -95,4 +94,5 @@ public class NovelDB extends SQLite {
         r.close();
         return list;
     }
+    */
 }
