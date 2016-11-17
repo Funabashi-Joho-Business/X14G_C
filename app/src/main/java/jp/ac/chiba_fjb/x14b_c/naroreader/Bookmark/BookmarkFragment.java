@@ -69,7 +69,7 @@ public class BookmarkFragment extends Fragment {
         rv.setAdapter(mBookmarkAdapter);                              //アダプターを設定
 
 
-        //ボタンが押され場合の処理
+        //ボタンが押された場合の処理
         ((SwipeRefreshLayout)view.findViewById(R.id.swipe_refresh)).setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {

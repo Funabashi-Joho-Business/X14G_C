@@ -10,7 +10,6 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
@@ -33,12 +32,13 @@
                 android:layout_weight="1" />
         </LinearLayout>
 
-        <ScrollView
+        <android.support.v7.widget.RecyclerView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            >
+            tools:listitem="@layout/bookmark_item"
+            android:id="@+id/RecyclerView" />
 
-        </ScrollView>
+
 
     </LinearLayout>
 </FrameLayout>

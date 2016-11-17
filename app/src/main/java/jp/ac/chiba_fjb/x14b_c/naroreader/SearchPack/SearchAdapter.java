@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
-import java.util.List;
 
 import jp.ac.chiba_fjb.x14b_c.naroreader.R;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelInfo;
@@ -30,23 +29,22 @@ public class SearchAdapter extends RecyclerView.Adapter{
     @Override
     public void onBindViewHolder (RecyclerView.ViewHolder holder,int position) {
         //positionから必要なデータをビューに設定する
-/*
-        NovelInfo s = mSearch.get(position);
+
+        NovelInfo s = mSearch[position];        //position＝番地
         String dateString = new SimpleDateFormat("yyyy年MM月dd日").format(s.general_lastup.getTime());
 
         ((TextView) holder.itemView.findViewById(R.id.textView)).setText(s.ncode);
         ((TextView) holder.itemView.findViewById(R.id.textView2)).setText("" + s.general_lastup);
         ((TextView) holder.itemView.findViewById(R.id.textView3)).setText(dateString);
         ((TextView) holder.itemView.findViewById(R.id.textView4)).setText(s.title);
-*/
+        System.out.println("Section5");
     }
 
     @Override
     public int getItemCount () {
         if (mSearch == null)
-
             return 0;
-        return 0; //mSearch;
+        return mSearch.length;  //初回起動時はnullで帰ってくる
     }
 
     public void setSearch(NovelInfo[] bookmarks){
