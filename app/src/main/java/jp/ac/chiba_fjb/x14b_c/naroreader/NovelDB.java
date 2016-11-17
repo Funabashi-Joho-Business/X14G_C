@@ -19,6 +19,7 @@ public class NovelDB extends AppDB {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+        super.onCreate(db);
         String sql;
         //ブックマーク用テーブルの作成
         sql = "create table t_bookmark(n_code text primary key,b_update date,b_category int)";

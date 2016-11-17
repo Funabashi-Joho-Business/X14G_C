@@ -10,6 +10,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Spinner;
+import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.TbnReader;
@@ -31,14 +33,27 @@ public class ConfigFragment extends Fragment implements View.OnClickListener {
         toolbar.setTitle("設定");
 
 
-
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_config, container, false);
+
+        Spinner s1 = (Spinner) view.findViewById(R.id.spinner);
+        Spinner s2 = (Spinner) view.findViewById(R.id.spinner3);
+        Spinner s3 = (Spinner) view.findViewById(R.id.spinner4);
 
         Button b1 = (Button) view.findViewById(R.id.config4);
         Button b2 = (Button) view.findViewById(R.id.config5);
         b1.setOnClickListener(this);
         b2.setOnClickListener(this);
+
+        NovelDB settingDB = new NovelDB(getContext());
+        String ss1 = settingDB.getSetting("fontSize");
+        String ss2 = settingDB.getSetting("fontColor");
+        String ss3 = settingDB.getSetting("BackColor");
+        settingDB.close();
+
+        setSelection(s1,ss1);
+        setSelection(s2,ss2);
+        setSelection(s3,ss3);
 
         return view;
     }
@@ -52,13 +67,37 @@ public class ConfigFragment extends Fragment implements View.OnClickListener {
                 newFragment.show(getFragmentManager(),null);
                 break;
             case R.id.config5: //設定の保存
-                settingSave();
+                Spinner s1 = (Spinner) getView().findViewById(R.id.spinner);
+                Spinner s2 = (Spinner) getView().findViewById(R.id.spinner3);
+                Spinner s3 = (Spinner) getView().findViewById(R.id.spinner4);
+
+                String t1 = (String)s1.getSelectedItem();
+                String t2 = (String)s2.getSelectedItem();
+                String t3 = (String)s3.getSelectedItem();
+
+                settingSave(t1,t2,t3);
                 break;
         }
     }
 
-    public void settingSave(){
+    public void settingSave(String fontSize,String fontColor,String backColor){
+        NovelDB settingDB = new NovelDB(getContext());
 
+        settingDB.setSetting("fontSize",fontSize);
+        settingDB.setSetting("fontColor",fontColor);
+        settingDB.setSetting("backColor",backColor);
+
+        settingDB.close();
     }
 
+    public static void setSelection(Spinner spinner, String item) {
+        SpinnerAdapter adapter = spinner.getAdapter();
+        int index = 0;
+        for (int i = 0; i < adapter.getCount(); i++) {
+            if (adapter.getItem(i).equals(item)) {
+                index = i; break;
+            }
+        }
+        spinner.setSelection(index);
+    }
 }
