@@ -14,7 +14,7 @@ import to.pns.lib.AppDB;
 
 public class NovelDB extends AppDB {
     public NovelDB(Context context) {
-        super(context, "novel.db", 1);
+        super(context, "novel.db", 2);
     }
 
     @Override
@@ -31,7 +31,11 @@ public class NovelDB extends AppDB {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
+        String sql;
+        if(oldVersion < 2) {
+            sql = "create table t_novel_reg(n_code text primary key)";
+            db.execSQL(sql);
+        }
     }
 
     public void addBookmark(String ncode, String name, Date update, int category){
@@ -40,12 +44,9 @@ public class NovelDB extends AppDB {
         //ブックマークデータの追加
         sql = String.format("replace into t_bookmark values('%s','%s','%d')",STR(ncode),d,category);
         exec(sql);
-        System.out.println(sql);
         //ノベルデータの追加
         sql = String.format("replace into t_novel values('%s','%s')",STR(ncode),STR(name));
         exec(sql);
-        System.out.println(sql);
-
     }
 
     public List<NovelBookmark> getBookmark(){

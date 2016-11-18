@@ -4,10 +4,16 @@
              android:layout_height="match_parent"
              tools:context="jp.ac.chiba_fjb.x14b_c.naroreader.Titles.TitlesFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_refresh"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment"/>
+        android:layout_height="wrap_content">
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/RecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            tools:listitem="@layout/bookmark_item" />
+    </android.support.v4.widget.SwipeRefreshLayout>
 
 </FrameLayout>
