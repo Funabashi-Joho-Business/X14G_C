@@ -1,4 +1,4 @@
-package jp.ac.chiba_fjb.x14b_c.naroreader;
+package jp.ac.chiba_fjb.x14b_c.naroreader.Other;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

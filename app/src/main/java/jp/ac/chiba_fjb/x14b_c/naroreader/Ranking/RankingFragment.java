@@ -2,6 +2,7 @@ package jp.ac.chiba_fjb.x14b_c.naroreader.Ranking;
 
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -16,6 +17,7 @@ import android.widget.Spinner;
 
 import java.util.List;
 
+import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NovelDB;
 import jp.ac.chiba_fjb.x14b_c.naroreader.R;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelRanking;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.TbnReader;
@@ -122,8 +124,15 @@ public class RankingFragment extends Fragment implements AdapterView.OnItemSelec
         mSpiner2 = (Spinner) view.findViewById(R.id.spinnerRFilter2);
         mSpiner3 = (Spinner) view.findViewById(R.id.spinnerRFilter3);
 
+
+        //スピナー初期設定
+        NovelDB db = new NovelDB(getContext());
         mSpiner1.setAdapter(arrayAdapter);
-        mSpiner1.setOnItemSelectedListener(this);
+        mSpiner1.setSelection(db.getSetting("rankingFilter1",0),false);
+        updateSpiner();
+        mSpiner2.setSelection(db.getSetting("rankingFilter2",0),false);
+        mSpiner3.setSelection(db.getSetting("rankingFilter3",0),false);
+        db.close();
 
 
         //ブックマーク表示用アダプターの作成
@@ -147,20 +156,60 @@ public class RankingFragment extends Fragment implements AdapterView.OnItemSelec
 
         });
 
+
         return view;
     }
 
     @Override
-    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-        if(adapterView == mSpiner1){
-            ArrayAdapter<String> arrayAdapter
-                = new ArrayAdapter<String>(getContext(), R.layout.adapter_item, RANKING_FILTER2_NAME[i]);
-                mSpiner2.setAdapter(arrayAdapter);
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        load();
+    }
 
-            ArrayAdapter<String> arrayAdapter2
-                = new ArrayAdapter<String>(getContext(), R.layout.adapter_item, RANKING_FILTER3_NAME[i]);
-            mSpiner3.setAdapter(arrayAdapter2);
-        }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        //スピナー変更を受け取る
+        mSpiner1.setOnItemSelectedListener(this);
+        mSpiner2.setOnItemSelectedListener(this);
+        mSpiner3.setOnItemSelectedListener(this);
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+        if(adapterView ==  mSpiner1)
+            updateSpiner();
+        else
+            load();
+
+        int f1 = mSpiner1.getSelectedItemPosition();
+        int f2 = mSpiner2.getSelectedItemPosition();
+        int f3 = mSpiner3.getSelectedItemPosition();
+
+        //変更の保存
+        NovelDB db = new NovelDB(getContext());
+        db.setSetting("rankingFilter1",f1);
+        db.setSetting("rankingFilter2",f2);
+        db.setSetting("rankingFilter3",f3);
+        db.close();
+
+    }
+
+    //スピナーの内容切り替え
+    void updateSpiner(){
+        int f1 = mSpiner1.getSelectedItemPosition();
+
+        ArrayAdapter<String> arrayAdapter
+            = new ArrayAdapter<String>(getContext(), R.layout.adapter_item, RANKING_FILTER2_NAME[f1]);
+        mSpiner2.setAdapter(arrayAdapter);
+        mSpiner2.setSelection(0,false);
+
+        ArrayAdapter<String> arrayAdapter2
+            = new ArrayAdapter<String>(getContext(), R.layout.adapter_item, RANKING_FILTER3_NAME[f1]);
+        mSpiner3.setAdapter(arrayAdapter2);
+        mSpiner3.setSelection(0,false);
 
     }
 
@@ -170,6 +219,7 @@ public class RankingFragment extends Fragment implements AdapterView.OnItemSelec
     }
 
     void load(){
+        ((SwipeRefreshLayout)getView().findViewById(R.id.swipe_refresh)).setRefreshing(true);
         new Thread(){
             @Override
             public void run() {

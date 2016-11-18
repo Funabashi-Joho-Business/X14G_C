@@ -33,7 +33,7 @@ public class RankingAdapter extends RecyclerView.Adapter {
         NovelRanking b = mRanking.get(position);
         String dateString = new SimpleDateFormat("yyyy年MM月dd日").format(b.update);
 
-        ((TextView)holder.itemView.findViewById(R.id.textRank)).setText(""+position);
+        ((TextView)holder.itemView.findViewById(R.id.textRank)).setText(""+(position+1));
         ((TextView)holder.itemView.findViewById(R.id.textCode)).setText(b.ncode+1);
         ((TextView)holder.itemView.findViewById(R.id.textGenre)).setText(""+b.genre);
         ((TextView)holder.itemView.findViewById(R.id.textDate)).setText(dateString);

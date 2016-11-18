@@ -327,12 +327,15 @@ public class TbnReader {
         }
         return null;
     }
-
+    static class NovelInfoJson{
+        public Integer allcount;
+        public NovelInfo[] infoList;
+    }
     public static NovelInfo getNovelInfo(String ncode){
         String address = String.format("http://api.syosetu.com/novelapi/api/?out=json&ncode=%s",ncode);
-        NovelInfo[] info = Json.send(address,null,NovelInfo[].class);
-        if(info != null && info.length > 1)
-            return info[1];
+        NovelInfoJson json = Json.send(address,null,NovelInfoJson.class);
+        if(json != null && json.allcount>0)
+            return json.infoList[0];
         return null;
     }
 
@@ -502,7 +505,7 @@ public class TbnReader {
                 "<a class=\"tl\" id=\"best\\d*?\" target=\"_blank\" href=\"http://ncode.syosetu.com/(.*?)/\">(.*?)</a>.*?"+
                 "小説情報</a>／作者：<a href=\"http://mypage.syosetu.com/(\\d*?)/\">(.*?)</a>.*?" +
                 "<span class=\"attention\">(.*?)</span>.*?"+
-                "<br />\\(全(\\d*?)部分\\).*?" +
+                "(?:(?:連載中|完結済)\n<br />\\(全(\\d*?)部分\\).*?|短編\n).*?" +
                 "<td class=\"ex\">\n(.*?)\n</td>.*?" +
                 "<td>\n(.*?)\n</td>.*?" +
                 "<td>\n最終更新日：(.*?)\n.*?" +
@@ -516,7 +519,7 @@ public class TbnReader {
                 ranking.writerId = Integer.parseInt(m.group(3));
                 ranking.writerName = m.group(4);
                 ranking.point = NumberFormat.getInstance().parse(m.group(5)).intValue();
-                ranking.novelCount = Integer.parseInt(m.group(6));
+                ranking.novelCount = m.group(6)==null?1:Integer.parseInt(m.group(6));
                 ranking.info = m.group(7);
                 ranking.genre = m.group(8);
                 ranking.update = format.parse(m.group(9));

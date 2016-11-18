@@ -10,7 +10,7 @@ import java.util.Date;
  */
 @JsonIgnoreProperties(ignoreUnknown=true)
 public class NovelInfo {
-    public Integer allcount;
+
 
     public String title;
     public String ncode;

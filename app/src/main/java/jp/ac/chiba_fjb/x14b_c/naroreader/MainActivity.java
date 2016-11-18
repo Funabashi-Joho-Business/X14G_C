@@ -14,6 +14,7 @@ import android.view.MenuItem;
 
 import jp.ac.chiba_fjb.x14b_c.naroreader.Bookmark.BookmarkFragment;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Ranking.RankingFragment;
+import jp.ac.chiba_fjb.x14b_c.naroreader.SearchPack.SearchFragment;
 import to.pns.lib.LogService;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -80,12 +81,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     R.anim.fragment_in,
                     R.anim.fragment_out);
             ft.replace(R.id.fragment_area,f);
+            ft.addToBackStack(null);
             ft.commit();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-
-
+    @Override
+    public void onBackPressed() {
+        //メニューが開いていたら閉じる
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if(drawer.isDrawerOpen(Gravity.LEFT))
+            drawer.closeDrawer(Gravity.LEFT);
+        else
+            super.onBackPressed();
+    }
 }

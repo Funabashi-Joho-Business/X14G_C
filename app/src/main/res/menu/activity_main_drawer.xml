@@ -3,6 +3,10 @@
 
     <group android:checkableBehavior="single">
         <item
+            android:id="@+id/nav_titles"
+            android:icon="@drawable/ic_menu_manage"
+            android:title="作品一覧" />
+        <item
             android:id="@+id/nav_bookmark"
             android:icon="@drawable/ic_book_black"
             android:title="ブックマーク" />
