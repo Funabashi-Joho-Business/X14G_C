@@ -1,14 +1,24 @@
-package jp.ac.chiba_fjb.x14b_c.naroreader;
+package jp.ac.chiba_fjb.x14b_c.naroreader.Ranking;
 
 
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+
+import java.util.List;
+
+import jp.ac.chiba_fjb.x14b_c.naroreader.R;
+import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelRanking;
+import jp.ac.chiba_fjb.x14b_c.naroreader.data.TbnReader;
 
 
 /**
@@ -92,6 +102,7 @@ public class RankingFragment extends Fragment implements AdapterView.OnItemSelec
     private Spinner mSpiner1;
     private Spinner mSpiner2;
     private Spinner mSpiner3;
+    private RankingAdapter mRankingAdapter;
 
     public RankingFragment() {
         // Required empty public constructor
@@ -115,6 +126,27 @@ public class RankingFragment extends Fragment implements AdapterView.OnItemSelec
         mSpiner1.setOnItemSelectedListener(this);
 
 
+        //ブックマーク表示用アダプターの作成
+        mRankingAdapter = new RankingAdapter();
+
+
+        //データ表示用のビューを作成
+        RecyclerView rv = (RecyclerView) view.findViewById(R.id.RecyclerView);
+        rv.setLayoutManager(new LinearLayoutManager(getContext()));     //アイテムを縦に並べる
+        rv.setAdapter(mRankingAdapter);                              //アダプターを設定
+
+
+        //ボタンが押され場合の処理
+        ((SwipeRefreshLayout)view.findViewById(R.id.swipe_refresh)).setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                Snackbar.make(getView(), "ランキングデータの要求", Snackbar.LENGTH_SHORT).show();
+                load();
+            }
+
+
+        });
+
         return view;
     }
 
@@ -136,4 +168,23 @@ public class RankingFragment extends Fragment implements AdapterView.OnItemSelec
     public void onNothingSelected(AdapterView<?> adapterView) {
 
     }
+
+    void load(){
+        new Thread(){
+            @Override
+            public void run() {
+                final List<NovelRanking> rankList = TbnReader.getRanking(mSpiner1.getSelectedItemPosition(), mSpiner2.getSelectedItemPosition(), mSpiner3.getSelectedItemPosition());
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mRankingAdapter.setRanking(rankList);
+                        mRankingAdapter.notifyDataSetChanged();
+                        ((SwipeRefreshLayout)getView().findViewById(R.id.swipe_refresh)).setRefreshing(false);
+                    }
+                });
+            }
+        }.start();
+    }
+
+
 }

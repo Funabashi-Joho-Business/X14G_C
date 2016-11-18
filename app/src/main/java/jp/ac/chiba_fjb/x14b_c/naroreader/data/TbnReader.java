@@ -485,9 +485,9 @@ public class TbnReader {
         }
         return series;
     }
-    public static List<NovelRanking> getRanking(String url){
+    public static List<NovelRanking> getRanking(int f1,int f2,int f3){
         String address;
-        address = url;
+        address = getRankingUrl(f1,f2,f3);
 
         String content = getContent(address);
         if (content == null)
@@ -518,7 +518,7 @@ public class TbnReader {
                 ranking.point = NumberFormat.getInstance().parse(m.group(5)).intValue();
                 ranking.novelCount = Integer.parseInt(m.group(6));
                 ranking.info = m.group(7);
-                ranking.genle = m.group(8);
+                ranking.genre = m.group(8);
                 ranking.update = format.parse(m.group(9));
                 ranking.textCount = NumberFormat.getInstance().parse(m.group(10)).intValue();
                 list.add(ranking);
@@ -528,6 +528,77 @@ public class TbnReader {
         }
 
         return list;
+
+    }
+    public static String getRankingUrl(int f1,int f2,int f3){
+        final String[] RANKING_FILTER1_URL=
+            {
+                "http://yomou.syosetu.com/rank/list/type/",
+                "http://yomou.syosetu.com/rank/genrelist/type/",
+                "http://yomou.syosetu.com/rank/isekailist/type/"
+            };
+
+        final String[][] RANKING_FILTER2_URL=
+            {
+                {
+                    "daily_",
+                    "weekly_",
+                    "monthly_",
+                    "quarter_",
+                    "yearly_",
+                    "total_"
+                },
+                {
+                    "daily_",
+                    "weekly_",
+                    "monthly_",
+                    "quarter_",
+                    "yearly_"
+                },
+                {
+                    "daily_",
+                    "weekly_",
+                    "monthly_",
+                    "quarter_",
+                    "yearly_"
+                }
+            };
+        final String[][] RANKING_FILTER3_URL=
+            {
+                {
+                    "total",
+                    "t",
+                    "r",
+                    "er"
+                },
+                {
+                    "101",
+                    "102",
+                    "201",
+                    "202",
+                    "301",
+                    "302",
+                    "303",
+                    "304",
+                    "305",
+                    "306",
+                    "401",
+                    "402",
+                    "403",
+                    "404",
+                    "9901",
+                    "9902",
+                    "9903",
+                    "9999",
+                },
+                {
+                    "1",
+                    "2",
+                    "o"
+                },
+
+            };
+        return RANKING_FILTER1_URL[f1]+RANKING_FILTER2_URL[f1][f2]+RANKING_FILTER3_URL[f1][f3];
 
     }
 }

@@ -15,5 +15,5 @@ public class NovelRanking {
     public int novelCount;
     public int point;
     public int textCount;
-    public String genle;
+    public String genre;
 }

@@ -123,73 +123,6 @@ public class ExampleUnitTest {
 
     @Test
 	public void getRankList(){
-        final String[] RANKING_FILTER1_URL=
-            {
-                "http://yomou.syosetu.com/rank/list/type/",
-                "http://yomou.syosetu.com/rank/genrelist/type/",
-                "http://yomou.syosetu.com/rank/isekailist/type/"
-            };
-
-        final String[][] RANKING_FILTER2_URL=
-            {
-                {
-                    "daily_",
-                    "weekly_",
-                    "monthly_",
-                    "quarter_",
-                    "yearly_",
-                    "total_"
-                },
-                {
-                    "daily_",
-                    "weekly_",
-                    "monthly_",
-                    "quarter_",
-                    "yearly_"
-                },
-                {
-                    "daily_",
-                    "weekly_",
-                    "monthly_",
-                    "quarter_",
-                    "yearly_"
-                }
-            };
-        final String[][] RANKING_FILTER3_URL=
-            {
-                {
-                    "total",
-                    "t",
-                    "r",
-                    "er"
-                },
-                {
-                    "101",
-                    "102",
-                    "201",
-                    "202",
-                    "301",
-                    "302",
-                    "303",
-                    "304",
-                    "305",
-                    "306",
-                    "401",
-                    "402",
-                    "403",
-                    "404",
-                    "9901",
-                    "9902",
-                    "9903",
-                    "9999",
-                },
-                {
-                    "1",
-                    "2",
-                    "o"
-                },
-
-            };
 
 
         final String[] RANKING_FILTER1_NAME=
@@ -283,10 +216,8 @@ public class ExampleUnitTest {
             System.out.format("%d:%s\n",i,RANKING_FILTER3_NAME[filter1][i]);
         int filter3 = 2;//sc.nextInt();
 
-        String url = RANKING_FILTER1_URL[filter1]+RANKING_FILTER2_URL[filter1][filter2]+RANKING_FILTER3_URL[filter1][filter3];
-        System.out.println(url);
 
-        List<NovelRanking> list = TbnReader.getRanking(url);
+        List<NovelRanking> list = TbnReader.getRanking(filter1,filter2,filter3);
 		if(list == null)
 			System.out.println("データ取得失敗");
 		else {
