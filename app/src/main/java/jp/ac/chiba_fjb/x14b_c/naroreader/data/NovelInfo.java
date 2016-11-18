@@ -50,4 +50,5 @@ public class NovelInfo {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     public Date updated_at;
 
+
 }

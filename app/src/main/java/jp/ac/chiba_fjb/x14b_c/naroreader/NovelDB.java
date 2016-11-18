@@ -47,6 +47,7 @@ public class NovelDB extends AppDB {
         System.out.println(sql);
 
     }
+
     public List<NovelBookmark> getBookmark(){
         String sql;
         sql = "select * from t_bookmark natural join t_novel";
@@ -63,4 +64,36 @@ public class NovelDB extends AppDB {
         r.close();
         return list;
     }
+
+    public void addSearch(String ncode, String name, Date update, int category){
+        String d = new java.sql.Timestamp(update.getTime()).toString();
+        String sql;
+        //ブックマークデータの追加
+        sql = String.format("replace into t_bookmark values('%s','%s','%d','%s')",STR(ncode),d,category);
+        exec(sql);
+        System.out.println(sql);
+        //ノベルデータの追加
+        sql = String.format("replace into t_novel values('%s','%s')",STR(ncode),STR(name));
+        exec(sql);
+        System.out.println(sql);
+
+    }
+
+/*    public List<NovelSearch> getSearch(){
+        String sql;
+        sql = "select * from t_bookmark natural join t_novel";
+        Cursor r = query(sql);
+
+        List<NovelSearch> list = new ArrayList<>();
+        while(r.moveToNext()){
+            String d = r.getString(1);
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(java.sql.Timestamp.valueOf(r.getString(1)));
+            NovelSearch b = new NovelSearch(r.getString(0),r.getString(3),r.getInt(2),cal,r.getString(4));
+            list.add(b);
+        }
+        r.close();
+        return list;
+    }
+    */
 }

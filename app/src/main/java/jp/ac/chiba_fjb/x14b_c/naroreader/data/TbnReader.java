@@ -327,6 +327,7 @@ public class TbnReader {
         }
         return null;
     }
+
     public static NovelInfo getNovelInfo(String ncode){
         String address = String.format("http://api.syosetu.com/novelapi/api/?out=json&ncode=%s",ncode);
         NovelInfo[] info = Json.send(address,null,NovelInfo[].class);
@@ -334,16 +335,19 @@ public class TbnReader {
             return info[1];
         return null;
     }
-    public static NovelInfo getKeyword(String word){
+
+    //キーワード検索用
+    public static NovelInfo[] getKeyword(String word){
         String address = String.format("http://api.syosetu.com/novelapi/api/?out=json&word=%s",word);
-        NovelInfo[] wordinfo = Json.send(address,null,NovelInfo[].class);
-        if(wordinfo != null && wordinfo.length > 1)
-            return wordinfo[1];
+        NovelInfo[] Keyword = Json.send(address,null,NovelInfo[].class);
+        if(Keyword != null && Keyword.length > 1)
+            return Keyword;
         return null;
     }
 
+    //評価ソート用
     public static NovelInfo getOrder(String order){
-        String address = String.format("http://api.syosetu.com/novelapi/api/?out=json&order=hyoka=%s",order);
+        String address = String.format("http://api.syosetu.com/novelapi/api/?out=json&order=%s",order);
         NovelInfo[] evorder = Json.send(address,null,NovelInfo[].class);
         if(evorder != null && evorder.length > 1)
             return evorder[1];

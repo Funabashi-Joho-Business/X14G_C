@@ -7,12 +7,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
-import jp.ac.chiba_fjb.x14b_c.naroreader.data.TbnReader;
 
 
 /**
@@ -46,7 +43,7 @@ public class SearchFragment extends Fragment implements View.OnClickListener{
 
     @Override
     public void onClick(View view) {
-        LinearLayout layout = (LinearLayout) view.findViewById(R.id.answer);    //検索結果を表示するところ
+       // LinearLayout layout = (LinearLayout) view.findViewById(R.id.answer);    //検索結果を表示するところ
 
         EditText Setext = (EditText)getView().findViewById(R.id.wordsearch);    //検索したい文字を格納
         String s;
@@ -59,7 +56,7 @@ public class SearchFragment extends Fragment implements View.OnClickListener{
 
         TextView sikiri = new TextView(getContext());
         sikiri.setText("------------------------");
-        layout.addView(sikiri);
+       // layout.addView(sikiri);
     }
 }
 /*

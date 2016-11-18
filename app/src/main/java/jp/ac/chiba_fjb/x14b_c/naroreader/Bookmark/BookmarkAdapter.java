@@ -47,6 +47,8 @@ public class BookmarkAdapter extends RecyclerView.Adapter {
         return mBookmarks.size();
     }
 
+
+
     public void setBookmarks(List<NovelBookmark> bookmarks){
         mBookmarks = bookmarks;
     }
