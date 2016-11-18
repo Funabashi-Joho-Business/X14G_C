@@ -30,8 +30,13 @@ public class NaroReceiver extends BroadcastReceiver {
                     @Override
                     public void run() {
 
+                        NovelDB settingDB = new NovelDB(context);
+                        String id = settingDB.getSetting("loginId","");
+                        String pass = settingDB.getSetting("loginPass","");
+                        settingDB.close();
+
                         //ログイン処理
-                        String hash = TbnReader.getLoginHash("x14g006@chiba-fjb.ac.jp","chibafjb01");
+                        String hash = TbnReader.getLoginHash(id,pass);
                         if(hash == null) {
                             context.sendBroadcast(new Intent().setAction(NOTIFI_BOOKMARK).putExtra("result",false));
                             LogService.output(context,"ログイン失敗");

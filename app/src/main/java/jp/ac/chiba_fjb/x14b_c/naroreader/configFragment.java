@@ -3,7 +3,6 @@ package jp.ac.chiba_fjb.x14b_c.naroreader;
 
 
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -12,9 +11,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
-import android.widget.TextView;
-
-import jp.ac.chiba_fjb.x14b_c.naroreader.data.TbnReader;
 
 public class ConfigFragment extends Fragment implements View.OnClickListener {
 
@@ -63,8 +59,20 @@ public class ConfigFragment extends Fragment implements View.OnClickListener {
         switch (view.getId()){
             case R.id.config4: //ログインダイアログ
                 // ダイアログを表示する
-                DialogFragment newFragment = new LoginFragment();
+
+
+                LoginFragment newFragment = new LoginFragment();
+                newFragment.setOnEditUserListener(new LoginFragment.OnEditUserListener() {
+                    @Override
+                    public void onEditUser(String id, String pass) {
+                        NovelDB settingDB = new NovelDB(getContext());
+                        settingDB.setSetting("loginId",id);
+                        settingDB.setSetting("loginPass",pass);
+                        settingDB.close();
+                    }
+                });
                 newFragment.show(getFragmentManager(),null);
+
                 break;
             case R.id.config5: //設定の保存
                 Spinner s1 = (Spinner) getView().findViewById(R.id.spinner);
