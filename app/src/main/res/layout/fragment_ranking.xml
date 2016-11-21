@@ -14,18 +14,18 @@
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="50dp">
 
             <Spinner
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="50dp"
                 android:id="@+id/spinnerRFilter1"
                 android:layout_weight="1"
                 android:spinnerMode="dialog"/>
 
             <Spinner
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="50dp"
                 android:id="@+id/spinnerRFilter2"
                 android:layout_weight="1"
                 android:spinnerMode="dialog"/>
@@ -34,9 +34,10 @@
 
         <Spinner
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
             android:id="@+id/spinnerRFilter3"
-            android:spinnerMode="dialog"/>
+            android:spinnerMode="dialog"
+            android:dropDownWidth="match_parent" />
 
         <android.support.v4.widget.SwipeRefreshLayout
             android:id="@+id/swipe_refresh"

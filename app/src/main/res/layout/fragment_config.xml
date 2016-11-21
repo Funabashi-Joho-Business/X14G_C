@@ -55,7 +55,7 @@
                     android:layout_weight="1" />
 
                 <Button
-                    android:text="ログイン"
+                    android:text="認証情報"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/config4"
