@@ -12,6 +12,7 @@ import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -332,6 +333,27 @@ public class TbnReader {
         NovelInfo[] json = Json.send(address,null,NovelInfo[].class);
         if(json != null && json.length > 1)
             return json[1];
+        return null;
+    }
+    public static List<NovelInfo> getNovelInfo(List<String> ncodeList){
+	    if(ncodeList.size() == 0)
+		    return null;
+
+        StringBuilder sb = new StringBuilder();
+        for(String ncode : ncodeList){
+            if(sb.length() > 0)
+                sb.append("-");
+            sb.append(ncode);
+        }
+
+
+        String address = String.format("http://api.syosetu.com/novelapi/api/?out=json&lim=500&ncode=%s",sb.toString());
+        NovelInfo[] json = Json.send(address,null,NovelInfo[].class);
+        if(json != null && json.length > 1){
+			List<NovelInfo> list = new ArrayList(Arrays.asList(json));
+	        list.remove(0);
+            return list;
+        }
         return null;
     }
 

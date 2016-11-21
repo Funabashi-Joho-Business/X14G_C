@@ -6,7 +6,6 @@ import android.content.Intent;
 
 import java.util.List;
 
-
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelBookmark;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelInfo;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.TbnReader;
@@ -20,8 +19,10 @@ import to.pns.lib.LogService;
 public class NaroReceiver extends BroadcastReceiver {
     public static final String ACTION_BOOKMARK = "ACTION_BOOKMARK"; //このクラスが処理すべき命令
     public static final String ACTION_SEARCH = "ACTION_SEARCH"; //検索用クラスの命令を書く
+    public static final String ACTION_NOVELINFO = "ACTION_NOVELINFO"; //ノベル情報の取得
     public static final String NOTIFI_BOOKMARK = "NOTIFI_BOOKMARK"; //処理終了後の通知
     public static final String NOTIFI_SEARCH = "NOTIFI_SEARCH"; //検索終了後の通知
+    public static final String NOTIFI_NOVELINFO = "NOTIFI_NOVELINFO"; //検索終了後の通知
     public NaroReceiver() {
     }
 
@@ -83,6 +84,30 @@ public class NaroReceiver extends BroadcastReceiver {
                         LogService.output(context,"検索終了");
                         //更新完了通知
                         context.sendBroadcast(new Intent().setAction(NOTIFI_SEARCH).putExtra("result",true));
+                    }
+                }.start();
+                break;
+            case ACTION_NOVELINFO:
+                new Thread(){
+                    @Override
+                    public void run() {
+                        LogService.output(context,"ノベル情報の取得");
+                        NovelDB db = new NovelDB(context);
+                        List<String>list = db.getNovel();
+                        db.close();
+
+
+                        //取得した検索情報をDBに保存
+                        List<NovelInfo> info = TbnReader.getNovelInfo(list);
+                        if(info != null) {
+                            //DBを利用
+                            db = new NovelDB(context);
+                            db.addNovelInfo(info);
+                            db.close();
+                            LogService.output(context, "ノベル情報の取得完了");
+                        }
+                        //更新完了通知
+                        context.sendBroadcast(new Intent().setAction(NOTIFI_NOVELINFO).putExtra("result",true));
                     }
                 }.start();
                 break;

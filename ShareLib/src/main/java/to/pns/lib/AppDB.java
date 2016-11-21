@@ -34,7 +34,7 @@ public abstract class AppDB extends SQLite {
         StringBuilder sb = new StringBuilder();
         for(int i=0;i<c.getFields().length;i++) {
             Field f = c.getFields()[i];
-            if(f.getName().charAt(0) != '$')
+            if(f.getName().charAt(0) == '$')
                 continue;
             if(sb.length()>0)
                 sb.append(",");
@@ -49,11 +49,19 @@ public abstract class AppDB extends SQLite {
     public static String createSqlReplaceClass(Object obj,String className) {
         try {
             Class c = obj.getClass();
-            StringBuilder sb = new StringBuilder();
+            StringBuilder sbValue = new StringBuilder();
+            StringBuilder sbName = new StringBuilder();
             for(int i=0;i<c.getFields().length;i++) {
-                if(i>0)
-                    sb.append(",");
                 Field f = c.getFields()[i];
+                if(f.getName().charAt(0) == '$')
+                    continue;
+
+                if(sbName.length()>0) {
+                    sbName.append(",");
+                    sbValue.append(",");
+                }
+                sbName.append(f.getName());
+
                 String value;
                 Object v = f.get(obj);
                 if(f.getType() == Date.class)
@@ -61,10 +69,10 @@ public abstract class AppDB extends SQLite {
                 else
                     value = v.toString();
 
-                sb.append(String.format("'%s'",STR(value)));
+                sbValue.append(String.format("'%s'",STR(value)));
             }
 
-            return String.format("replace into %s values(%s)",className,sb.toString());
+            return String.format("replace into %s(%s) values(%s)",className,sbName.toString(),sbValue.toString());
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }

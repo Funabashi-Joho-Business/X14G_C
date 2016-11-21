@@ -16,12 +16,13 @@ import to.pns.lib.AppDB;
 
 public class NovelDB extends AppDB {
     public NovelDB(Context context) {
-        super(context, "novel3.db", 1);
+        super(context, "novel4.db", 1);
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
         super.onCreate(db);
+
         String sql;
         //ブックマーク用テーブルの作成
         sql = "create table t_bookmark(n_code text primary key,b_update date,b_category int)";
@@ -33,7 +34,7 @@ public class NovelDB extends AppDB {
         sql = "create table t_novel_reg(ncode text primary key)";
         db.execSQL(sql);
         sql = createSqlCreateClass(NovelInfo.class,"t_novel_info","ncode");
-        //db.execSQL(sql);
+        db.execSQL(sql);
     }
 
     @Override
@@ -43,14 +44,23 @@ public class NovelDB extends AppDB {
 
 
     public void addNovel(String ncode){
-        String sql = String.format("replace into t_novel_reg values('%s')",STR(ncode));
+        String sql = String.format("replace into t_novel_reg values(UPPER('%s'))",STR(ncode));
         exec(sql);
     }
     public void delNovel(String ncode){
         String sql = String.format("delete from t_novel_reg where n_code = '%s'",STR(ncode));
         exec(sql);
     }
-    public void addNovelInfo(NovelInfo[] novelInfo){
+    public List<String> getNovel(){
+        List<String> list = new ArrayList<String>();
+         String sql = String.format("select * from t_novel_reg");
+        Cursor c = query(sql);
+        while(c.moveToNext()){
+            list.add(c.getString(0));
+        }
+        return list;
+    }
+    public void addNovelInfo(List<NovelInfo> novelInfo){
         for(NovelInfo info : novelInfo){
             String sql = createSqlReplaceClass(info,"t_novel_info");
             exec(sql);
@@ -99,7 +109,7 @@ public class NovelDB extends AppDB {
     }
     public List<Map<String,String>> getTitles(){
         //メインに登録されているデータを抽出
-        String sql = "select * from t_reg_titles natural left join t_novel_info";
+        String sql = "select * from t_novel_reg natural left join t_novel_info";
         return queryMap(sql);
     }
 
