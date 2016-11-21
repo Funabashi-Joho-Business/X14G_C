@@ -6,11 +6,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Map;
 
 import jp.ac.chiba_fjb.x14b_c.naroreader.R;
-import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelBookmark;
 
 /**
 リサイクルビューに使用するデータ関連づけ用アダプター
@@ -18,10 +17,10 @@ import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelBookmark;
 
 public class TitlesAdapter extends RecyclerView.Adapter implements View.OnClickListener {
     public interface OnItemClickListener{
-        public void onItemClick(NovelBookmark bookmark);
+        public void onItemClick(Map<String,String> value);
     }
     private OnItemClickListener mListener;
-    private List<NovelBookmark> mBookmarks;
+    private List<Map<String,String>> mValues;
     void setOnItemClickListener(OnItemClickListener listener){
         mListener = listener;
     }
@@ -29,7 +28,7 @@ public class TitlesAdapter extends RecyclerView.Adapter implements View.OnClickL
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         //レイアウトを設定
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.bookmark_item, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.titles_item, parent, false);
         view.setOnClickListener(this);
         return new RecyclerView.ViewHolder(view){}; //本当はここでアイテム設定を実装するのだけれど、簡単にするためスルー
     }
@@ -38,34 +37,31 @@ public class TitlesAdapter extends RecyclerView.Adapter implements View.OnClickL
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         //positionから必要なデータをビューに設定する
 
-        NovelBookmark b = mBookmarks.get(position);
-        String dateString = new SimpleDateFormat("yyyy年MM月dd日").format(b.getUpdate().getTime());
-        holder.itemView.setTag(R.layout.bookmark_item,position);
-        ((TextView)holder.itemView.findViewById(R.id.textView)).setText(b.getCode());
-        ((TextView)holder.itemView.findViewById(R.id.textView2)).setText(""+b.getCategory());
-        ((TextView)holder.itemView.findViewById(R.id.textView3)).setText(dateString);
-        ((TextView)holder.itemView.findViewById(R.id.textView4)).setText(b.getName());
+        Map<String,String> value = mValues.get(position);
+       // String dateString = new SimpleDateFormat("yyyy年MM月dd日").format(b.getUpdate().getTime());
+        holder.itemView.setTag(R.layout.titles_item,position);  //現在位置の設定
+        ((TextView)holder.itemView.findViewById(R.id.textCode)).setText(value.get("ncode"));
     }
 
     @Override
     public int getItemCount() {
-        if(mBookmarks == null)
+        if(mValues == null)
             return 0;
-        return mBookmarks.size();
+        return mValues.size();
     }
 
 
 
-    public void setBookmarks(List<NovelBookmark> bookmarks){
-        mBookmarks = bookmarks;
+    public void setBookmarks(List<Map<String,String>> values){
+        mValues = values;
     }
 
     @Override
     public void onClick(View view) {
         if(mListener != null) {
-            int pos = (int) view.getTag(R.layout.bookmark_item);
-            NovelBookmark bookmark = mBookmarks.get(pos);
-            mListener.onItemClick(bookmark);
+            int pos = (int) view.getTag(R.layout.titles_item);
+            Map<String,String> value = mValues.get(pos);
+            mListener.onItemClick(value);
         }
     }
 }

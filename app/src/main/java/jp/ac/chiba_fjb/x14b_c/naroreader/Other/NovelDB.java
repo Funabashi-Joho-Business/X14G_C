@@ -8,13 +8,15 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelBookmark;
+import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelInfo;
 import to.pns.lib.AppDB;
 
 public class NovelDB extends AppDB {
     public NovelDB(Context context) {
-        super(context, "novel.db", 2);
+        super(context, "novel3.db", 1);
     }
 
     @Override
@@ -27,17 +29,33 @@ public class NovelDB extends AppDB {
         //ノベル名用テーブルの作成
         sql = "create table t_novel(n_code text primary key,n_name text)";
         db.execSQL(sql);
+
+        sql = "create table t_novel_reg(ncode text primary key)";
+        db.execSQL(sql);
+        sql = createSqlCreateClass(NovelInfo.class,"t_novel_info","ncode");
+        //db.execSQL(sql);
     }
 
     @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        String sql;
-        if(oldVersion < 2) {
-            sql = "create table t_novel_reg(n_code text primary key)";
-            db.execSQL(sql);
-        }
+    public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
+
     }
 
+
+    public void addNovel(String ncode){
+        String sql = String.format("replace into t_novel_reg values('%s')",STR(ncode));
+        exec(sql);
+    }
+    public void delNovel(String ncode){
+        String sql = String.format("delete from t_novel_reg where n_code = '%s'",STR(ncode));
+        exec(sql);
+    }
+    public void addNovelInfo(NovelInfo[] novelInfo){
+        for(NovelInfo info : novelInfo){
+            String sql = createSqlReplaceClass(info,"t_novel_info");
+            exec(sql);
+        }
+    }
     public void addBookmark(String ncode, String name, Date update, int category){
         String d = new java.sql.Timestamp(update.getTime()).toString();
         String sql;
@@ -78,6 +96,11 @@ public class NovelDB extends AppDB {
         exec(sql);
         System.out.println(sql);
 
+    }
+    public List<Map<String,String>> getTitles(){
+        //メインに登録されているデータを抽出
+        String sql = "select * from t_reg_titles natural left join t_novel_info";
+        return queryMap(sql);
     }
 
 /*    public List<NovelSearch> getSearch(){

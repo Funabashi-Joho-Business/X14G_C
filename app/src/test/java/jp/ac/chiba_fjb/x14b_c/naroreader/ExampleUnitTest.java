@@ -2,18 +2,16 @@ package jp.ac.chiba_fjb.x14b_c.naroreader;
 
 import org.junit.Test;
 
-import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
 import java.util.List;
-import java.util.Scanner;
 
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelBody;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelBookmark;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelInfo;
-import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelRanking;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelSeries;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelSubTitle;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.TbnReader;
+import to.pns.lib.AppDB;
 
 /**
  * Example local unit test, which will execute on the development machine (host).
@@ -121,116 +119,15 @@ public class ExampleUnitTest {
 
 	@Test
 	public void classPut(){
-		Class c = NovelInfo.class;
-		for(Field f : c.getFields()) {
-			System.out.println(f.getName()+" "+f.getType().getName());
+		//System.out.println(AppDB.createSqlCreateClass(NovelInfo.class,"t_novel_info","ncode"));
+
+		NovelInfo info = TbnReader.getNovelInfo("n7733dl");
+		if(info != null){
+			System.out.println(AppDB.createSqlReplaceClass(info,"t_novel_info"));
 		}
+
 	}
 
 
-    //@Test
-	public void getRankList(){
 
-
-        final String[] RANKING_FILTER1_NAME=
-            {
-                "総合",
-                "ジャンル別",
-                "異世界転生/転移"
-            };
-
-        final String[][] RANKING_FILTER2_NAME=
-            {
-                {
-                    "日間",
-                    "週間",
-                    "月間",
-                    "四半期",
-                    "年間",
-                    "累計"
-                },
-                {
-                    "日間",
-                    "週間",
-                    "月間",
-                    "四半期",
-                    "年間"
-                },
-                {
-                    "日間",
-                    "週間",
-                    "月間",
-                    "四半期",
-                    "年間"
-                }
-            };
-        final String[][] RANKING_FILTER3_NAME =
-            {
-                {
-                    "すべて",
-                    "短編",
-                    "連載中",
-                    "完結済"
-
-                },
-                {
-                    "恋愛(異世界)",
-                    "恋愛(現実世界)",
-                    "ハイファンタジー",
-                    "ローファンタジー",
-                    "純文学",
-                    "ヒューマンドラマ",
-                    "歴史",
-                    "推理",
-                    "ホラー",
-                    "アクション",
-                    "コメディー",
-                    "VRゲーム",
-                    "宇宙",
-                    "空想科学",
-                    "パニック",
-                    "その他",
-                    "童話",
-                    "詩",
-                    "エッセイ",
-                    "その他"
-
-                },
-                {
-                    "恋愛",
-                    "ファンタジー",
-                    "文芸・SF・その他"
-
-                }
-
-            };
-
-
-        Scanner sc = new Scanner(System.in);
-
-        System.out.println("大分類");
-        for(int i=0;i<RANKING_FILTER1_NAME.length;i++)
-            System.out.format("%d:%s\n",i,RANKING_FILTER1_NAME[i]);
-        int filter1 = 1;//sc.nextInt();
-
-        System.out.println("中分類");
-        for(int i=0;i<RANKING_FILTER2_NAME[filter1].length;i++)
-            System.out.format("%d:%s\n",i,RANKING_FILTER2_NAME[filter1][i]);
-        int filter2 = 0;//sc.nextInt();
-
-        System.out.println("小分類");
-        for(int i=0;i<RANKING_FILTER3_NAME[filter1].length;i++)
-            System.out.format("%d:%s\n",i,RANKING_FILTER3_NAME[filter1][i]);
-        int filter3 = 2;//sc.nextInt();
-
-
-        List<NovelRanking> list = TbnReader.getRanking(filter1,filter2,filter3);
-		if(list == null)
-			System.out.println("データ取得失敗");
-		else {
-			for(NovelRanking r : list){
-				System.out.format("%s %s\n",r.ncode,r.title);
-			}
-		}
-	}
 }

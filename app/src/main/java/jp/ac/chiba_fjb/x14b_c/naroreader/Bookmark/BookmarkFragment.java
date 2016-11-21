@@ -16,15 +16,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import jp.ac.chiba_fjb.x14b_c.naroreader.MainActivity;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NaroReceiver;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NovelDB;
 import jp.ac.chiba_fjb.x14b_c.naroreader.R;
+import jp.ac.chiba_fjb.x14b_c.naroreader.Titles.TitlesFragment;
+import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelBookmark;
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class BookmarkFragment extends Fragment {
+public class BookmarkFragment extends Fragment implements BookmarkAdapter.OnItemClickListener {
 
     //通知処理
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
@@ -65,7 +68,7 @@ public class BookmarkFragment extends Fragment {
 
         //ブックマーク表示用アダプターの作成
         mBookmarkAdapter = new BookmarkAdapter();
-
+        mBookmarkAdapter.setOnItemClickListener(this);
 
         //データ表示用のビューを作成
         RecyclerView rv = (RecyclerView) view.findViewById(R.id.RecyclerView);
@@ -106,5 +109,14 @@ public class BookmarkFragment extends Fragment {
         mBookmarkAdapter.setBookmarks(db.getBookmark());
         db.close();
         mBookmarkAdapter.notifyDataSetChanged();   //データ再表示要求
+    }
+
+    @Override
+    public void onItemClick(NovelBookmark bookmark) {
+        NovelDB db = new NovelDB(getContext());
+        db.addNovel(bookmark.getCode());
+        db.close();
+
+        ((MainActivity)getActivity()).changeFragment(TitlesFragment.class);
     }
 }

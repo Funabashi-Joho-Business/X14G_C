@@ -13,7 +13,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:clipToPadding="false"
-            tools:listitem="@layout/bookmark_item" />
+            tools:listitem="@layout/titles_item" />
     </android.support.v4.widget.SwipeRefreshLayout>
 
 </FrameLayout>

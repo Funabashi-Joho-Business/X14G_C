@@ -327,15 +327,11 @@ public class TbnReader {
         }
         return null;
     }
-    static class NovelInfoJson{
-        public Integer allcount;
-        public NovelInfo[] infoList;
-    }
     public static NovelInfo getNovelInfo(String ncode){
         String address = String.format("http://api.syosetu.com/novelapi/api/?out=json&ncode=%s",ncode);
-        NovelInfoJson json = Json.send(address,null,NovelInfoJson.class);
-        if(json != null && json.allcount>0)
-            return json.infoList[0];
+        NovelInfo[] json = Json.send(address,null,NovelInfo[].class);
+        if(json != null && json.length > 1)
+            return json[1];
         return null;
     }
 

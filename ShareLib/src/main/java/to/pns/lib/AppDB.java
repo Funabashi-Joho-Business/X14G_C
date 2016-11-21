@@ -4,7 +4,9 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,8 +25,51 @@ public abstract class AppDB extends SQLite {
     }
 
 
+    public static String createSqlCreateClass(Class c,String className,String primary){
+        Map<Class,String> map = new HashMap<Class,String>();
+        map.put(String.class,"text");
+        map.put(int.class,"int");
+        map.put(Date.class,"date");
 
+        StringBuilder sb = new StringBuilder();
+        for(int i=0;i<c.getFields().length;i++) {
+            Field f = c.getFields()[i];
+            if(f.getName().charAt(0) != '$')
+                continue;
+            if(sb.length()>0)
+                sb.append(",");
 
+            sb.append(String.format("%s %s",f.getName(),map.get(f.getType())));
+            if(f.getName().equals(primary))
+                sb.append(" primary key");
+        }
+        return String.format("create table %s (%s)",className,sb.toString());
+    }
+
+    public static String createSqlReplaceClass(Object obj,String className) {
+        try {
+            Class c = obj.getClass();
+            StringBuilder sb = new StringBuilder();
+            for(int i=0;i<c.getFields().length;i++) {
+                if(i>0)
+                    sb.append(",");
+                Field f = c.getFields()[i];
+                String value;
+                Object v = f.get(obj);
+                if(f.getType() == Date.class)
+                    value = new java.sql.Timestamp(((Date)v).getTime()).toString();
+                else
+                    value = v.toString();
+
+                sb.append(String.format("'%s'",STR(value)));
+            }
+
+            return String.format("replace into %s values(%s)",className,sb.toString());
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
     public void setSetting(String name,int value)
     {
@@ -123,4 +168,6 @@ public abstract class AppDB extends SQLite {
         exec("COMMIT;");
         //exec("vacuum;");
     }
+
+
 }

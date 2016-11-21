@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Bookmark.BookmarkFragment;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Ranking.RankingFragment;
 import jp.ac.chiba_fjb.x14b_c.naroreader.SearchPack.SearchFragment;
+import jp.ac.chiba_fjb.x14b_c.naroreader.Titles.TitlesFragment;
 import to.pns.lib.LogService;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -41,7 +42,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         mBundle = new Bundle();
 
-        changeFragment(BookmarkFragment.class);
+        changeFragment(TitlesFragment.class);
 
         LogService.output(getApplicationContext(),"アプリ起動");
     }
@@ -49,6 +50,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch(item.getItemId()){
+            case R.id.nav_titles:
+                changeFragment(TitlesFragment.class);
+                break;
             case R.id.nav_bookmark:
                 changeFragment(BookmarkFragment.class);
                 break;
@@ -71,7 +75,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
-    void changeFragment(Class c){
+    public void changeFragment(Class c){
 
         try {
             Fragment f = (Fragment) c.newInstance();
