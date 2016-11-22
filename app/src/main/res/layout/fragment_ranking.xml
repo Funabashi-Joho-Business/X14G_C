@@ -6,21 +6,51 @@
 
     <!-- TODO: Update blank fragment layout -->
 
-    <ScrollView
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <LinearLayout
+            android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical" >
+            android:layout_height="50dp">
 
-            <TextView
-                android:text="ここにランキングが出るといいな"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/textView3" />
+            <Spinner
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:id="@+id/spinnerRFilter1"
+                android:layout_weight="1"
+                android:spinnerMode="dialog"/>
+
+            <Spinner
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:id="@+id/spinnerRFilter2"
+                android:layout_weight="1"
+                android:spinnerMode="dialog"/>
+
         </LinearLayout>
-    </ScrollView>
+
+        <Spinner
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:id="@+id/spinnerRFilter3"
+            android:spinnerMode="dialog"
+            android:dropDownWidth="match_parent" />
+
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/swipe_refresh"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/RecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipToPadding="false"
+                tools:listitem="@layout/ranking_item" />
+        </android.support.v4.widget.SwipeRefreshLayout>
+
+    </LinearLayout>
 
 </FrameLayout>

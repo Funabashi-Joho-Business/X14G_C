@@ -3,6 +3,10 @@
 
     <group android:checkableBehavior="single">
         <item
+            android:id="@+id/nav_titles"
+            android:icon="@drawable/ic_menu_manage"
+            android:title="作品一覧" />
+        <item
             android:id="@+id/nav_bookmark"
             android:icon="@drawable/ic_book_black"
             android:title="ブックマーク" />
@@ -15,13 +19,14 @@
             android:id="@+id/nav_search"
             android:icon="@drawable/ic_search_black"
             android:title="検索" />
+
         <item
             android:id="@+id/nav_log"
             android:icon="@drawable/ic_menu_manage"
             android:title="ログ表示" />
 
         <item
-            android:id="@+id/nav_appriconfig"
+            android:id="@+id/nav_config"
             android:icon="@drawable/ic_settings_black"
             android:title="設定" />
     </group>
