@@ -342,10 +342,10 @@ public class TbnReader {
     public static NovelInfo[] getKeyword(String word){ //word "異世界"が引っ張られてる
         System.out.println("Section3");
         String address = String.format("http://api.syosetu.com/novelapi/api/?out=json&word=%s",word);
-        NovelInfo[] eSearch = Json.send(address,null,NovelInfo[].class);
+        NovelInfo[] flashdata = Json.send(address,null,NovelInfo[].class);
         System.out.println("Section4");
-        if(eSearch != null && eSearch.length > 1)
-            return eSearch;
+        if(flashdata != null && flashdata.length > 1)
+            return flashdata;
         return null;
     }
 

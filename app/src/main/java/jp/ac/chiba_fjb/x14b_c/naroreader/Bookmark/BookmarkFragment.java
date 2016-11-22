@@ -102,5 +102,6 @@ public class BookmarkFragment extends Fragment {
         mBookmarkAdapter.setBookmarks(db.getBookmark());
         db.close();
         mBookmarkAdapter.notifyDataSetChanged();   //データ再表示要求
+        System.out.println("SectionExtra2");
     }
 }

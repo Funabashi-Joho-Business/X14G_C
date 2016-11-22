@@ -1,13 +1,8 @@
 package jp.ac.chiba_fjb.x14b_c.naroreader.SearchPack;
 
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
+
 import android.os.Bundle;
-import android.support.annotation.MainThread;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,12 +10,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 
-import jp.ac.chiba_fjb.x14b_c.naroreader.NaroReceiver;
 import jp.ac.chiba_fjb.x14b_c.naroreader.R;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelInfo;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.TbnReader;
+
 
 
 /**
@@ -36,7 +30,7 @@ public class SearchFragment extends Fragment implements View.OnClickListener{
 
     private SearchAdapter mSearch;
     private EditText mwordsearch;
-
+    public NovelInfo[] flashdata;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -54,10 +48,9 @@ public class SearchFragment extends Fragment implements View.OnClickListener{
         RecyclerView rv = (RecyclerView) view.findViewById(R.id.RecyclerView);
         rv.setLayoutManager(new LinearLayoutManager(getContext()));     //アイテムを縦に並べる
         rv.setAdapter(mSearch);                              //アダプターを設定
-
         System.out.println("Section1");
-        mSearch.notifyDataSetChanged();   //データ再表示要求
-        System.out.println("Section8");
+
+        update();
         return view;
     }
 
@@ -66,24 +59,33 @@ public class SearchFragment extends Fragment implements View.OnClickListener{
 
         System.out.println("Section2");
 
-        new Thread(){
+        new Thread() {
             @Override
             public void run() {
 
 
                 String word = mwordsearch.getText().toString();
-                TbnReader.getKeyword(word); //word "異世界"が入ってる
+                flashdata = TbnReader.getKeyword(word);
                 System.out.println("Section6");
                 mSearch.getItemCount();
                 System.out.println("Section7");
-                return ;
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        update();
+                    }
+                });
+                return;
             }
         }.start();
 
 
     }
-
-
+    public void update(){
+        mSearch.setSearch(flashdata);
+        mSearch.notifyDataSetChanged();   //データ再表示要求
+        System.out.println("Section8");
+    }
 
 }
 

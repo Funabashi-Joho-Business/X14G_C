@@ -30,8 +30,8 @@ public class SearchAdapter extends RecyclerView.Adapter{
     public void onBindViewHolder (RecyclerView.ViewHolder holder,int position) {
         //positionから必要なデータをビューに設定する
 
-        NovelInfo s = mSearch[position];        //position＝番地
-        String dateString = new SimpleDateFormat("yyyy年MM月dd日").format(s.general_lastup.getTime());
+        NovelInfo s = mSearch[position+1];        //position＝番地
+        String dateString = new SimpleDateFormat("yyyy年MM月dd日").format(s.general_lastup);
 
         ((TextView) holder.itemView.findViewById(R.id.textView)).setText(s.ncode);
         ((TextView) holder.itemView.findViewById(R.id.textView2)).setText("" + s.general_lastup);
@@ -44,7 +44,7 @@ public class SearchAdapter extends RecyclerView.Adapter{
     public int getItemCount () {
         if (mSearch == null)
             return 0;
-        return mSearch.length;  //初回起動時はnullで帰ってくる
+        return mSearch.length-1;  //初回起動時はnullで帰ってくる
     }
 
     public void setSearch(NovelInfo[] bookmarks){
