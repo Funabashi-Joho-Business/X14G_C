@@ -17,12 +17,13 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    configurations {
+
+        compile.exclude group: "org.apache.httpcomponents", module: "httpclient"
+    }
 
 }
 
-configurations {
-    compile.exclude group: "org.apache.httpcomponents", module: "httpclient"
-}
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
