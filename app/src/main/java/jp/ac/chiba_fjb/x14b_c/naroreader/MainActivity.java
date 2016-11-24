@@ -13,6 +13,7 @@ import android.view.Gravity;
 import android.view.MenuItem;
 
 import jp.ac.chiba_fjb.x14b_c.naroreader.Bookmark.BookmarkFragment;
+import jp.ac.chiba_fjb.x14b_c.naroreader.Other.FragmentLog;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Ranking.RankingFragment;
 import jp.ac.chiba_fjb.x14b_c.naroreader.SearchPack.SearchFragment;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Titles.TitlesFragment;
@@ -74,7 +75,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
-
+    boolean firstFlag = true;
     public void changeFragment(Class c){
 
         try {
@@ -85,7 +86,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     R.anim.fragment_in,
                     R.anim.fragment_out);
             ft.replace(R.id.fragment_area,f);
-            ft.addToBackStack(null);
+            if(firstFlag)
+                firstFlag = false;
+            else
+                ft.addToBackStack(null);
             ft.commit();
         } catch (Exception e) {
             e.printStackTrace();

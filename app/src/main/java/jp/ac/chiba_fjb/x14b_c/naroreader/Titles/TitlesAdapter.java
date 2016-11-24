@@ -60,7 +60,7 @@ public class TitlesAdapter extends RecyclerView.Adapter implements View.OnClickL
 
 
 
-    public void setBookmarks(List<Map<String,String>> values){
+    public void setValues(List<Map<String,String>> values){
         mValues = values;
     }
 

@@ -12,7 +12,6 @@ import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 
-import jp.ac.chiba_fjb.x14b_c.naroreader.Other.LoginFragment;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NovelDB;
 
 public class ConfigFragment extends Fragment implements View.OnClickListener {

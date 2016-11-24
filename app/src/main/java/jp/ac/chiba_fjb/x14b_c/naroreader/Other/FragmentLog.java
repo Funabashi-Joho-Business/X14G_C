@@ -1,4 +1,4 @@
-package jp.ac.chiba_fjb.x14b_c.naroreader;
+package jp.ac.chiba_fjb.x14b_c.naroreader.Other;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -16,6 +16,7 @@ import android.widget.FrameLayout;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
+import jp.ac.chiba_fjb.x14b_c.naroreader.R;
 import to.pns.lib.ListView;
 import to.pns.lib.LogDB;
 import to.pns.lib.LogService;

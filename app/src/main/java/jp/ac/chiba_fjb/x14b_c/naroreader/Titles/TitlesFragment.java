@@ -99,7 +99,7 @@ public class TitlesFragment extends Fragment implements TitlesAdapter.OnItemClic
 	void update(){
 		//アダプターにデータを設定
 		NovelDB db = new NovelDB(getContext());
-		mAdapter.setBookmarks(db.getTitles());
+		mAdapter.setValues(db.getTitles());
 		db.close();
 		mAdapter.notifyDataSetChanged();   //データ再表示要求
 

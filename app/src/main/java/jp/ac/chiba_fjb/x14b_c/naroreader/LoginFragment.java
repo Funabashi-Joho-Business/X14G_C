@@ -1,4 +1,4 @@
-package jp.ac.chiba_fjb.x14b_c.naroreader.Other;
+package jp.ac.chiba_fjb.x14b_c.naroreader;
 
 
 import android.app.Dialog;
@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import jp.ac.chiba_fjb.x14b_c.naroreader.R;
+import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NovelDB;
 
 /**
  * A simple {@link Fragment} subclass.

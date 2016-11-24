@@ -53,7 +53,7 @@ public class NovelDB extends AppDB {
     }
     public List<String> getNovel(){
         List<String> list = new ArrayList<String>();
-         String sql = String.format("select * from t_novel_reg");
+        String sql = String.format("select * from t_novel_reg");
         Cursor c = query(sql);
         while(c.moveToNext()){
             list.add(c.getString(0));
