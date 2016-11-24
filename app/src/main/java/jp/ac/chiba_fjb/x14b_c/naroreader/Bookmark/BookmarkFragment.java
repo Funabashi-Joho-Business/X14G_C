@@ -11,23 +11,19 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import jp.ac.chiba_fjb.x14b_c.naroreader.MainActivity;
-import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NaroReceiver;
-import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NovelDB;
+import jp.ac.chiba_fjb.x14b_c.naroreader.NaroReceiver;
+import jp.ac.chiba_fjb.x14b_c.naroreader.NovelDB;
 import jp.ac.chiba_fjb.x14b_c.naroreader.R;
-import jp.ac.chiba_fjb.x14b_c.naroreader.Titles.TitlesFragment;
-import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelBookmark;
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class BookmarkFragment extends Fragment implements BookmarkAdapter.OnItemClickListener {
+public class BookmarkFragment extends Fragment {
 
     //通知処理
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
@@ -59,16 +55,13 @@ public class BookmarkFragment extends Fragment implements BookmarkAdapter.OnItem
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        Toolbar toolbar = (Toolbar)getActivity().findViewById(R.id.toolbar);
-        // タイトルを設定
-        toolbar.setTitle("ブックマーク");
 
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_bookmark, container, false);
 
         //ブックマーク表示用アダプターの作成
         mBookmarkAdapter = new BookmarkAdapter();
-        mBookmarkAdapter.setOnItemClickListener(this);
+
 
         //データ表示用のビューを作成
         RecyclerView rv = (RecyclerView) view.findViewById(R.id.RecyclerView);
@@ -76,7 +69,7 @@ public class BookmarkFragment extends Fragment implements BookmarkAdapter.OnItem
         rv.setAdapter(mBookmarkAdapter);                              //アダプターを設定
 
 
-        //ボタンが押され場合の処理
+        //ボタンが押された場合の処理
         ((SwipeRefreshLayout)view.findViewById(R.id.swipe_refresh)).setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -109,14 +102,6 @@ public class BookmarkFragment extends Fragment implements BookmarkAdapter.OnItem
         mBookmarkAdapter.setBookmarks(db.getBookmark());
         db.close();
         mBookmarkAdapter.notifyDataSetChanged();   //データ再表示要求
-    }
-
-    @Override
-    public void onItemClick(NovelBookmark bookmark) {
-        NovelDB db = new NovelDB(getContext());
-        db.addNovel(bookmark.getCode());
-        db.close();
-
-        ((MainActivity)getActivity()).changeFragment(TitlesFragment.class);
+        System.out.println("SectionExtra2");
     }
 }

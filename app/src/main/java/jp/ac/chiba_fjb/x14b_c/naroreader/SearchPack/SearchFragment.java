@@ -1,23 +1,26 @@
 package jp.ac.chiba_fjb.x14b_c.naroreader.SearchPack;
 
 
+
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import jp.ac.chiba_fjb.x14b_c.naroreader.R;
+import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelInfo;
+import jp.ac.chiba_fjb.x14b_c.naroreader.data.TbnReader;
+
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class SearchFragment extends Fragment implements View.OnClickListener{
-    //subSearch sub = new subSearch();
 
 
     public SearchFragment() {
@@ -25,55 +28,64 @@ public class SearchFragment extends Fragment implements View.OnClickListener{
     }
 
 
+    private SearchAdapter mSearch;
+    private EditText mwordsearch;
+    public NovelInfo[] flashdata;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        Toolbar toolbar = (Toolbar)getActivity().findViewById(R.id.toolbar);
-        // タイトルを設定
-        toolbar.setTitle("検索");
-
-        ///////////////////検索条件を受け取り、検索・抽出を実行させる（要SQL）//////////////////////
-
         //Inflate the layout for this fragment;
         View view =  inflater.inflate(R.layout.fragment_search, container, false);
-        view.findViewById(R.id.wordsearch);
+        mwordsearch = (EditText)view.findViewById(R.id.wordsearch);
         view.findViewById(R.id.searchbutton).setOnClickListener(this);
+
+        //ブックマーク表示用アダプターの作成
+        mSearch = new SearchAdapter();
+
+        //データ表示用のビューを作成
+        RecyclerView rv = (RecyclerView) view.findViewById(R.id.RecyclerView);
+        rv.setLayoutManager(new LinearLayoutManager(getContext()));     //アイテムを縦に並べる
+        rv.setAdapter(mSearch);                              //アダプターを設定
+        System.out.println("Section1");
+
+        update();
         return view;
     }
 
     @Override
     public void onClick(View view) {
-       // LinearLayout layout = (LinearLayout) view.findViewById(R.id.answer);    //検索結果を表示するところ
 
-        EditText Setext = (EditText)getView().findViewById(R.id.wordsearch);    //検索したい文字を格納
-        String s;
-        s = Setext.getText().toString();
-        //sub.start();    //サブスレッド開始
+        System.out.println("Section2");
 
-        //TextView textView = new TextView(MainActivity.this);
-        //textView.setId("test");
-
-
-        TextView sikiri = new TextView(getContext());
-        sikiri.setText("------------------------");
-       // layout.addView(sikiri);
-    }
-}
-/*
-class subSearch extends Thread{
-    public void Subclass001() {
-        runOnUiThread(new Runnable() {
+        new Thread() {
             @Override
             public void run() {
-                String sort;
-                sort = "hyoka";
-                TbnReader.getKeyword();            // サブスレッドで実行するもの
-                TbnReader.getOrder(sort);
+
+
+                String word = mwordsearch.getText().toString();
+                flashdata = TbnReader.getKeyword(word);
+                System.out.println("Section6");
+                mSearch.getItemCount();
+                System.out.println("Section7");
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        update();
+                    }
+                });
                 return;
             }
-        })
+        }.start();
+
+
     }
+    public void update(){
+        mSearch.setSearch(flashdata);
+        mSearch.notifyDataSetChanged();   //データ再表示要求
+        System.out.println("Section8");
+    }
+
 }
-*/
 

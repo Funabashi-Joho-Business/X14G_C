@@ -1,6 +1,5 @@
 package jp.ac.chiba_fjb.x14b_c.naroreader.Bookmark;
 
-
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -46,6 +45,7 @@ public class BookmarkAdapter extends RecyclerView.Adapter implements View.OnClic
         ((TextView)holder.itemView.findViewById(R.id.textView2)).setText(""+b.getCategory());
         ((TextView)holder.itemView.findViewById(R.id.textView3)).setText(dateString);
         ((TextView)holder.itemView.findViewById(R.id.textView4)).setText(b.getName());
+        System.out.println("Section Extra");
     }
 
     @Override

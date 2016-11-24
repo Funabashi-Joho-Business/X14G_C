@@ -15,7 +15,6 @@ import android.view.MenuItem;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Bookmark.BookmarkFragment;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Ranking.RankingFragment;
 import jp.ac.chiba_fjb.x14b_c.naroreader.SearchPack.SearchFragment;
-import jp.ac.chiba_fjb.x14b_c.naroreader.Titles.TitlesFragment;
 import to.pns.lib.LogService;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -28,9 +27,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        //この辺何してるんだろう？
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        ((DrawerLayout) findViewById(R.id.drawer_layout)).openDrawer(Gravity.LEFT);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -38,11 +38,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
-        drawer.openDrawer(Gravity.LEFT);//起動時にドロわーを開く
-
         mBundle = new Bundle();
 
-        changeFragment(TitlesFragment.class);
+        changeFragment(BookmarkFragment.class);
 
         LogService.output(getApplicationContext(),"アプリ起動");
     }
@@ -50,9 +48,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch(item.getItemId()){
-            case R.id.nav_titles:
-                changeFragment(TitlesFragment.class);
-                break;
             case R.id.nav_bookmark:
                 changeFragment(BookmarkFragment.class);
                 break;
@@ -65,17 +60,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_search:
                 changeFragment(SearchFragment.class);
                 break;
-            case R.id.nav_config:
-                changeFragment(ConfigFragment.class);
-                break;
         }
-
        ((DrawerLayout) findViewById(R.id.drawer_layout)).closeDrawers();
         return true;
     }
 
 
-    public void changeFragment(Class c){
+    void changeFragment(Class c){
 
         try {
             Fragment f = (Fragment) c.newInstance();
@@ -85,20 +76,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     R.anim.fragment_in,
                     R.anim.fragment_out);
             ft.replace(R.id.fragment_area,f);
-            ft.addToBackStack(null);
             ft.commit();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    @Override
-    public void onBackPressed() {
-        //メニューが開いていたら閉じる
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if(drawer.isDrawerOpen(Gravity.LEFT))
-            drawer.closeDrawer(Gravity.LEFT);
-        else
-            super.onBackPressed();
-    }
+
+
 }

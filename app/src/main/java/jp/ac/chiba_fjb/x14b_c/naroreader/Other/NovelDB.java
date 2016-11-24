@@ -14,6 +14,7 @@ import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelBookmark;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelInfo;
 import to.pns.lib.AppDB;
 
+
 public class NovelDB extends AppDB {
     public NovelDB(Context context) {
         super(context, "novel4.db", 1);
@@ -94,6 +95,7 @@ public class NovelDB extends AppDB {
         return list;
     }
 
+
     public void addSearch(String ncode, String name, Date update, int category){
         String d = new java.sql.Timestamp(update.getTime()).toString();
         String sql;
@@ -113,21 +115,6 @@ public class NovelDB extends AppDB {
         return queryMap(sql);
     }
 
-/*    public List<NovelSearch> getSearch(){
-        String sql;
-        sql = "select * from t_bookmark natural join t_novel";
-        Cursor r = query(sql);
 
-        List<NovelSearch> list = new ArrayList<>();
-        while(r.moveToNext()){
-            String d = r.getString(1);
-            Calendar cal = Calendar.getInstance();
-            cal.setTime(java.sql.Timestamp.valueOf(r.getString(1)));
-            NovelSearch b = new NovelSearch(r.getString(0),r.getString(3),r.getInt(2),cal,r.getString(4));
-            list.add(b);
-        }
-        r.close();
-        return list;
-    }
-    */
+
 }
