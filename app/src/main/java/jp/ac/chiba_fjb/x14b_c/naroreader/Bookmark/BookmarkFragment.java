@@ -15,8 +15,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import jp.ac.chiba_fjb.x14b_c.naroreader.NaroReceiver;
-import jp.ac.chiba_fjb.x14b_c.naroreader.NovelDB;
+
+import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NaroReceiver;
+import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NovelDB;
 import jp.ac.chiba_fjb.x14b_c.naroreader.R;
 
 

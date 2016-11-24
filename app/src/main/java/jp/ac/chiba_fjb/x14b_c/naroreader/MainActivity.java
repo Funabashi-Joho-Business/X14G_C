@@ -27,16 +27,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        //この辺何してるんだろう？
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        ((DrawerLayout) findViewById(R.id.drawer_layout)).openDrawer(Gravity.LEFT);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
+
+        drawer.openDrawer(Gravity.LEFT);//起動時にドロわーを開く
 
         mBundle = new Bundle();
 
@@ -60,7 +61,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_search:
                 changeFragment(SearchFragment.class);
                 break;
+            case R.id.nav_config:
+                changeFragment(ConfigFragment.class);
+                break;
         }
+
        ((DrawerLayout) findViewById(R.id.drawer_layout)).closeDrawers();
         return true;
     }
