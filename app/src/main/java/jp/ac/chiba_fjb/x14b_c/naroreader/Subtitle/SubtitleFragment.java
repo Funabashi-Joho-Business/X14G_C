@@ -89,7 +89,7 @@ public class SubtitleFragment extends Fragment implements SubtitleAdapter.OnItem
         });
 
         //イベント通知受け取りの宣言
-        getContext().registerReceiver(mReceiver,new IntentFilter(NaroReceiver.NOTIFI_BOOKMARK));
+        // getContext().registerReceiver(mReceiver,new IntentFilter(NaroReceiver.NOTIFI_BOOKMARK));
 
         //初回更新
         update();
@@ -99,7 +99,7 @@ public class SubtitleFragment extends Fragment implements SubtitleAdapter.OnItem
     @Override
     public void onDestroy() {
         //イベント通知受け取りを解除
-        getContext().unregisterReceiver(mReceiver);
+        // getContext().unregisterReceiver(mReceiver);
         super.onDestroy();
     }
 
