@@ -442,7 +442,7 @@ public class TbnReader {
 
         SimpleDateFormat format = new SimpleDateFormat("yyyy年 MM月 dd日");
 
-        Pattern p = Pattern.compile("<dd class=\"subtitle\"><a href=\".*?\">(.*?)</a></dd>.*?<dt class=\"long_update\">\n(.*?)\n.*?(?=<span title=\"(.*?) 改稿\">)?.*?</dl>", Pattern.DOTALL);
+        Pattern p = Pattern.compile("<dd class=\"subtitle\"><a href=\".*?\">(.*?)</a></dd>.*?<dt class=\"long_update\">\n(.*?)\n.*?(?=<span title=\"(.*?) 改稿\">|).*?</dl>", Pattern.DOTALL);
         Matcher m = p.matcher(content);
         try {
             while (m.find()){

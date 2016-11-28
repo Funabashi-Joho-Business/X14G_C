@@ -96,7 +96,7 @@ public class ExampleUnitTest {
 		}
 
 	}
-   // @Test
+    @Test
 	public void testSubTitle(){
 		List<NovelSubTitle> list = TbnReader.getSubTitle("n1027cz");
 		for(NovelSubTitle item : list){
@@ -119,7 +119,7 @@ public class ExampleUnitTest {
 		}
 	}
 
-	@Test
+	//@Test
 	public void classPut(){
 		Class c = NovelInfo.class;
 		for(Field f : c.getFields()) {
