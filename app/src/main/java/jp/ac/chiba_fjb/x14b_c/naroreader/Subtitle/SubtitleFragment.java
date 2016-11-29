@@ -22,6 +22,7 @@ import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NovelDB;
 import jp.ac.chiba_fjb.x14b_c.naroreader.R;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Titles.TitlesFragment;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelBookmark;
+import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelInfo;
 
 
 /**
@@ -36,7 +37,9 @@ public class SubtitleFragment extends Fragment implements SubtitleAdapter.OnItem
         public void onReceive(Context context, Intent intent) {
             switch(intent.getAction()){
                 case NaroReceiver.NOTIFI_NOVELSUB:
-                    ((SwipeRefreshLayout)getView().findViewById(R.id.swipe_refresh)).setRefreshing(false);
+                    SwipeRefreshLayout s = (SwipeRefreshLayout)getView().findViewById(R.id.swipe_refresh);
+                    if(s != null)
+                       s.setRefreshing(false);
 
                     if(intent.getBooleanExtra("result",false))
                         Snackbar.make(getView(), "サブタイトルの受信完了", Snackbar.LENGTH_SHORT).show();
@@ -61,11 +64,15 @@ public class SubtitleFragment extends Fragment implements SubtitleAdapter.OnItem
                              Bundle savedInstanceState) {
 
 
-        // タイトルを設定
-        getActivity().setTitle("サブタイトル");
-
         if(getArguments() != null)
             mNCode = getArguments().getString("ncode");
+
+        NovelDB db = new NovelDB(getContext());
+        NovelInfo ni = db.getNovelInfo(mNCode);
+        db.close();
+
+        if(ni != null)
+            getActivity().setTitle(ni.title);
 
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_subtitle, container, false);
