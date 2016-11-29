@@ -17,8 +17,10 @@ import android.widget.Spinner;
 
 import java.util.List;
 
+import jp.ac.chiba_fjb.x14b_c.naroreader.MainActivity;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NovelDB;
 import jp.ac.chiba_fjb.x14b_c.naroreader.R;
+import jp.ac.chiba_fjb.x14b_c.naroreader.Titles.TitlesFragment;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelRanking;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.TbnReader;
 
@@ -26,7 +28,7 @@ import jp.ac.chiba_fjb.x14b_c.naroreader.data.TbnReader;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class RankingFragment extends Fragment implements AdapterView.OnItemSelectedListener {
+public class RankingFragment extends Fragment implements AdapterView.OnItemSelectedListener, RankingAdapter.OnItemClickListener {
 
     final String[] RANKING_FILTER1_NAME=
     {
@@ -104,7 +106,7 @@ public class RankingFragment extends Fragment implements AdapterView.OnItemSelec
     private Spinner mSpiner1;
     private Spinner mSpiner2;
     private Spinner mSpiner3;
-    private RankingAdapter mRankingAdapter;
+    private RankingAdapter mAdapter;
 
     public RankingFragment() {
         // Required empty public constructor
@@ -136,13 +138,14 @@ public class RankingFragment extends Fragment implements AdapterView.OnItemSelec
 
 
         //ブックマーク表示用アダプターの作成
-        mRankingAdapter = new RankingAdapter();
+        mAdapter = new RankingAdapter();
+        mAdapter.setOnItemClickListener(this);
 
 
         //データ表示用のビューを作成
         RecyclerView rv = (RecyclerView) view.findViewById(R.id.RecyclerView);
         rv.setLayoutManager(new LinearLayoutManager(getContext()));     //アイテムを縦に並べる
-        rv.setAdapter(mRankingAdapter);                              //アダプターを設定
+        rv.setAdapter(mAdapter);                              //アダプターを設定
 
 
         //ボタンが押され場合の処理
@@ -227,8 +230,8 @@ public class RankingFragment extends Fragment implements AdapterView.OnItemSelec
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        mRankingAdapter.setRanking(rankList);
-                        mRankingAdapter.notifyDataSetChanged();
+                        mAdapter.setRanking(rankList);
+                        mAdapter.notifyDataSetChanged();
                         ((SwipeRefreshLayout)getView().findViewById(R.id.swipe_refresh)).setRefreshing(false);
                     }
                 });
@@ -237,4 +240,12 @@ public class RankingFragment extends Fragment implements AdapterView.OnItemSelec
     }
 
 
+    @Override
+    public void onItemClick(NovelRanking item) {
+        NovelDB db = new NovelDB(getContext());
+        db.addNovel(item.ncode);
+        db.close();
+
+        ((MainActivity)getActivity()).changeFragment(TitlesFragment.class);
+    }
 }

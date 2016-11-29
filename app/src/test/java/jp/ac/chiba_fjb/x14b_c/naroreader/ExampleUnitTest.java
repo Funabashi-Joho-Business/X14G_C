@@ -1,7 +1,5 @@
 package jp.ac.chiba_fjb.x14b_c.naroreader;
 
-import org.junit.Test;
-
 import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -96,7 +94,7 @@ public class ExampleUnitTest {
 		}
 
 	}
-   // @Test
+    //@Test
 	public void testSubTitle(){
 		List<NovelSubTitle> list = TbnReader.getSubTitle("n1027cz");
 		for(NovelSubTitle item : list){
@@ -119,7 +117,7 @@ public class ExampleUnitTest {
 		}
 	}
 
-	@Test
+	//@Test
 	public void classPut(){
 		Class c = NovelInfo.class;
 		for(Field f : c.getFields()) {

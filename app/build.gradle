@@ -29,7 +29,13 @@ android {
         exclude 'META-INF/dependencies.txt'
         exclude 'META-INF/LGPL2.1'
     }
+    configurations.all {
+        resolutionStrategy.force 'com.google.code.findbugs:jsr305:1.3.9'
+
+    }
 }
+
+
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
@@ -38,19 +44,14 @@ dependencies {
     })
     compile 'com.android.support:appcompat-v7:25.+'
     compile 'com.android.support:design:25.+'
+    compile 'com.android.support:support-v4:25.+'
     testCompile 'junit:junit:4.12'
-}
-dependencies {
-    compile 'com.android.support:support-v4:25.+'
-}
-dependencies {
-    compile 'com.android.support:support-v4:25.+'
-}
-dependencies {
+
     compile 'com.fasterxml.jackson.core:jackson-core:2.8.3@jar'
     compile 'com.fasterxml.jackson.core:jackson-annotations:2.8.3@jar'
     compile 'com.fasterxml.jackson.core:jackson-databind:2.8.3@jar'
     compile project(path: ':ShareLib')
+    compile 'com.android.support:recyclerview-v7:25.+'
 
-    compile 'com.android.support:recyclerview-v7:25.0.0'
+
 }
