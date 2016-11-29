@@ -60,9 +60,9 @@ public class SubtitleFragment extends Fragment implements SubtitleAdapter.OnItem
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        Toolbar toolbar = (Toolbar)getActivity().findViewById(R.id.toolbar);
+
         // タイトルを設定
-        toolbar.setTitle("サブタイトル");
+        getActivity().setTitle("サブタイトル");
 
         if(getArguments() != null)
             mNCode = getArguments().getString("ncode");

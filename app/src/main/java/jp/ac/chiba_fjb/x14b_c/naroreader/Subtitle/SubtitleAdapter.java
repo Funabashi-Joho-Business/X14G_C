@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 import jp.ac.chiba_fjb.x14b_c.naroreader.R;
@@ -44,12 +45,11 @@ public class SubtitleAdapter extends RecyclerView.Adapter implements View.OnClic
         //positionから必要なデータをビューに設定する
 
         NovelSubTitle v = mValues.get(position);
-//        String dateString = new SimpleDateFormat("yyyy年MM月dd日").format(b.getUpdate().getTime());
+//        String dateString = new SimpleDateFormat("yyyy年MM月dd日").format(v.getUpdate().getTime());
         holder.itemView.setTag(R.layout.bookmark_item,position);
         ((TextView)holder.itemView.findViewById(R.id.textTitle)).setText(v.title);
-//        ((TextView)holder.itemView.findViewById(R.id.textView2)).setText(""+b.getCategory());
-//        ((TextView)holder.itemView.findViewById(R.id.textView3)).setText(dateString);
-//        ((TextView)holder.itemView.findViewById(R.id.textView4)).setText(b.getName());
+        ((TextView)holder.itemView.findViewById(R.id.textDate)).setText(v.date.toString());
+        ((TextView)holder.itemView.findViewById(R.id.textNo)).setText(""+(position+1));
     }
 
     @Override
