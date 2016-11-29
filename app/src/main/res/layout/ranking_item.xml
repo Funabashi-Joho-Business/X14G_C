@@ -25,6 +25,21 @@
 
             >
 
+            <TextView
+                android:text="タイトル"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/textTitle"
+                android:layout_weight="1"
+                android:textSize="20sp"
+                android:textStyle="normal|bold" />
+
+            <TextView
+                android:text="あらすじ"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/textInfo"/>
+
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
@@ -53,18 +68,7 @@
 
             </LinearLayout>
 
-            <TextView
-                android:text="タイトル"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/textTitle"
-                android:layout_weight="1" />
 
-            <TextView
-                android:text="あらすじ"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/textInfo"/>
 
         </LinearLayout>
     </LinearLayout>

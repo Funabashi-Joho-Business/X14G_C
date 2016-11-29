@@ -16,13 +16,22 @@ import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelRanking;
 リサイクルビューに使用するデータ関連づけ用アダプター
  */
 
-public class RankingAdapter extends RecyclerView.Adapter {
-    private List<NovelRanking> mRanking;
+public class RankingAdapter extends RecyclerView.Adapter implements View.OnClickListener {
+    public interface OnItemClickListener{
+        public void onItemClick(NovelRanking item);
+    }
+    void setOnItemClickListener(OnItemClickListener listener){
+        mListener = listener;
+    }
+    private OnItemClickListener mListener;
+
+    private List<NovelRanking> mValues;
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         //レイアウトを設定
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.ranking_item, parent, false);
+        view.setOnClickListener(this);
         return new RecyclerView.ViewHolder(view){}; //本当はここでアイテム設定を実装するのだけれど、簡単にするためスルー
     }
 
@@ -30,9 +39,9 @@ public class RankingAdapter extends RecyclerView.Adapter {
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         //positionから必要なデータをビューに設定する
 
-        NovelRanking b = mRanking.get(position);
+        NovelRanking b = mValues.get(position);
         String dateString = new SimpleDateFormat("yyyy年MM月dd日").format(b.update);
-
+        holder.itemView.setTag(R.layout.ranking_item,position);
         ((TextView)holder.itemView.findViewById(R.id.textRank)).setText(""+(position+1));
         ((TextView)holder.itemView.findViewById(R.id.textCode)).setText(b.ncode+1);
         ((TextView)holder.itemView.findViewById(R.id.textGenre)).setText(""+b.genre);
@@ -43,15 +52,23 @@ public class RankingAdapter extends RecyclerView.Adapter {
 
     @Override
     public int getItemCount() {
-        if(mRanking == null)
+        if(mValues == null)
             return 0;
-        return mRanking.size();
+        return mValues.size();
     }
 
 
 
     public void setRanking(List<NovelRanking> ranking){
-        mRanking = ranking;
+        mValues = ranking;
     }
 
+    @Override
+    public void onClick(View view) {
+        if(mListener != null) {
+            int pos = (int) view.getTag(R.layout.ranking_item);
+            NovelRanking item = mValues.get(pos);
+            mListener.onItemClick(item);
+        }
+    }
 }

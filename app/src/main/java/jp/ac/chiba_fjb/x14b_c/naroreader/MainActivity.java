@@ -13,6 +13,7 @@ import android.view.Gravity;
 import android.view.MenuItem;
 
 import jp.ac.chiba_fjb.x14b_c.naroreader.Bookmark.BookmarkFragment;
+import jp.ac.chiba_fjb.x14b_c.naroreader.Other.FragmentLog;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Ranking.RankingFragment;
 import jp.ac.chiba_fjb.x14b_c.naroreader.SearchPack.SearchFragment;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Titles.TitlesFragment;
@@ -45,6 +46,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         changeFragment(TitlesFragment.class);
 
         LogService.output(getApplicationContext(),"アプリ起動");
+
     }
 
     @Override
@@ -74,18 +76,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
-
+    boolean firstFlag = true;
     public void changeFragment(Class c){
+        changeFragment(c,null);
+    }
+    public void changeFragment(Class c,Bundle budle){
 
         try {
+            //フラグメントの作成
             Fragment f = (Fragment) c.newInstance();
+            f.setArguments(budle);
             //フラグ面tのの切り替え処理
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             ft.setCustomAnimations(
-                    R.anim.fragment_in,
-                    R.anim.fragment_out);
+                R.anim.fragment_in,
+                R.anim.fragment_out);
             ft.replace(R.id.fragment_area,f);
-            ft.addToBackStack(null);
+            if(firstFlag)
+                firstFlag = false;
+            else
+                ft.addToBackStack(null);
             ft.commit();
         } catch (Exception e) {
             e.printStackTrace();

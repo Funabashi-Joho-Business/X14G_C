@@ -18,9 +18,11 @@ import android.view.ViewGroup;
 
 import java.util.Map;
 
+import jp.ac.chiba_fjb.x14b_c.naroreader.MainActivity;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NaroReceiver;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NovelDB;
 import jp.ac.chiba_fjb.x14b_c.naroreader.R;
+import jp.ac.chiba_fjb.x14b_c.naroreader.Subtitle.SubtitleFragment;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -99,7 +101,7 @@ public class TitlesFragment extends Fragment implements TitlesAdapter.OnItemClic
 	void update(){
 		//アダプターにデータを設定
 		NovelDB db = new NovelDB(getContext());
-		mAdapter.setBookmarks(db.getTitles());
+		mAdapter.setValues(db.getTitles());
 		db.close();
 		mAdapter.notifyDataSetChanged();   //データ再表示要求
 
@@ -107,6 +109,8 @@ public class TitlesFragment extends Fragment implements TitlesAdapter.OnItemClic
 	}
 	@Override
 	public void onItemClick(Map<String, String> value) {
-
+		Bundle bundle = new Bundle();
+		bundle.putString("ncode",value.get("ncode"));
+		((MainActivity)getActivity()).changeFragment(SubtitleFragment.class,bundle);
 	}
 }
