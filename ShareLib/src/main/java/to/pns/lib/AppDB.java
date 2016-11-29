@@ -43,7 +43,38 @@ public abstract class AppDB extends SQLite {
             if(f.getName().equals(primary))
                 sb.append(" primary key");
         }
-        return String.format("create table %s (%s)",className,sb.toString());
+        return String.format("creat table %s (%s)",className,sb.toString());
+    }
+    public <T>  List<T> queryClass(String sql,Class<T> cs){
+        try {
+            List<T> list = new ArrayList<T>();
+            Cursor c = query(sql);
+            int col = c.getColumnCount();
+
+            while(c.moveToNext())
+            {
+                T inst = cs.newInstance();
+                for(int i=0;i<col;i++){
+                    try {
+                        String name = c.getColumnName(i);
+                        Field f = cs.getField(name);
+                        if(f.getType() == int.class)
+                            f.set(inst,c.getInt(i));
+                        else if(f.getType() == String.class)
+                            f.set(inst,c.getString(i));
+                        else if(f.getType() == Date.class)
+                            f.set(inst,java.sql.Timestamp.valueOf(c.getString(i)));
+                    } catch (NoSuchFieldException e) {
+                    }
+                }
+                list.add(inst);
+            }
+            c.close();
+            return list;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public static String createSqlReplaceClass(Object obj,String className) {

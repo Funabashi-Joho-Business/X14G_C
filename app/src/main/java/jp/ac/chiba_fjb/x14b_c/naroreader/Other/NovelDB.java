@@ -42,13 +42,15 @@ public class NovelDB extends AppDB {
     @Override
     public void onUpgrade(SQLiteDatabase db,  int oldVersion, int newVersion) {
         if(oldVersion < 2){
-            //ブックマーク用テーブルの作成
+            //サブタイトル用テーブルの作成
             String sql;
             sql = "create table t_novel_sub(n_code text,sub_no int,sub_title text,sub_regdate date,sub_update date,primary key(n_code,sub_no))";
             db.execSQL(sql);
         }
     }
     public void addSubTitle(String ncode,List<NovelSubTitle> list){
+        begin();
+
         String sql;
         sql = String.format("delete from t_novel_sub where n_code='%s'",STR(ncode));
         exec(sql);
@@ -64,7 +66,7 @@ public class NovelDB extends AppDB {
                 values.put("sub_update", new java.sql.Timestamp(sub.update.getTime()).toString());
             insert("t_novel_sub",values);
         }
-
+        commit();
     }
 
     public void addNovel(String ncode){
@@ -89,6 +91,14 @@ public class NovelDB extends AppDB {
             String sql = createSqlReplaceClass(info,"t_novel_info");
             exec(sql);
         }
+    }
+    public NovelInfo getNovelInfo(String ncode){
+        String sql = String.format("select * from t_novel_info where ncode LIKE '%s'",STR(ncode));
+        List<NovelInfo> list = queryClass(sql,NovelInfo.class);
+        if(list.size() == 0)
+            return null;
+        return list.get(0);
+
     }
     public void addBookmark(String ncode, String name, Date update, int category){
         String d = new java.sql.Timestamp(update.getTime()).toString();

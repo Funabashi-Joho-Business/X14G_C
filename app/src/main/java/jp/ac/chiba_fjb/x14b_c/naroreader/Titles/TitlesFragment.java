@@ -68,20 +68,11 @@ public class TitlesFragment extends Fragment implements TitlesAdapter.OnItemClic
 		rv.setLayoutManager(new LinearLayoutManager(getContext()));     //アイテムを縦に並べる
 		rv.setAdapter(mAdapter);                                       //アダプターを設定
 
-		//ボタンが押され場合の処理
-		((SwipeRefreshLayout)view.findViewById(R.id.swipe_refresh)).setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-			@Override
-			public void onRefresh() {
-				Snackbar.make(getView(), "ノベル情報の要求", Snackbar.LENGTH_SHORT).show();
-				//受信要求
-				getContext().sendBroadcast(new Intent(getContext(),NaroReceiver.class).setAction(NaroReceiver.ACTION_NOVELINFO));
-			}
-
-		});
-		update();
 		//イベント通知受け取りの宣言
 		getContext().registerReceiver(mReceiver,new IntentFilter(NaroReceiver.NOTIFI_NOVELINFO));
 
+		update();
+		reload();
 
 	}
 
@@ -97,7 +88,18 @@ public class TitlesFragment extends Fragment implements TitlesAdapter.OnItemClic
 		getContext().unregisterReceiver(mReceiver);
 		super.onDestroyView();
 	}
+	void reload(){
+		//ボタンが押され場合の処理
+		((SwipeRefreshLayout)getView().findViewById(R.id.swipe_refresh)).setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+			@Override
+			public void onRefresh() {
+				Snackbar.make(getView(), "ノベル情報の要求", Snackbar.LENGTH_SHORT).show();
+				//受信要求
+				getContext().sendBroadcast(new Intent(getContext(),NaroReceiver.class).setAction(NaroReceiver.ACTION_NOVELINFO));
+			}
 
+		});
+	}
 	void update(){
 		//アダプターにデータを設定
 		NovelDB db = new NovelDB(getContext());
