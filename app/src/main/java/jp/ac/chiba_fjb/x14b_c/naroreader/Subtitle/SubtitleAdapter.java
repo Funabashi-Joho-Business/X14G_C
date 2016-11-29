@@ -45,10 +45,17 @@ public class SubtitleAdapter extends RecyclerView.Adapter implements View.OnClic
         //positionから必要なデータをビューに設定する
 
         NovelSubTitle v = mValues.get(position);
-//        String dateString = new SimpleDateFormat("yyyy年MM月dd日").format(v.getUpdate().getTime());
+
         holder.itemView.setTag(R.layout.bookmark_item,position);
         ((TextView)holder.itemView.findViewById(R.id.textTitle)).setText(v.title);
-        ((TextView)holder.itemView.findViewById(R.id.textDate)).setText(v.date.toString());
+
+        String dateString;
+        if (v.update == null){
+            dateString = v.date.toString();
+        } else {
+            dateString = v.update.toString();
+        }
+        ((TextView)holder.itemView.findViewById(R.id.textDate)).setText(dateString);
         ((TextView)holder.itemView.findViewById(R.id.textNo)).setText(""+(position+1));
     }
 

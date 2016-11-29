@@ -22,6 +22,7 @@ import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NovelDB;
 import jp.ac.chiba_fjb.x14b_c.naroreader.R;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Titles.TitlesFragment;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelBookmark;
+import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelInfo;
 
 
 /**
@@ -61,11 +62,15 @@ public class SubtitleFragment extends Fragment implements SubtitleAdapter.OnItem
                              Bundle savedInstanceState) {
 
 
-        // タイトルを設定
-        getActivity().setTitle("サブタイトル");
-
         if(getArguments() != null)
             mNCode = getArguments().getString("ncode");
+
+        NovelDB db = new NovelDB(getContext());
+        NovelInfo ni = db.getNovelInfo(mNCode);
+        db.close();
+
+        // タイトルを設定
+        getActivity().setTitle(ni.title);
 
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_subtitle, container, false);
