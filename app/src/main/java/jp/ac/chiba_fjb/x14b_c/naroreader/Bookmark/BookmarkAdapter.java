@@ -45,7 +45,6 @@ public class BookmarkAdapter extends RecyclerView.Adapter implements View.OnClic
         ((TextView)holder.itemView.findViewById(R.id.textView2)).setText(""+b.getCategory());
         ((TextView)holder.itemView.findViewById(R.id.textView3)).setText(dateString);
         ((TextView)holder.itemView.findViewById(R.id.textView4)).setText(b.getName());
-        System.out.println("Section Extra");
     }
 
     @Override
