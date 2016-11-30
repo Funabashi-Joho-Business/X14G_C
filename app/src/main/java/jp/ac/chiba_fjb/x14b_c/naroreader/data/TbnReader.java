@@ -447,7 +447,7 @@ public class TbnReader {
         NovelBody body = new NovelBody();
         body.title = m.group(1)!=null?m.group(1):m.group(2);
         body.body =  m.group(3);
-        body.ranking = m.group(4);
+        body.tag = m.group(4);
 
         return body;
     }

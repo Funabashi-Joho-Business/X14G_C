@@ -6,6 +6,7 @@ import android.content.Intent;
 
 import java.util.List;
 
+import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelBody;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelBookmark;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelInfo;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelSubTitle;
@@ -21,9 +22,11 @@ public class NaroReceiver extends BroadcastReceiver {
     public static final String ACTION_BOOKMARK = "ACTION_BOOKMARK"; //このクラスが処理すべき命令
     public static final String ACTION_NOVELINFO = "ACTION_NOVELINFO"; //ノベル情報の取得
     public static final String ACTION_NOVELSUB = "ACTION_NOVELSUB"; //ノベルサブタイトルの取得
+    public static final String ACTION_NOVELCONTENT = "ACTION_NOVELCONTENT"; //ノベルサブタイトルの取得
     public static final String NOTIFI_BOOKMARK = "NOTIFI_BOOKMARK"; //処理終了後の通知
     public static final String NOTIFI_NOVELINFO = "NOTIFI_NOVELINFO"; //検索終了後の通知
     public static final String NOTIFI_NOVELSUB = "NOTIFI_NOVELSUB"; //サブタイトル取得終了後の通知
+    public static final String NOTIFI_NOVELCONTENT = "NOTIFI_NOVELCONTENT"; //本文取得終了後の通知
     public NaroReceiver() {
     }
 
@@ -112,6 +115,27 @@ public class NaroReceiver extends BroadcastReceiver {
                         }
                         //更新完了通知
                         context.sendBroadcast(new Intent().setAction(NOTIFI_NOVELSUB).putExtra("result",true));
+                    }
+                }.start();
+                break;
+            case ACTION_NOVELCONTENT:
+                new Thread(){
+                    @Override
+                    public void run() {
+                        String ncode = intent.getStringExtra("ncode");
+                        int index = intent.getIntExtra("index",0);
+                        if(ncode == null)
+                            return;
+
+                        LogService.format(context,"%s(%d)の本分の取得",ncode,index);
+                        NovelBody body = TbnReader.getNovelBody(ncode,index);
+                        if(body != null){
+                            NovelDB db = new NovelDB(context);
+                            db.addNovelContents(ncode,index,body.body,body.tag);
+                            db.close();
+                        }
+                        //更新完了通知
+                        context.sendBroadcast(new Intent().setAction(NOTIFI_NOVELCONTENT).putExtra("result",true));
                     }
                 }.start();
                 break;
