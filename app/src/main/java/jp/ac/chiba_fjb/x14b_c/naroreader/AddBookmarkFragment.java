@@ -44,7 +44,7 @@ public class AddBookmarkFragment extends DialogFragment implements View.OnClickL
 
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         Dialog dialog = super.onCreateDialog(savedInstanceState);
-        dialog.setTitle("ログイン");
+        dialog.setTitle("ブックマーク");
         return dialog;
     }
 
