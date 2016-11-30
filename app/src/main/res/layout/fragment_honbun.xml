@@ -27,7 +27,7 @@
                 android:text="戻る"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/Back"
+                android:id="@+id/Hback"
                 android:layout_weight="1" />
 
             <TextView
@@ -42,7 +42,7 @@
                 android:text="次へ"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/button2"
+                android:id="@+id/Hnext"
                 android:layout_weight="1" />
 
         </LinearLayout>
@@ -57,14 +57,21 @@
                 android:text="しおりをはさむ"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/button"
+                android:id="@+id/shiori"
+                android:layout_weight="1" />
+
+            <Button
+                android:text="ブックマークに保存"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/insertBookmark"
                 android:layout_weight="1" />
 
             <Button
                 android:text="ホーム画面へ"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/button3"
+                android:id="@+id/backhome"
                 android:layout_weight="1" />
 
         </LinearLayout>

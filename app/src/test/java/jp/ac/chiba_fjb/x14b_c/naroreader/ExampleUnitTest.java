@@ -1,5 +1,7 @@
 package jp.ac.chiba_fjb.x14b_c.naroreader;
 
+import org.junit.Test;
+
 import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -19,6 +21,21 @@ import jp.ac.chiba_fjb.x14b_c.naroreader.data.TbnReader;
  * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
  */
 public class ExampleUnitTest {
+	@Test
+	public void testEvo(){
+		String userId = "";
+		String userPass = "";
+
+		String hash = TbnReader.getLoginHash(userId,userPass);
+		if(hash == null){
+			System.out.println("ログイン失敗");
+		}else{
+			System.out.format("ハッシュコード: %s\n",hash);
+		}
+		//List<NovelEvaluation> list = TbnReader.getEvaluation(hash);
+		//TbnReader.setEvaluation(hash,"n7975cr",5,5);
+	}
+
 	//@Test
 	public void testBookmark() throws Exception {
 		String userId = "";

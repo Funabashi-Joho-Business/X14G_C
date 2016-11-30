@@ -9,13 +9,11 @@ import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-import jp.ac.chiba_fjb.x14b_c.naroreader.R;
-import jp.ac.chiba_fjb.x14b_c.naroreader.Subtitle.SubtitleAdapter;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class Honbun extends Fragment {
+public class Honbun extends Fragment implements View.OnClickListener {
 
 
     public Honbun() {
@@ -23,6 +21,7 @@ public class Honbun extends Fragment {
     }
 
     private WebView mWebView;
+    private int Fullpage;
 
 
     @Override
@@ -36,13 +35,42 @@ public class Honbun extends Fragment {
         nコードとページ数だけ貰えればOK
          */
 
-        mWebView.setWebViewClient(new WebViewClient());
+        //mWebView.setWebViewClient(new WebViewClient());
         mWebView = (WebView)view.findViewById(R.id.mWebView);
         mWebView.loadUrl("file:///android_asset/naiyou.html");
+        view.findViewById(R.id.Hnext).setOnClickListener(this);
+        view.findViewById(R.id.Hback).setOnClickListener(this);
+        view.findViewById(R.id.shiori).setOnClickListener(this);
+        view.findViewById(R.id.backhome).setOnClickListener(this);
+        view.findViewById(R.id.insertBookmark).setOnClickListener(this);
 
 
 
+        Hupdate();
         return view;
     }
 
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()){
+            case R.id.Hnext:
+                //次ページに飛ぶ
+                break;
+            case R.id.Hback:
+                //1ページ前に飛ぶ
+                break;
+            case R.id.shiori:
+                //しおりをはさむ
+                break;
+            case R.id.insertBookmark:
+                //ブックマークの設定or解除
+            case R.id.backhome:
+                //帰る
+                break;
+        }
+    }
+
+    public void Hupdate(){
+        //Fullpage = SubtitleAdapter.pagelangth;
+    }
 }

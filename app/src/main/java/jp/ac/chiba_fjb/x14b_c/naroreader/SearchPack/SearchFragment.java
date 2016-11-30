@@ -48,7 +48,6 @@ public class SearchFragment extends Fragment implements View.OnClickListener{
         RecyclerView rv = (RecyclerView) view.findViewById(R.id.RecyclerView);
         rv.setLayoutManager(new LinearLayoutManager(getContext()));     //アイテムを縦に並べる
         rv.setAdapter(mSearch);                              //アダプターを設定
-        System.out.println("Section1");
 
         update();
         return view;
@@ -57,8 +56,6 @@ public class SearchFragment extends Fragment implements View.OnClickListener{
     @Override
     public void onClick(View view) {
 
-        System.out.println("Section2");
-
         new Thread() {
             @Override
             public void run() {
@@ -66,9 +63,7 @@ public class SearchFragment extends Fragment implements View.OnClickListener{
 
                 String word = mwordsearch.getText().toString();
                 flashdata = TbnReader.getKeyword(word);
-                System.out.println("Section6");
                 mSearch.getItemCount();
-                System.out.println("Section7");
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -84,7 +79,6 @@ public class SearchFragment extends Fragment implements View.OnClickListener{
     public void update(){
         mSearch.setSearch(flashdata);
         mSearch.notifyDataSetChanged();   //データ再表示要求
-        System.out.println("Section8");
     }
 
 }

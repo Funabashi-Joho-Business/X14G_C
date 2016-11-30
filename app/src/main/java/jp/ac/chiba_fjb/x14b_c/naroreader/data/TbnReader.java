@@ -94,6 +94,7 @@ public class TbnReader {
             URL url = new URL(adr);
             HttpURLConnection con = (HttpURLConnection)url.openConnection();
             con.setDoOutput(true);
+            con.setInstanceFollowRedirects(true);
             con.setRequestMethod("POST");
             con.setConnectTimeout(3000);
             con.setReadTimeout(3000);
@@ -239,7 +240,48 @@ public class TbnReader {
         }
         return null;
     }
+    public static boolean setEvaluation(String hash,String ncode,int bunsyopoint,int storypoint){
+        NovelInfo info = getNovelInfo(ncode);
+        if(info == null)
+            return false;
 
+        String address = String.format("http://ncode.syosetu.com/%s/%d/",ncode,info.general_all_no);
+        WebData webData = getContent2(address,hash,null,null);
+        Pattern p = Pattern.compile("name=\"token\" value=\"(.*?)\"");
+        Matcher m = p.matcher(webData.content);
+        if(!m.find())
+            return false;
+        String token = m.group(1);
+        System.out.println(token);
+
+        address = String.format("http://ncode.syosetu.com/novelpoint/register/ncode/%d/?token=%s&bunsyopoint=%d&storypoint=%d",convertNcode(ncode),token,bunsyopoint,storypoint);
+        getContent(address,hash);
+
+        return true;
+    }
+    public static List<NovelEvaluation> getEvaluation(String hash){
+        int id = getUserID(hash);
+        if(id == 0)
+            return null;
+
+        String address = String.format("http://mypage.syosetu.com/mypagenovelhyoka/list/userid/%d/",id);
+        String content = getContent(address);
+        if(content == null)
+            return null;
+
+        List<NovelEvaluation> list = new ArrayList<NovelEvaluation>();
+
+        Pattern p = Pattern.compile("<a href=\"http://ncode.syosetu.com/(.*?)/\">.*?ストーリー評価：(\\d?+)pt.*?文章評価：(\\d?+)pt",Pattern.DOTALL);
+        Matcher m = p.matcher(content);
+        while(m.find()){
+            NovelEvaluation e = new NovelEvaluation();
+            e.ncode = m.group(1);
+            e.storypoint = Integer.parseInt(m.group(2));
+            e.bunsyopoint = Integer.parseInt(m.group(3));
+            list.add(e);
+        }
+        return list;
+    }
 
     //ブックマークの設定
     //hash ログイントークン
@@ -275,7 +317,14 @@ public class TbnReader {
         }
         return false;
     }
-
+    public static int getUserID(String hash){
+        String content = getContent("http://syosetu.com/user/top/",hash);
+        Pattern p = Pattern.compile("\\[ID:(.*?)\\] でログイン中</li>",Pattern.DOTALL);
+        Matcher m = p.matcher(content);
+        if(m.find())
+            return Integer.parseInt(m.group(1));
+        return 0;
+    }
     //ブックマークの取得
     //hash ログイントークン
     public static List<NovelBookmark> getBookmark(String hash) {
@@ -551,6 +600,7 @@ public class TbnReader {
         return list;
 
     }
+
     public static String getRankingUrl(int f1,int f2,int f3){
         final String[] RANKING_FILTER1_URL=
             {
