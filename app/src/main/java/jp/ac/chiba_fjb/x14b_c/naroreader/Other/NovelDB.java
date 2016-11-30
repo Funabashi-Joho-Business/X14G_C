@@ -40,9 +40,10 @@ public class NovelDB extends AppDB {
     }
 
     @Override
+
     public void onUpgrade(SQLiteDatabase db,  int oldVersion, int newVersion) {
         if(oldVersion < 2){
-            //サブタイトル用テーブルの作成
+            //ブックマーク用テーブルの作成
             String sql;
             sql = "create table t_novel_sub(n_code text,sub_no int,sub_title text,sub_regdate date,sub_update date,primary key(n_code,sub_no))";
             db.execSQL(sql);
