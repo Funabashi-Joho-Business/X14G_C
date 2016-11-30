@@ -17,6 +17,7 @@ import android.widget.Spinner;
 
 import java.util.List;
 
+import jp.ac.chiba_fjb.x14b_c.naroreader.AddBookmarkFragment;
 import jp.ac.chiba_fjb.x14b_c.naroreader.MainActivity;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NovelDB;
 import jp.ac.chiba_fjb.x14b_c.naroreader.R;
@@ -247,5 +248,15 @@ public class RankingFragment extends Fragment implements AdapterView.OnItemSelec
         db.close();
 
         ((MainActivity)getActivity()).changeFragment(TitlesFragment.class);
+    }
+
+    @Override
+    public void onItemLongClick(NovelRanking item) {
+        //フラグメントのインスタンスを作成
+        AddBookmarkFragment f = new AddBookmarkFragment();
+        //フラグメントをダイアログとして表示
+        f.show(getFragmentManager(),"");
+
+
     }
 }
