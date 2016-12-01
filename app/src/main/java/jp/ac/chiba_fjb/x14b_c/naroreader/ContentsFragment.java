@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -103,8 +104,6 @@ public class ContentsFragment extends Fragment implements View.OnClickListener {
         mWebView.getSettings().setJavaScriptEnabled(true);  //JavaScript許可
         mWebView.loadUrl("file:///android_asset/Template.html");
 
-
-
         view.findViewById(R.id.Hnext).setOnClickListener(this);
         view.findViewById(R.id.Hback).setOnClickListener(this);
         view.findViewById(R.id.shiori).setOnClickListener(this);
@@ -121,6 +120,13 @@ public class ContentsFragment extends Fragment implements View.OnClickListener {
         //イベント通知受け取りの宣言
         getContext().registerReceiver(mReceiver,new IntentFilter(NaroReceiver.NOTIFI_NOVELCONTENT));
         update();
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                ((MainActivity)getActivity()).getSupportActionBar().hide();
+            }
+        },1000);
     }
 
     @Override
