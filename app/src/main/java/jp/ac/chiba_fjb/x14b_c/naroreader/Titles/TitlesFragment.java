@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 
 import java.util.Map;
 
+import jp.ac.chiba_fjb.x14b_c.naroreader.AddBookmarkFragment;
 import jp.ac.chiba_fjb.x14b_c.naroreader.MainActivity;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NaroReceiver;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NovelDB;
@@ -114,5 +115,13 @@ public class TitlesFragment extends Fragment implements TitlesAdapter.OnItemClic
 		Bundle bundle = new Bundle();
 		bundle.putString("ncode",value.get("ncode"));
 		((MainActivity)getActivity()).changeFragment(SubtitleFragment.class,bundle);
+	}
+
+	@Override
+	public void onItemLongClick(Map<String, String> value) {
+		//フラグメントのインスタンスを作成
+		AddBookmarkFragment f = new AddBookmarkFragment();
+		//フラグメントをダイアログとして表示
+		f.show(getFragmentManager(),"");
 	}
 }

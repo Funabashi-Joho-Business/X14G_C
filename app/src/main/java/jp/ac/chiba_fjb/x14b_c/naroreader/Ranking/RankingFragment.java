@@ -256,7 +256,5 @@ public class RankingFragment extends Fragment implements AdapterView.OnItemSelec
         AddBookmarkFragment f = new AddBookmarkFragment();
         //フラグメントをダイアログとして表示
         f.show(getFragmentManager(),"");
-
-
     }
 }
