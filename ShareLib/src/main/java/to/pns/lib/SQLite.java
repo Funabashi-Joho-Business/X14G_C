@@ -25,6 +25,15 @@ public abstract class SQLite extends SQLiteOpenHelper
 	public void insert(String tableName, ContentValues v){
 		mDataBase.insert(tableName,null,v);
 	}
+	public void replace(String tableName, ContentValues v){
+		if(mDataBase == null || mDataBase.isReadOnly())
+		{
+			if(mDataBase != null)
+				mDataBase.close();
+			mDataBase = getWritableDatabase();
+		}
+		mDataBase.replace(tableName,null,v);
+	}
 	public boolean isTable(String name)
 	{
 		String sql = String.format("select name from sqlite_master where name='%s';",name);
@@ -86,6 +95,7 @@ public abstract class SQLite extends SQLiteOpenHelper
 		//シングルクオートをシングルクオート二つにエスケーブ
 		return str.replaceAll("'", "''");
 	}
+
 	public void begin()
 	{
 		exec("begin;");
