@@ -81,5 +81,7 @@ public class SearchFragment extends Fragment implements View.OnClickListener{
         mSearch.notifyDataSetChanged();   //データ再表示要求
     }
 
+    
+
 }
 

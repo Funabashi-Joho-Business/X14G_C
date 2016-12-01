@@ -21,7 +21,7 @@ public class SearchAdapter extends RecyclerView.Adapter{
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder (ViewGroup parent,int viewType) {
         //レイアウトを設定
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.bookmark_item, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.search_item, parent, false);
         return new RecyclerView.ViewHolder(view) {
         }; //本当はここでアイテム設定を実装するのだけれど、簡単にするためスルー
     }
@@ -34,7 +34,7 @@ public class SearchAdapter extends RecyclerView.Adapter{
         String dateString = new SimpleDateFormat("yyyy年MM月dd日").format(s.general_lastup);
 
         ((TextView) holder.itemView.findViewById(R.id.textView)).setText(s.ncode);
-        ((TextView) holder.itemView.findViewById(R.id.textView2)).setText("" + s.general_lastup);
+        ((TextView) holder.itemView.findViewById(R.id.textView2)).setText(""+s.genre);
         ((TextView) holder.itemView.findViewById(R.id.textView3)).setText(dateString);
         ((TextView) holder.itemView.findViewById(R.id.textView4)).setText(s.title);
     }
