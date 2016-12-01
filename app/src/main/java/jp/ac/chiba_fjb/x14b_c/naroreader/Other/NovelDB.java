@@ -12,13 +12,14 @@ import java.util.List;
 import java.util.Map;
 
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelBookmark;
+import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelContent;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelInfo;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelSubTitle;
 import to.pns.lib.AppDB;
 
 public class NovelDB extends AppDB {
     public NovelDB(Context context) {
-        super(context, "novel4.db", 2);
+        super(context, "novel4.db", 3);
     }
 
     @Override
@@ -40,11 +41,18 @@ public class NovelDB extends AppDB {
     }
 
     @Override
+
     public void onUpgrade(SQLiteDatabase db,  int oldVersion, int newVersion) {
         if(oldVersion < 2){
             //サブタイトル用テーブルの作成
             String sql;
             sql = "create table t_novel_sub(n_code text,sub_no int,sub_title text,sub_regdate date,sub_update date,primary key(n_code,sub_no))";
+            db.execSQL(sql);
+        }
+        if(oldVersion < 3){
+            //本文用テーブルの作成
+            String sql;
+            sql = "create table t_novel_content(n_code text,sub_no int,content_update date,content_body text,content_tag text,primary key(n_code,sub_no))";
             db.execSQL(sql);
         }
     }
@@ -68,7 +76,15 @@ public class NovelDB extends AppDB {
         }
         commit();
     }
-
+    public void addNovelContents(String ncode,int index,String content,String tag){
+        ContentValues values = new ContentValues();
+        values.put("n_code", ncode);
+        values.put("sub_no", index);
+        values.put("content_update", new java.sql.Timestamp(new Date().getTime()).toString());
+        values.put("content_body",content);
+        values.put("content_tag",tag);
+        replace("t_novel_content",values);
+    }
     public void addNovel(String ncode){
         String sql = String.format("replace into t_novel_reg values(UPPER('%s'))",STR(ncode));
         exec(sql);
@@ -163,21 +179,26 @@ public class NovelDB extends AppDB {
         return list;
     }
 
-/*    public List<NovelSearch> getSearch(){
-        String sql;
-        sql = "select * from t_bookmark natural join t_novel";
-        Cursor r = query(sql);
 
-        List<NovelSearch> list = new ArrayList<>();
-        while(r.moveToNext()){
-            String d = r.getString(1);
-            Calendar cal = Calendar.getInstance();
-            cal.setTime(java.sql.Timestamp.valueOf(r.getString(1)));
-            NovelSearch b = new NovelSearch(r.getString(0),r.getString(3),r.getInt(2),cal,r.getString(4));
-            list.add(b);
+    public NovelContent getNovelContent(String ncode, int index) {
+        String sql = String.format("select sub_title,sub_regdate,sub_update,content_body,content_tag from t_novel_content natural join t_novel_sub where n_code='%s' and sub_no=%d",STR(ncode),index);
+        Cursor c = query(sql);
+        NovelContent content = null;
+        if(c.moveToNext()){
+            content = new NovelContent();
+            content.ncode = ncode;
+            content.index = index;
+            content.title = c.getString(0);
+            content.regdate = java.sql.Timestamp.valueOf(c.getString(1));
+            if(c.getString(2) != null)
+                content.update = java.sql.Timestamp.valueOf(c.getString(2));
+            content.body = c.getString(3);
+            content.tag = c.getString(4);
+
         }
-        r.close();
-        return list;
+        c.close();
+
+        return content;
+
     }
-    */
 }

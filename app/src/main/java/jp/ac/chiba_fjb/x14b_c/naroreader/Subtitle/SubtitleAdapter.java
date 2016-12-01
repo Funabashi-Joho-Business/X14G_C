@@ -24,7 +24,7 @@ public class SubtitleAdapter extends RecyclerView.Adapter implements View.OnClic
     private String mNCode;
 
     public interface OnItemClickListener{
-        public void onItemClick(NovelBookmark bookmark);
+        public void onItemClick(int value);
     }
     private OnItemClickListener mListener;
     private List<NovelSubTitle> mValues;
@@ -76,7 +76,7 @@ public class SubtitleAdapter extends RecyclerView.Adapter implements View.OnClic
     public void onClick(View view) {
         if(mListener != null) {
             int pos = (int) view.getTag(R.layout.bookmark_item);
-           // mListener.onItemClick(bookmark);
+            mListener.onItemClick(pos+1);
         }
     }
 }

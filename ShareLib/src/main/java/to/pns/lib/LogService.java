@@ -17,5 +17,17 @@ public class LogService
 		con.sendBroadcast(broadcastIntent);
 
 	}
+	public static void format(Context con,String f,Object... args)
+	{
+		String msg = String.format(f,args);
+
+		LogDB db = new LogDB(con);
+		db.output(msg);
+		db.close();
+
+		Intent broadcastIntent = new Intent(UPDATE_NAME);
+		con.sendBroadcast(broadcastIntent);
+
+	}
 
 }

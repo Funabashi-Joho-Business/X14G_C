@@ -37,7 +37,6 @@ public class SearchAdapter extends RecyclerView.Adapter{
         ((TextView) holder.itemView.findViewById(R.id.textView2)).setText("" + s.general_lastup);
         ((TextView) holder.itemView.findViewById(R.id.textView3)).setText(dateString);
         ((TextView) holder.itemView.findViewById(R.id.textView4)).setText(s.title);
-        System.out.println("Section5");
     }
 
     @Override

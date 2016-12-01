@@ -89,7 +89,7 @@ public class ExampleUnitTest {
 		System.out.println("-----------------------------");
 		System.out.println(body.body);
 		System.out.println("-----------------------------");
-		System.out.println(body.ranking);
+		System.out.println(body.tag);
 		System.out.println("-----------------------------");
 
 	}

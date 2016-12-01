@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import jp.ac.chiba_fjb.x14b_c.naroreader.ContentsFragment;
 import jp.ac.chiba_fjb.x14b_c.naroreader.MainActivity;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NaroReceiver;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NovelDB;
@@ -23,6 +24,7 @@ import jp.ac.chiba_fjb.x14b_c.naroreader.R;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Titles.TitlesFragment;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelBookmark;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelInfo;
+import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelSubTitle;
 
 
 /**
@@ -124,12 +126,12 @@ public class SubtitleFragment extends Fragment implements SubtitleAdapter.OnItem
         mSubtitleAdapter.notifyDataSetChanged();   //データ再表示要求
     }
 
-    @Override
-    public void onItemClick(NovelBookmark bookmark) {
-        NovelDB db = new NovelDB(getContext());
-        db.addNovel(bookmark.getCode());
-        db.close();
 
-        ((MainActivity)getActivity()).changeFragment(TitlesFragment.class);
+    @Override
+    public void onItemClick(int value) {
+        Bundle bundle = new Bundle();
+        bundle.putString("ncode",mNCode);
+        bundle.putInt("index",value);
+        ((MainActivity)getActivity()).changeFragment(ContentsFragment.class,bundle);
     }
 }
