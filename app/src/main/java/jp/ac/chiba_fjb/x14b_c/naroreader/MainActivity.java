@@ -27,7 +27,6 @@ import to.pns.lib.LogService;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private Bundle mBundle;
-    private CompletableFuture mStatusBarColorAnimator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

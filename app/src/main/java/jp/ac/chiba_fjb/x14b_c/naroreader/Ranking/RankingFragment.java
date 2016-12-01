@@ -228,14 +228,16 @@ public class RankingFragment extends Fragment implements AdapterView.OnItemSelec
             @Override
             public void run() {
                 final List<NovelRanking> rankList = TbnReader.getRanking(mSpiner1.getSelectedItemPosition(), mSpiner2.getSelectedItemPosition(), mSpiner3.getSelectedItemPosition());
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        mAdapter.setRanking(rankList);
-                        mAdapter.notifyDataSetChanged();
-                        ((SwipeRefreshLayout)getView().findViewById(R.id.swipe_refresh)).setRefreshing(false);
-                    }
-                });
+                if(getActivity() != null) {
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mAdapter.setRanking(rankList);
+                            mAdapter.notifyDataSetChanged();
+                            ((SwipeRefreshLayout) getView().findViewById(R.id.swipe_refresh)).setRefreshing(false);
+                        }
+                    });
+                }
             }
         }.start();
     }

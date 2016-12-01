@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -98,12 +99,18 @@ public class SubtitleFragment extends Fragment implements SubtitleAdapter.OnItem
 
         });
 
-        //イベント通知受け取りの宣言
-         getContext().registerReceiver(mReceiver,new IntentFilter(NaroReceiver.NOTIFI_NOVELSUB));
 
+        return view;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        //イベント通知受け取りの宣言
+        getContext().registerReceiver(mReceiver,new IntentFilter(NaroReceiver.NOTIFI_NOVELSUB));
         //初回更新
         update();
-        return view;
     }
 
     @Override
