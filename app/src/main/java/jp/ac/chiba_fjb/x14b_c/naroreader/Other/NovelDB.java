@@ -38,6 +38,13 @@ public class NovelDB extends AppDB {
         db.execSQL(sql);
         sql = createSqlCreateClass(NovelInfo.class,"t_novel_info","ncode");
         db.execSQL(sql);
+
+        sql = "create table t_novel_sub(n_code text,sub_no int,sub_title text,sub_regdate date,sub_update date,primary key(n_code,sub_no))";
+        db.execSQL(sql);
+
+        sql = "create table t_novel_content(n_code text,sub_no int,content_update date,content_body text,content_tag text,primary key(n_code,sub_no))";
+        db.execSQL(sql);
+
     }
 
     @Override

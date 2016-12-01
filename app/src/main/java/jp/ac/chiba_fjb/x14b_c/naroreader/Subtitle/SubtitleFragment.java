@@ -11,7 +11,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,10 +20,7 @@ import jp.ac.chiba_fjb.x14b_c.naroreader.MainActivity;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NaroReceiver;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NovelDB;
 import jp.ac.chiba_fjb.x14b_c.naroreader.R;
-import jp.ac.chiba_fjb.x14b_c.naroreader.Titles.TitlesFragment;
-import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelBookmark;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelInfo;
-import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelSubTitle;
 
 
 /**
@@ -39,15 +35,14 @@ public class SubtitleFragment extends Fragment implements SubtitleAdapter.OnItem
         public void onReceive(Context context, Intent intent) {
             switch(intent.getAction()){
                 case NaroReceiver.NOTIFI_NOVELSUB:
-                    SwipeRefreshLayout s = (SwipeRefreshLayout)getView().findViewById(R.id.swipe_refresh);
-                    if(s != null)
-                       s.setRefreshing(false);
-
-                    if(intent.getBooleanExtra("result",false))
-                        Snackbar.make(getView(), "サブタイトルの受信完了", Snackbar.LENGTH_SHORT).show();
-                    else
-                        Snackbar.make(getView(), "サブタイトルの受信失敗", Snackbar.LENGTH_SHORT).show();
-                    update();
+                    if(getView() != null){
+                        ((SwipeRefreshLayout)getView().findViewById(R.id.swipe_refresh)).setRefreshing(false);
+                        if(intent.getBooleanExtra("result",false))
+                            Snackbar.make(getView(), "サブタイトルの受信完了", Snackbar.LENGTH_SHORT).show();
+                        else
+                            Snackbar.make(getView(), "サブタイトルの受信失敗", Snackbar.LENGTH_SHORT).show();
+                        update();
+                    }
                     break;
             }
         }

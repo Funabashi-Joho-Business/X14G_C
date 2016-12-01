@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
-        drawer.openDrawer(Gravity.LEFT);//起動時にドロわーを開く
+        //drawer.openDrawer(Gravity.LEFT);//起動時にドロわーを開く
 
         mBundle = new Bundle();
 
