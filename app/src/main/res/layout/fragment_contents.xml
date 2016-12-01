@@ -1,8 +1,9 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".ContentsFragment">
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             xmlns:app="http://schemas.android.com/apk/res-auto"
+             tools:context=".ContentsFragment">
 
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/swipe_refresh"
@@ -12,6 +13,10 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <android.support.v4.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
         <WebView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -19,7 +24,7 @@
             android:id="@+id/mWebView" >
 
         </WebView>
-
+        </android.support.v4.widget.NestedScrollView>
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"

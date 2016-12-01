@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -14,7 +13,6 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
@@ -87,16 +85,7 @@ public class ContentsFragment extends Fragment implements View.OnClickListener {
 
 
         });
-        swipe.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
-            @Override
-            public void onScrollChanged() {
-                if (mWebView.getScrollY() == 0) {
-                    swipe.setEnabled(true);
-                } else {
-                    swipe.setEnabled(false);
-                }
-            }
-        });
+
 
         //mWebView.setWebViewClient(new WebViewClient());
         mWebView = (WebView)view.findViewById(R.id.mWebView);
@@ -121,12 +110,7 @@ public class ContentsFragment extends Fragment implements View.OnClickListener {
         getContext().registerReceiver(mReceiver,new IntentFilter(NaroReceiver.NOTIFI_NOVELCONTENT));
         update();
 
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                ((MainActivity)getActivity()).getSupportActionBar().hide();
-            }
-        },1000);
+
     }
 
     @Override
