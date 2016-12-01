@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NovelDB;
+import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelInfo;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -34,8 +35,18 @@ public class AddBookmarkFragment extends DialogFragment implements View.OnClickL
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_add_bookmark, container, false);
 
+        TextView tv = (TextView) view.findViewById(R.id.textTitle);
         Button b1 = (Button) view.findViewById(R.id.addYes);
         Button b2 = (Button) view.findViewById(R.id.addNo);
+
+        //バンドルの取得
+        if(getArguments() != null){
+            Bundle bn = getArguments();
+            String mTitle = bn.getString("title");
+
+            tv.setText(mTitle);
+        }
+
         b1.setOnClickListener(this);
         b2.setOnClickListener(this);
 

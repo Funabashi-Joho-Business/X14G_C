@@ -119,8 +119,12 @@ public class TitlesFragment extends Fragment implements TitlesAdapter.OnItemClic
 
 	@Override
 	public void onItemLongClick(Map<String, String> value) {
+		Bundle bn = new Bundle();
+		bn.putString("ncode",value.get("ncode"));
+		bn.putString("title",value.get("title"));
 		//フラグメントのインスタンスを作成
 		AddBookmarkFragment f = new AddBookmarkFragment();
+		f.setArguments(bn);
 		//フラグメントをダイアログとして表示
 		f.show(getFragmentManager(),"");
 	}

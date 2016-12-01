@@ -252,8 +252,12 @@ public class RankingFragment extends Fragment implements AdapterView.OnItemSelec
 
     @Override
     public void onItemLongClick(NovelRanking item) {
+        Bundle bn = new Bundle();
+        bn.putString("ncode",item.ncode);
+        bn.putString("title",item.title);
         //フラグメントのインスタンスを作成
         AddBookmarkFragment f = new AddBookmarkFragment();
+        f.setArguments(bn);
         //フラグメントをダイアログとして表示
         f.show(getFragmentManager(),"");
     }
