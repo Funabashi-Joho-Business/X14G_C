@@ -10,18 +10,120 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="jp.ac.chiba_fjb.x14b_c.naroreader.ConfigFragment">
 
-    <ScrollView
+    <TableLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true">
+        android:layout_weight="1">
 
-
-        <LinearLayout
-            android:orientation="horizontal"
+        <TableRow
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent">
+
+            <TextView
+                android:text="ID"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/textId"
+                android:padding="10dp"
+                android:layout_weight="1"/>
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:inputType="textPersonName"
+                android:ems="10"
+                android:layout_weight="1"
+                android:id="@+id/LoginID" />
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:text="Password"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/textPass"
+                android:padding="10dp"
+                android:layout_weight="1"/>
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword"
+                android:ems="10"
+                android:id="@+id/loginPass"
+                android:layout_weight="1" />
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:text="文字サイズ"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/config1"
+                android:padding="10dp"
+                android:layout_weight="1" />
+
+            <Spinner
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/spinner"
+                android:entries="@array/fontSize"
+                android:layout_weight="1" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:text="文字の色"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/config2"
+                android:padding="10dp"
+                android:layout_weight="1" />
+
+            <Spinner
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/spinner3"
+                android:layout_weight="1"
+                android:elevation="0dp"
+                android:entries="@array/fontColor"
+                android:spinnerMode="dialog" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:text="背景の色"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/config3"
+                android:padding="10dp"
+                android:layout_weight="1" />
+
+            <Spinner
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/spinner4"
+                android:layout_weight="1"
+                android:entries="@array/fontColor"
+                android:spinnerMode="dialog" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
             <LinearLayout
                 android:orientation="vertical"
@@ -30,79 +132,8 @@
                 android:layout_weight="1"
                 android:padding="0dp">
 
-                <TextView
-                    android:text="文字サイズ"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/config1"
-                    android:padding="10dp"
-                    android:layout_weight="1" />
-
-                <TextView
-                    android:text="文字の色"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/config2"
-                    android:padding="10dp"
-                    android:layout_weight="1" />
-
-                <TextView
-                    android:text="背景の色"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/config3"
-                    android:padding="10dp"
-                    android:layout_weight="1" />
-
-                <Button
-                    android:text="認証情報"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/config4"
-                    android:layout_weight="1" />
-
-                <Button
-                    android:text="保存"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/config5"
-                    android:layout_weight="1" />
-
             </LinearLayout>
+        </TableRow>
+    </TableLayout>
 
-            <LinearLayout
-                android:orientation="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:layout_gravity="right"
-                android:weightSum="1">
-
-                <Spinner
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/spinner"
-                    android:entries="@array/fontSize"
-                    android:layout_weight="0.10" />
-
-                <Spinner
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/spinner3"
-                    android:layout_weight="0.10"
-                    android:elevation="0dp"
-                    android:entries="@array/fontColor"
-                    android:spinnerMode="dialog" />
-
-                <Spinner
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/spinner4"
-                    android:layout_weight="0.08"
-                    android:entries="@array/fontColor"
-                    android:spinnerMode="dialog" />
-
-            </LinearLayout>
-        </LinearLayout>
-    </ScrollView>
 </RelativeLayout>
