@@ -7,8 +7,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
-import java.util.List;
-import java.util.Map;
 
 import jp.ac.chiba_fjb.x14b_c.naroreader.R;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelInfo;
@@ -17,17 +15,8 @@ import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelInfo;
  * Created by x14g019 on 2016/11/08.
  */
 
-public class SearchAdapter extends RecyclerView.Adapter implements View.OnClickListener{
-    public interface OnItemClickListener{
-        public void onItemClick(Map<String,String> value);
-    }
+public class SearchAdapter extends RecyclerView.Adapter{
     private NovelInfo[] mSearch;
-    private OnItemClickListener mListener;
-    private List<Map<String,String>> mValues;
-    void setOnItemClickListener(SearchAdapter.OnItemClickListener listener){
-        mListener = listener;
-    }
-
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder (ViewGroup parent,int viewType) {
@@ -61,13 +50,5 @@ public class SearchAdapter extends RecyclerView.Adapter implements View.OnClickL
             mSearch = bookmarks;
         }
 
-    @Override
-    public void onClick(View view) {
-        if(mListener != null) {
-            int pos = (int) view.getTag(R.layout.titles_item);
-            Map<String,String> value = mValues.get(pos);
-            mListener.onItemClick(value);
-        }
-    }
 
 }

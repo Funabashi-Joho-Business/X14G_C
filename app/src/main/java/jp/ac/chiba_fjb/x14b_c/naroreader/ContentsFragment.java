@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,7 +30,6 @@ public class ContentsFragment extends Fragment implements View.OnClickListener {
         public void onReceive(Context context, Intent intent) {
             switch(intent.getAction()){
                 case NaroReceiver.NOTIFI_NOVELCONTENT:
-                    ((SwipeRefreshLayout)getView().findViewById(R.id.swipe_refresh)).setRefreshing(false);
                     if(intent.getBooleanExtra("result",false))
                         Snackbar.make(getView(), "本文の受信完了", Snackbar.LENGTH_SHORT).show();
                     else
@@ -51,21 +49,13 @@ public class ContentsFragment extends Fragment implements View.OnClickListener {
 
     private WebView mWebView;
     private int Fullpage;
-    private WebViewClient mWebClient = new WebViewClient(){
-        @Override
-        public void onPageFinished(WebView view, String url) {
-            super.onPageFinished(view, url);
-            update();
-        }
 
-
-    };
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_contents, container, false);
+        View view = inflater.inflate(R.layout.fragment_honbun, container, false);
 
         /*
         値をサブタイトルから受け取ってURLに叩き込む
@@ -75,24 +65,9 @@ public class ContentsFragment extends Fragment implements View.OnClickListener {
         mNCode = bundle.getString("ncode");
         mIndex = bundle.getInt("index");
 
-        //スワイプされた場合の処理
-        final SwipeRefreshLayout swipe = (SwipeRefreshLayout)view.findViewById(R.id.swipe_refresh);
-        swipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                load();
-            }
-
-
-        });
-
-
         //mWebView.setWebViewClient(new WebViewClient());
         mWebView = (WebView)view.findViewById(R.id.mWebView);
-        mWebView.setWebViewClient(mWebClient);
-        mWebView.getSettings().setJavaScriptEnabled(true);  //JavaScript許可
-        mWebView.loadUrl("file:///android_asset/Template.html");
-
+        mWebView.loadUrl("file:///android_asset/naiyou.html");
         view.findViewById(R.id.Hnext).setOnClickListener(this);
         view.findViewById(R.id.Hback).setOnClickListener(this);
         view.findViewById(R.id.shiori).setOnClickListener(this);
@@ -109,8 +84,6 @@ public class ContentsFragment extends Fragment implements View.OnClickListener {
         //イベント通知受け取りの宣言
         getContext().registerReceiver(mReceiver,new IntentFilter(NaroReceiver.NOTIFI_NOVELCONTENT));
         update();
-
-
     }
 
     @Override
@@ -146,25 +119,17 @@ public class ContentsFragment extends Fragment implements View.OnClickListener {
         db.close();
 
         if(nc == null){
-
-            setBody("読み込み中");
-            load();
+            Snackbar.make(getView(), "本文の要求", Snackbar.LENGTH_SHORT).show();
+            Intent intent = new Intent(getContext(),NaroReceiver.class);
+            intent.putExtra("ncode",mNCode);
+            intent.putExtra("index",mIndex);
+            //受信要求
+            getContext().sendBroadcast(intent.setAction(NaroReceiver.ACTION_NOVELCONTENT));
         }
         else {
-            setBody(nc.body);
+            mWebView.loadDataWithBaseURL(null, nc.body, "text/html", "UTF-8", null);
+            //System.out.println(nc.body);
         }
         //Fullpage = SubtitleAdapter.pagelangth;
-    }
-    void setBody(String value){
-        String body = value.replaceAll("\"","\\\"");
-        mWebView.loadUrl("javascript:setBody(\""+ body +"\");");
-    }
-    void load(){
-        Snackbar.make(getView(), "本文の要求", Snackbar.LENGTH_SHORT).show();
-        Intent intent = new Intent(getContext(),NaroReceiver.class);
-        intent.putExtra("ncode",mNCode);
-        intent.putExtra("index",mIndex);
-        //受信要求
-        getContext().sendBroadcast(intent.setAction(NaroReceiver.ACTION_NOVELCONTENT));
     }
 }

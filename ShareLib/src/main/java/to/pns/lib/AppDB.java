@@ -43,7 +43,7 @@ public abstract class AppDB extends SQLite {
             if(f.getName().equals(primary))
                 sb.append(" primary key");
         }
-        return String.format("create table %s (%s)",className,sb.toString());
+        return String.format("creat table %s (%s)",className,sb.toString());
     }
     public <T>  List<T> queryClass(String sql,Class<T> cs){
         try {

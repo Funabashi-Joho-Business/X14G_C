@@ -251,51 +251,12 @@ public class RankingFragment extends Fragment implements AdapterView.OnItemSelec
     }
 
     @Override
-    public void onItemLongClick(final NovelRanking item) {
-        Bundle bn = new Bundle();
-        bn.putString("ncode",item.ncode);
-        bn.putString("title",item.title);
+    public void onItemLongClick(NovelRanking item) {
         //フラグメントのインスタンスを作成
         AddBookmarkFragment f = new AddBookmarkFragment();
-        f.setArguments(bn);
-
-        //ダイアログボタンの処理
-        f.setOnDialogButtonListener(new AddBookmarkFragment.OnDialogButtonListener() {
-            @Override
-            public void onDialogButton() {
-                new Thread(){
-                    @Override
-                    public void run() {
-
-                        NovelDB settingDB = new NovelDB(getContext());
-                        String id = settingDB.getSetting("loginId","");
-                        String pass = settingDB.getSetting("loginPass","");
-                        settingDB.close();
-
-                        //ログイン処理
-                        String hash = TbnReader.getLoginHash(id,pass);
-                        if(item.ncode != null){
-                            String mNcode = item.ncode;
-                            if (TbnReader.setBookmark(hash, mNcode)) //ブックマーク処理
-                                snack("ブックマークしました");
-                            else
-                                snack("ブックマークできませんでした");
-                        }
-                    }
-                }.start();
-            }
-        });
-
         //フラグメントをダイアログとして表示
         f.show(getFragmentManager(),"");
-    }
 
-    void snack (final String data){
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Snackbar.make(getView(), data, Snackbar.LENGTH_SHORT).show();
-            }
-        });
+
     }
 }
