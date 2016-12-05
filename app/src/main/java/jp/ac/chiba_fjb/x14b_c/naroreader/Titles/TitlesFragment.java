@@ -123,6 +123,7 @@ public class TitlesFragment extends Fragment implements TitlesAdapter.OnItemClic
 		Bundle bn = new Bundle();
 		bn.putString("ncode",value.get("ncode"));
 		bn.putString("title",value.get("title"));
+		bn.putInt("mode",0);
 		//フラグメントのインスタンスを作成
 		AddBookmarkFragment f = new AddBookmarkFragment();
 		f.setArguments(bn);

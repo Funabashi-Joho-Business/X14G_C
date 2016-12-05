@@ -16,12 +16,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import jp.ac.chiba_fjb.x14b_c.naroreader.AddBookmarkFragment;
 import jp.ac.chiba_fjb.x14b_c.naroreader.MainActivity;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NaroReceiver;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NovelDB;
 import jp.ac.chiba_fjb.x14b_c.naroreader.R;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Titles.TitlesFragment;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelBookmark;
+import jp.ac.chiba_fjb.x14b_c.naroreader.data.TbnReader;
 
 
 /**
@@ -118,5 +120,55 @@ public class BookmarkFragment extends Fragment implements BookmarkAdapter.OnItem
         db.close();
 
         ((MainActivity)getActivity()).changeFragment(TitlesFragment.class);
+    }
+
+    @Override
+    public void onItemLongClick(final NovelBookmark bookmark) {
+        Bundle bn = new Bundle();
+        bn.putString("ncode",bookmark.getCode());
+        bn.putString("title",bookmark.getName());
+        bn.putInt("mode",1);
+        //フラグメントのインスタンスを作成
+        AddBookmarkFragment f = new AddBookmarkFragment();
+        f.setArguments(bn);
+
+        //ダイアログボタンの処理
+        f.setOnDialogButtonListener(new AddBookmarkFragment.OnDialogButtonListener() {
+            @Override
+            public void onDialogButton() {
+                new Thread(){
+                    @Override
+                    public void run() {
+
+                        NovelDB settingDB = new NovelDB(getContext());
+                        String id = settingDB.getSetting("loginId","");
+                        String pass = settingDB.getSetting("loginPass","");
+                        settingDB.close();
+
+                        //ログイン処理
+                        String hash = TbnReader.getLoginHash(id,pass);
+                        if(bookmark.getCode() != null){
+                            String mNcode = bookmark.getCode();
+                            if (TbnReader.clearBookmark(hash, mNcode)) //ブックマーク処理
+                                snack("ブックマーク解除しました");
+                            else
+                                snack("ブックマーク解除できませんでした");
+                        }
+                    }
+                }.start();
+            }
+        });
+
+        //フラグメントをダイアログとして表示
+        f.show(getFragmentManager(),"");
+    }
+
+    void snack (final String data){
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Snackbar.make(getView(), data, Snackbar.LENGTH_SHORT).show();
+            }
+        });
     }
 }

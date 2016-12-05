@@ -11,14 +11,17 @@ import java.util.List;
 
 import jp.ac.chiba_fjb.x14b_c.naroreader.R;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelBookmark;
+import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelRanking;
 
 /**
 リサイクルビューに使用するデータ関連づけ用アダプター
  */
 
-public class BookmarkAdapter extends RecyclerView.Adapter implements View.OnClickListener {
+public class BookmarkAdapter extends RecyclerView.Adapter implements View.OnClickListener, View.OnLongClickListener {
+
     public interface OnItemClickListener{
         public void onItemClick(NovelBookmark bookmark);
+        public void onItemLongClick(NovelBookmark bookmark);
     }
     private OnItemClickListener mListener;
     private List<NovelBookmark> mBookmarks;
@@ -31,6 +34,8 @@ public class BookmarkAdapter extends RecyclerView.Adapter implements View.OnClic
         //レイアウトを設定
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.bookmark_item, parent, false);
         view.setOnClickListener(this);
+        view.setOnLongClickListener(this);
+
         return new RecyclerView.ViewHolder(view){}; //本当はここでアイテム設定を実装するのだけれど、簡単にするためスルー
     }
 
@@ -67,5 +72,15 @@ public class BookmarkAdapter extends RecyclerView.Adapter implements View.OnClic
             NovelBookmark bookmark = mBookmarks.get(pos);
             mListener.onItemClick(bookmark);
         }
+    }
+
+    @Override
+    public boolean onLongClick(View view) {
+        if(mListener != null) {
+            int pos = (int) view.getTag(R.layout.bookmark_item);
+            NovelBookmark bookmark = mBookmarks.get(pos);
+            mListener.onItemLongClick(bookmark);
+        }
+        return false;
     }
 }

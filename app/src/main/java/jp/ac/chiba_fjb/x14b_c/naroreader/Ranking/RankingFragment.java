@@ -255,6 +255,7 @@ public class RankingFragment extends Fragment implements AdapterView.OnItemSelec
         Bundle bn = new Bundle();
         bn.putString("ncode",item.ncode);
         bn.putString("title",item.title);
+        bn.putInt("mode",0);
         //フラグメントのインスタンスを作成
         AddBookmarkFragment f = new AddBookmarkFragment();
         f.setArguments(bn);
