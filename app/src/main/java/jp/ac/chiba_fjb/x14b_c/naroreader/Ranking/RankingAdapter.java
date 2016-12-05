@@ -32,7 +32,6 @@ public class RankingAdapter extends RecyclerView.Adapter implements View.OnClick
 ;
 
     private List<NovelRanking> mValues;
-    // GestureDetectorインスタンス変数
 
 
     @Override

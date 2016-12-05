@@ -3,6 +3,7 @@ package jp.ac.chiba_fjb.x14b_c.naroreader;
 
 import android.app.Dialog;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -11,18 +12,17 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NovelDB;
+import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelInfo;
+import jp.ac.chiba_fjb.x14b_c.naroreader.data.TbnReader;
+
 /**
  * A simple {@link Fragment} subclass.
  */
 public class AddBookmarkFragment extends DialogFragment implements View.OnClickListener {
-
-    public interface OnEditUserListener{
-        void onEditUser(String id,String pass);
-    }
     public AddBookmarkFragment() {
         // Required empty public constructor
     }
-
 
     //インタフェイスの定義
     public interface OnDialogButtonListener{
@@ -39,7 +39,6 @@ public class AddBookmarkFragment extends DialogFragment implements View.OnClickL
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_add_bookmark, container, false);
-
 
         TextView tv = (TextView) view.findViewById(R.id.textTitle);
         Button b1 = (Button) view.findViewById(R.id.addYes);
@@ -70,7 +69,7 @@ public class AddBookmarkFragment extends DialogFragment implements View.OnClickL
         switch (v.getId()){
             case R.id.addYes:
                 //ブックマークに追加する処理
-
+                mListener.onDialogButton();
                 getDialog().cancel();
                 break;
             case R.id.addNo:
