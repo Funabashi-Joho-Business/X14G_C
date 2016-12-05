@@ -145,7 +145,8 @@ public class TitlesFragment extends Fragment implements TitlesAdapter.OnItemClic
 						String hash = TbnReader.getLoginHash(id,pass);
 						if(value.get("ncode") != null){
 							String mNcode = value.get("ncode");
-							if (TbnReader.setBookmark(hash, mNcode)) //ブックマーク処理
+							if (TbnReader.setBookmark(hash, mNcode))
+								//ブックマーク処理
 								snack("ブックマークしました");
 							else
 								snack("ブックマークできませんでした");

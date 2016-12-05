@@ -149,10 +149,12 @@ public class BookmarkFragment extends Fragment implements BookmarkAdapter.OnItem
                         String hash = TbnReader.getLoginHash(id,pass);
                         if(bookmark.getCode() != null){
                             String mNcode = bookmark.getCode();
-                            if (TbnReader.clearBookmark(hash, mNcode)) //ブックマーク処理
+                            if (TbnReader.clearBookmark(hash, mNcode)){ //ブックマーク処理
                                 snack("ブックマーク解除しました");
-                            else
+                                getContext().sendBroadcast(new Intent(getContext(),NaroReceiver.class).setAction(NaroReceiver.ACTION_BOOKMARK));
+                            } else {
                                 snack("ブックマーク解除できませんでした");
+                            }
                         }
                     }
                 }.start();
