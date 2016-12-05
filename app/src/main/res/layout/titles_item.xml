@@ -10,6 +10,13 @@
                   android:layout_margin="3dp"
                   android:background="@android:color/holo_green_light">
 
+        <TextView
+            android:text="タイトル"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/textTitle"
+            android:layout_weight="1" />
+
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
@@ -30,13 +37,6 @@
                 android:layout_weight="1" />
 
         </LinearLayout>
-
-        <TextView
-            android:text="タイトル"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/textTitle"
-            android:layout_weight="1" />
 
     </LinearLayout>
 </FrameLayout>

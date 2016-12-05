@@ -123,6 +123,9 @@ public class NovelDB extends AppDB {
         return list.get(0);
 
     }
+    public void clearBookmark(){
+        exec("delete from t_bookmark");
+    }
     public void addBookmark(String ncode, String name, Date update, int category){
         String d = new java.sql.Timestamp(update.getTime()).toString();
         String sql;

@@ -36,13 +36,15 @@ public class BookmarkFragment extends Fragment implements BookmarkAdapter.OnItem
         public void onReceive(Context context, Intent intent) {
             switch(intent.getAction()){
                 case NaroReceiver.NOTIFI_BOOKMARK:
-                    ((SwipeRefreshLayout)getView().findViewById(R.id.swipe_refresh)).setRefreshing(false);
+                    if(getView()!=null) {
+                        ((SwipeRefreshLayout) getView().findViewById(R.id.swipe_refresh)).setRefreshing(false);
 
-                    if(intent.getBooleanExtra("result",false))
-                        Snackbar.make(getView(), "ブックマークデータの受信完了", Snackbar.LENGTH_SHORT).show();
-                    else
-                        Snackbar.make(getView(), "ブックマークデータの受信失敗", Snackbar.LENGTH_SHORT).show();
-                    update();
+                        if (intent.getBooleanExtra("result", false))
+                            Snackbar.make(getView(), "ブックマークデータの受信完了", Snackbar.LENGTH_SHORT).show();
+                        else
+                            Snackbar.make(getView(), "ブックマークデータの受信失敗", Snackbar.LENGTH_SHORT).show();
+                        update();
+                    }
                     break;
             }
         }
@@ -116,7 +118,7 @@ public class BookmarkFragment extends Fragment implements BookmarkAdapter.OnItem
         NovelDB db = new NovelDB(getContext());
         db.addNovel(bookmark.getCode());
         db.close();
-
+        getContext().sendBroadcast(new Intent(getContext(),NaroReceiver.class).setAction(NaroReceiver.ACTION_NOVELINFO));
         ((MainActivity)getActivity()).changeFragment(TitlesFragment.class);
     }
 }
