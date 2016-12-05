@@ -123,6 +123,7 @@ public class TitlesFragment extends Fragment implements TitlesAdapter.OnItemClic
 		Bundle bn = new Bundle();
 		bn.putString("ncode",value.get("ncode"));
 		bn.putString("title",value.get("title"));
+		bn.putInt("mode",0);
 		//フラグメントのインスタンスを作成
 		AddBookmarkFragment f = new AddBookmarkFragment();
 		f.setArguments(bn);
@@ -144,7 +145,8 @@ public class TitlesFragment extends Fragment implements TitlesAdapter.OnItemClic
 						String hash = TbnReader.getLoginHash(id,pass);
 						if(value.get("ncode") != null){
 							String mNcode = value.get("ncode");
-							if (TbnReader.setBookmark(hash, mNcode)) //ブックマーク処理
+							if (TbnReader.setBookmark(hash, mNcode))
+								//ブックマーク処理
 								snack("ブックマークしました");
 							else
 								snack("ブックマークできませんでした");
