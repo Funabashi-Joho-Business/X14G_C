@@ -123,6 +123,16 @@ public class NovelDB extends AppDB {
         return list.get(0);
 
     }
+    public List<NovelInfo> getNovelInfo(List<String> listNcode){
+        StringBuilder sb = new StringBuilder();
+        for(String s : listNcode){
+            if(sb.length() > 0)
+                sb.append(",");
+            sb.append(String.format("'%s'",s.toUpperCase()));
+        }
+        String sql = String.format("select * from t_novel_info where ncode in (%s)",sb.toString());
+        return queryClass(sql,NovelInfo.class);
+    }
     public void clearBookmark(){
         exec("delete from t_bookmark");
     }

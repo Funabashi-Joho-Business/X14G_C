@@ -236,7 +236,8 @@ public class RankingFragment extends Fragment implements AdapterView.OnItemSelec
                         public void run() {
                             mAdapter.setRanking(rankList);
                             mAdapter.notifyDataSetChanged();
-                            ((SwipeRefreshLayout) getView().findViewById(R.id.swipe_refresh)).setRefreshing(false);
+                            if(getView()!=null)
+                                ((SwipeRefreshLayout) getView().findViewById(R.id.swipe_refresh)).setRefreshing(false);
                         }
                     });
                 }

@@ -16,13 +16,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import jp.ac.chiba_fjb.x14b_c.naroreader.AddBookmarkFragment;
 import jp.ac.chiba_fjb.x14b_c.naroreader.MainActivity;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NaroReceiver;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NovelDB;
 import jp.ac.chiba_fjb.x14b_c.naroreader.R;
-import jp.ac.chiba_fjb.x14b_c.naroreader.Titles.TitlesFragment;
+import jp.ac.chiba_fjb.x14b_c.naroreader.Subtitle.SubtitleFragment;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelBookmark;
+import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelInfo;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.TbnReader;
 
 
@@ -52,7 +58,6 @@ public class BookmarkFragment extends Fragment implements BookmarkAdapter.OnItem
         }
     };
     private BookmarkAdapter mBookmarkAdapter;
-
 
     public BookmarkFragment() {
 
@@ -110,8 +115,25 @@ public class BookmarkFragment extends Fragment implements BookmarkAdapter.OnItem
     void update(){
         //アダプターにデータを設定
         NovelDB db = new NovelDB(getContext());
-        mBookmarkAdapter.setBookmarks(db.getBookmark());
+        List<NovelBookmark> list = db.getBookmark();
+        mBookmarkAdapter.setBookmarks(list);
+
+
+        List<String > listNcode = new ArrayList<String>();
+        for(NovelBookmark n : list){
+            listNcode.add(n.getCode());
+        }
+        List<NovelInfo> novelInfo = db.getNovelInfo(listNcode);
+        Map<String,NovelInfo> map = new HashMap<String,NovelInfo>();
+        for(NovelInfo n : novelInfo){
+            map.put(n.ncode,n);
+        }
+        mBookmarkAdapter.setNovelInfos(map);
         db.close();
+
+
+
+
         mBookmarkAdapter.notifyDataSetChanged();   //データ再表示要求
     }
 
@@ -120,8 +142,11 @@ public class BookmarkFragment extends Fragment implements BookmarkAdapter.OnItem
         NovelDB db = new NovelDB(getContext());
         db.addNovel(bookmark.getCode());
         db.close();
-        getContext().sendBroadcast(new Intent(getContext(),NaroReceiver.class).setAction(NaroReceiver.ACTION_NOVELINFO));
-        ((MainActivity)getActivity()).changeFragment(TitlesFragment.class);
+        //getContext().sendBroadcast(new Intent(getContext(),NaroReceiver.class).setAction(NaroReceiver.ACTION_NOVELINFO));
+
+        Bundle bundle = new Bundle();
+        bundle.putString("ncode",bookmark.getCode());
+        ((MainActivity)getActivity()).changeFragment(SubtitleFragment.class,bundle);
     }
 
     @Override

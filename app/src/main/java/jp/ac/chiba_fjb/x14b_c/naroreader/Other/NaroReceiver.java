@@ -74,16 +74,13 @@ public class NaroReceiver extends BroadcastReceiver {
                     @Override
                     public void run() {
                         LogService.output(context,"ノベル情報の取得");
-                        NovelDB db = new NovelDB(context);
-                        List<String>list = db.getNovel();
-                        db.close();
-
+                        List<String> ncodes = (List<String>)intent.getSerializableExtra("ncode");
 
                         //取得した検索情報をDBに保存
-                        List<NovelInfo> info = TbnReader.getNovelInfo(list);
+                        List<NovelInfo> info = TbnReader.getNovelInfo(ncodes);
                         if(info != null) {
                             //DBを利用
-                            db = new NovelDB(context);
+                            NovelDB db = new NovelDB(context);
                             db.addNovelInfo(info);
                             db.close();
                             LogService.output(context, "ノベル情報の取得完了");

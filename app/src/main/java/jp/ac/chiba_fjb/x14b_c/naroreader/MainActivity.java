@@ -35,7 +35,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        //この辺何してるんだろう？
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -49,7 +48,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         mBundle = new Bundle();
 
-        changeFragment(TitlesFragment.class);
+        changeFragment(BookmarkFragment.class);
 
         LogService.output(getApplicationContext(),"アプリ起動");
 

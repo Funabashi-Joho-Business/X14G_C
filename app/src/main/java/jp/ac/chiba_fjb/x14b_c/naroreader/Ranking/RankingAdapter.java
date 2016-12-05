@@ -1,17 +1,15 @@
 package jp.ac.chiba_fjb.x14b_c.naroreader.Ranking;
 
 import android.support.v7.widget.RecyclerView;
-import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.TextView;
 
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
-import jp.ac.chiba_fjb.x14b_c.naroreader.AddBookmarkFragment;
 import jp.ac.chiba_fjb.x14b_c.naroreader.R;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelRanking;
 
@@ -51,9 +49,12 @@ public class RankingAdapter extends RecyclerView.Adapter implements View.OnClick
         NovelRanking b = mValues.get(position);
         String dateString = new SimpleDateFormat("yyyy年MM月dd日").format(b.update);
         holder.itemView.setTag(R.layout.ranking_item,position);
-        ((TextView)holder.itemView.findViewById(R.id.textRank)).setText(""+(position+1));
+        ((TextView)holder.itemView.findViewById(R.id.textRank)).setText((position+1)+"位");
         ((TextView)holder.itemView.findViewById(R.id.textCode)).setText(b.ncode+1);
         ((TextView)holder.itemView.findViewById(R.id.textGenre)).setText(""+b.genre);
+        ((TextView)holder.itemView.findViewById(R.id.textCount)).setText(b.novelCount+"話");
+        ((TextView)holder.itemView.findViewById(R.id.textPoint)).setText(NumberFormat.getNumberInstance().format(b.point)+"pt");
+        ((TextView)holder.itemView.findViewById(R.id.textWritter)).setText(""+b.writerName);
         ((TextView)holder.itemView.findViewById(R.id.textDate)).setText(dateString);
         ((TextView)holder.itemView.findViewById(R.id.textTitle)).setText(b.title);
         ((TextView)holder.itemView.findViewById(R.id.textInfo)).setText(b.info);
