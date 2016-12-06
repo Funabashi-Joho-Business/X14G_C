@@ -1,4 +1,4 @@
-package jp.ac.chiba_fjb.x14b_c.naroreader;
+package jp.ac.chiba_fjb.x14b_c.naroreader.Contents;
 
 
 import android.content.BroadcastReceiver;
@@ -19,6 +19,7 @@ import android.webkit.WebViewClient;
 
 import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NaroReceiver;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NovelDB;
+import jp.ac.chiba_fjb.x14b_c.naroreader.R;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelContent;
 
 
