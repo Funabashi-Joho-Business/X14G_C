@@ -3,18 +3,23 @@ package jp.ac.chiba_fjb.x14b_c.naroreader;
 
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
+import android.widget.TextView;
 
 import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NovelDB;
 
-public class ConfigFragment extends Fragment implements View.OnClickListener {
+public class ConfigFragment extends Fragment  {
 
 
     public ConfigFragment() {
@@ -38,16 +43,18 @@ public class ConfigFragment extends Fragment implements View.OnClickListener {
         Spinner s2 = (Spinner) view.findViewById(R.id.spinner3);
         Spinner s3 = (Spinner) view.findViewById(R.id.spinner4);
 
-        Button b1 = (Button) view.findViewById(R.id.config4);
-        Button b2 = (Button) view.findViewById(R.id.config5);
-        b1.setOnClickListener(this);
-        b2.setOnClickListener(this);
-
         NovelDB settingDB = new NovelDB(getContext());
+        String id = settingDB.getSetting("loginId","");
+        String pass = settingDB.getSetting("loginPass","");
         String ss1 = settingDB.getSetting("fontSize");
         String ss2 = settingDB.getSetting("fontColor");
         String ss3 = settingDB.getSetting("BackColor");
         settingDB.close();
+
+        TextView textId = (TextView) view.findViewById(R.id.LoginID);
+        TextView textPass = (TextView) view.findViewById(R.id.loginPass);
+        textId.setText(id);
+        textPass.setText(pass);
 
         setSelection(s1,ss1);
         setSelection(s2,ss2);
@@ -56,47 +63,15 @@ public class ConfigFragment extends Fragment implements View.OnClickListener {
         return view;
     }
 
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()){
-            case R.id.config4: //ログインダイアログ
-                // ダイアログを表示する
 
-
-                LoginFragment newFragment = new LoginFragment();
-                newFragment.setOnEditUserListener(new LoginFragment.OnEditUserListener() {
-                    @Override
-                    public void onEditUser(String id, String pass) {
-                        NovelDB settingDB = new NovelDB(getContext());
-                        settingDB.setSetting("loginId",id);
-                        settingDB.setSetting("loginPass",pass);
-                        settingDB.close();
-                    }
-                });
-                newFragment.show(getFragmentManager(),null);
-
-                break;
-            case R.id.config5: //設定の保存
-                Spinner s1 = (Spinner) getView().findViewById(R.id.spinner);
-                Spinner s2 = (Spinner) getView().findViewById(R.id.spinner3);
-                Spinner s3 = (Spinner) getView().findViewById(R.id.spinner4);
-
-                String t1 = (String)s1.getSelectedItem();
-                String t2 = (String)s2.getSelectedItem();
-                String t3 = (String)s3.getSelectedItem();
-
-                settingSave(t1,t2,t3);
-                break;
-        }
-    }
-
-    public void settingSave(String fontSize,String fontColor,String backColor){
+    public void settingSave(String id,String pass,String fontSize,String fontColor,String backColor){
         NovelDB settingDB = new NovelDB(getContext());
 
         settingDB.setSetting("fontSize",fontSize);
         settingDB.setSetting("fontColor",fontColor);
         settingDB.setSetting("backColor",backColor);
-
+        settingDB.setSetting("loginId",id);
+        settingDB.setSetting("loginPass",pass);
         settingDB.close();
     }
 
@@ -109,5 +84,37 @@ public class ConfigFragment extends Fragment implements View.OnClickListener {
             }
         }
         spinner.setSelection(index);
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        //super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.config, menu);
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.menu_save) {
+            TextView id = (TextView) getView().findViewById(R.id.LoginID);
+            TextView pass = (TextView) getView().findViewById(R.id.loginPass);
+            Spinner s1 = (Spinner) getView().findViewById(R.id.spinner);
+            Spinner s2 = (Spinner) getView().findViewById(R.id.spinner3);
+            Spinner s3 = (Spinner) getView().findViewById(R.id.spinner4);
+
+            String t1 = (String) s1.getSelectedItem();
+            String t2 = (String) s2.getSelectedItem();
+            String t3 = (String) s3.getSelectedItem();
+
+            settingSave(id.getText().toString(), pass.getText().toString(), t1, t2, t3);
+            Snackbar.make(getView(), "保存完了", Snackbar.LENGTH_SHORT).show();
+        }
+        return true;
     }
 }

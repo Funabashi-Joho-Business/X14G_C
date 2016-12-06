@@ -11,10 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 import jp.ac.chiba_fjb.x14b_c.naroreader.R;
-import jp.ac.chiba_fjb.x14b_c.naroreader.Titles.TitlesAdapter;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelInfo;
-
-import static android.R.attr.value;
 
 /**
  * Created by x14g019 on 2016/11/08.
@@ -22,14 +19,15 @@ import static android.R.attr.value;
 
 public class SearchAdapter extends RecyclerView.Adapter implements View.OnClickListener{
     public interface OnItemClickListener{
-        public void onItemClick(NovelInfo value);
-    }
-    private OnItemClickListener mListener;
-    void setOnItemClickListener(OnItemClickListener listener){
-        mListener = listener;
+    public void onItemClick(NovelInfo value);
     }
 
     private NovelInfo[] mSearch;
+    private OnItemClickListener mListener;
+    void setOnItemClickListener(SearchAdapter.OnItemClickListener listener){
+        mListener = listener;
+    }
+
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder (ViewGroup parent,int viewType) {
@@ -63,6 +61,7 @@ public class SearchAdapter extends RecyclerView.Adapter implements View.OnClickL
     public void setSearch(NovelInfo[] bookmarks){
             mSearch = bookmarks;
         }
+
 
     public void setValues(NovelInfo[] values){
         mSearch = values;
