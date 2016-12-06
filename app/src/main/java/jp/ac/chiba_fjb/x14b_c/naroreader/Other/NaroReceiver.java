@@ -31,7 +31,7 @@ public class NaroReceiver extends BroadcastReceiver {
     public static final String NOTIFI_NOVELCONTENT = "NOTIFI_NOVELCONTENT"; //本文取得終了後の通知
     public NaroReceiver() {
     }
-    static void updateNovelInfo(Context con){
+    public static void updateNovelInfo(Context con){
         NovelDB db = new NovelDB(con);
         List<NovelBookmark> boolmarks = db.getBookmark();
         List<Map<String, String>> titles = db.getTitles();
@@ -44,7 +44,17 @@ public class NaroReceiver extends BroadcastReceiver {
 
         con.sendBroadcast(new Intent(con,NaroReceiver.class).setAction(NaroReceiver.ACTION_NOVELINFO).putExtra("ncode",list));
     }
-    static void updateNovelInfoBookmark(Context con){
+    public static void updateNovelInfoHistory(Context con){
+        NovelDB db = new NovelDB(con);
+        List<Map<String, String>> titles = db.getTitles();
+        db.close();
+        ArrayList<String> list = new ArrayList<String>();
+        for(Map<String, String> t : titles)
+            list.add(t.get("ncode"));
+
+        con.sendBroadcast(new Intent(con,NaroReceiver.class).setAction(NaroReceiver.ACTION_NOVELINFO).putExtra("ncode",list));
+    }
+    public static void updateNovelInfoBookmark(Context con){
         NovelDB db = new NovelDB(con);
         List<NovelBookmark> boolmarks = db.getBookmark();
         db.close();
