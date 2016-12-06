@@ -16,8 +16,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import jp.ac.chiba_fjb.x14b_c.naroreader.AddBookmarkFragment;
@@ -75,6 +73,16 @@ public class TitlesFragment extends Fragment implements TitlesAdapter.OnItemClic
 		//イベント通知受け取りの宣言
 		getContext().registerReceiver(mReceiver,new IntentFilter(NaroReceiver.NOTIFI_NOVELINFO));
 
+		//ボタンが押され場合の処理
+		((SwipeRefreshLayout)getView().findViewById(R.id.swipe_refresh)).setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+			@Override
+			public void onRefresh() {
+				Snackbar.make(getView(), "ノベル情報の要求", Snackbar.LENGTH_SHORT).show();
+				reload();
+			}
+
+		});
+
 		update();
 		reload();
 
@@ -93,21 +101,8 @@ public class TitlesFragment extends Fragment implements TitlesAdapter.OnItemClic
 		super.onDestroyView();
 	}
 	void reload(){
-		//ボタンが押され場合の処理
-		((SwipeRefreshLayout)getView().findViewById(R.id.swipe_refresh)).setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-			@Override
-			public void onRefresh() {
-				Snackbar.make(getView(), "ノベル情報の要求", Snackbar.LENGTH_SHORT).show();
-				//必要なコードの列挙
-				NovelDB db = new NovelDB(getContext());
-				List<String> list = db.getNovel();
-				db.close();
+		NaroReceiver.updateNovelInfoHistory(getContext());
 
-				//受信要求
-				getContext().sendBroadcast(new Intent(getContext(),NaroReceiver.class).setAction(NaroReceiver.ACTION_NOVELINFO).putExtra("ncode",(ArrayList<String>)list));
-			}
-
-		});
 	}
 	void update(){
 		//アダプターにデータを設定

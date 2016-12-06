@@ -385,7 +385,7 @@ public class TbnReader {
         return null;
     }
     public static List<NovelInfo> getNovelInfo(List<String> ncodeList){
-	    if(ncodeList.size() == 0)
+	    if(ncodeList == null || ncodeList.size() == 0)
 		    return null;
 
         StringBuilder sb = new StringBuilder();
