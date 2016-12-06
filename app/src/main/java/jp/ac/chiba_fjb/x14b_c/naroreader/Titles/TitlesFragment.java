@@ -16,6 +16,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import jp.ac.chiba_fjb.x14b_c.naroreader.AddBookmarkFragment;
@@ -59,7 +61,7 @@ public class TitlesFragment extends Fragment implements TitlesAdapter.OnItemClic
 	public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
 
-		getActivity().setTitle("登録タイトル一覧");
+		getActivity().setTitle("閲覧履歴");
 
 		//ブックマーク表示用アダプターの作成
 		mAdapter = new TitlesAdapter();
@@ -96,8 +98,13 @@ public class TitlesFragment extends Fragment implements TitlesAdapter.OnItemClic
 			@Override
 			public void onRefresh() {
 				Snackbar.make(getView(), "ノベル情報の要求", Snackbar.LENGTH_SHORT).show();
+				//必要なコードの列挙
+				NovelDB db = new NovelDB(getContext());
+				List<String> list = db.getNovel();
+				db.close();
+
 				//受信要求
-				getContext().sendBroadcast(new Intent(getContext(),NaroReceiver.class).setAction(NaroReceiver.ACTION_NOVELINFO));
+				getContext().sendBroadcast(new Intent(getContext(),NaroReceiver.class).setAction(NaroReceiver.ACTION_NOVELINFO).putExtra("ncode",(ArrayList<String>)list));
 			}
 
 		});
@@ -123,6 +130,7 @@ public class TitlesFragment extends Fragment implements TitlesAdapter.OnItemClic
 		Bundle bn = new Bundle();
 		bn.putString("ncode",value.get("ncode"));
 		bn.putString("title",value.get("title"));
+		bn.putInt("mode",0);
 		//フラグメントのインスタンスを作成
 		AddBookmarkFragment f = new AddBookmarkFragment();
 		f.setArguments(bn);
@@ -144,7 +152,8 @@ public class TitlesFragment extends Fragment implements TitlesAdapter.OnItemClic
 						String hash = TbnReader.getLoginHash(id,pass);
 						if(value.get("ncode") != null){
 							String mNcode = value.get("ncode");
-							if (TbnReader.setBookmark(hash, mNcode)) //ブックマーク処理
+							if (TbnReader.setBookmark(hash, mNcode))
+								//ブックマーク処理
 								snack("ブックマークしました");
 							else
 								snack("ブックマークできませんでした");

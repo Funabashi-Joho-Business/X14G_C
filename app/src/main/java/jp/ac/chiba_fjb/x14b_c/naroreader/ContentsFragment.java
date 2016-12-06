@@ -50,7 +50,6 @@ public class ContentsFragment extends Fragment implements View.OnClickListener {
     }
 
     private WebView mWebView;
-    private int Fullpage;
     private WebViewClient mWebClient = new WebViewClient(){
         @Override
         public void onPageFinished(WebView view, String url) {
@@ -125,9 +124,13 @@ public class ContentsFragment extends Fragment implements View.OnClickListener {
         switch (view.getId()){
             case R.id.Hnext:
                 //次ページに飛ぶ
+                mIndex = mIndex + 1 ;
+                update();
                 break;
             case R.id.Hback:
                 //1ページ前に飛ぶ
+                mIndex = mIndex - 1 ;
+                update();
                 break;
             case R.id.shiori:
                 //しおりをはさむ

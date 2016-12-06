@@ -17,9 +17,11 @@ import jp.ac.chiba_fjb.x14b_c.naroreader.R;
 リサイクルビューに使用するデータ関連づけ用アダプター
  */
 
-public class TitlesAdapter extends RecyclerView.Adapter implements View.OnClickListener {
+public class TitlesAdapter extends RecyclerView.Adapter implements View.OnClickListener, View.OnLongClickListener {
+
     public interface OnItemClickListener{
         public void onItemClick(Map<String,String> value);
+        public void onItemLongClick(Map<String,String> value);
     }
     private OnItemClickListener mListener;
     private List<Map<String,String>> mValues;
@@ -32,6 +34,8 @@ public class TitlesAdapter extends RecyclerView.Adapter implements View.OnClickL
         //レイアウトを設定
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.titles_item, parent, false);
         view.setOnClickListener(this);
+        view.setOnLongClickListener(this);
+
         return new RecyclerView.ViewHolder(view){}; //本当はここでアイテム設定を実装するのだけれど、簡単にするためスルー
     }
 
@@ -71,5 +75,15 @@ public class TitlesAdapter extends RecyclerView.Adapter implements View.OnClickL
             Map<String,String> value = mValues.get(pos);
             mListener.onItemClick(value);
         }
+    }
+
+    @Override
+    public boolean onLongClick(View view) {
+        if(mListener != null) {
+            int pos = (int) view.getTag(R.layout.titles_item);
+            Map<String,String> value = mValues.get(pos);
+            mListener.onItemLongClick(value);
+        }
+        return false;
     }
 }
