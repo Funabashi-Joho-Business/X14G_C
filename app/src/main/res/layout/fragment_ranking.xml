@@ -14,42 +14,33 @@
         android:layout_height="match_parent">
 
         <LinearLayout
-            android:orientation="vertical"
+            android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="#aa55aaff">
-
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <Spinner
-                    android:layout_width="wrap_content"
-                    android:id="@+id/spinnerRFilter1"
-                    android:layout_weight="1"
-                    android:spinnerMode="dialog"
-                    android:layout_height="wrap_content"/>
-
-                <Spinner
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/spinnerRFilter2"
-                    android:layout_weight="1"
-                    android:spinnerMode="dialog"/>
-
-            </LinearLayout>
+            android:layout_height="50dp">
 
             <Spinner
-                app:layout_scrollFlags="scroll|enterAlways"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/spinnerRFilter3"
-                android:spinnerMode="dialog"
-                android:dropDownWidth="match_parent"
-                android:layout_weight="1"/>
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:id="@+id/spinnerRFilter1"
+                android:layout_weight="1"
+                android:spinnerMode="dialog"/>
+
+            <Spinner
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:id="@+id/spinnerRFilter2"
+                android:layout_weight="1"
+                android:spinnerMode="dialog"/>
 
         </LinearLayout>
+
+        <Spinner
+            app:layout_scrollFlags="scroll|enterAlways"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:id="@+id/spinnerRFilter3"
+            android:spinnerMode="dialog"
+            android:dropDownWidth="match_parent" />
 
         <android.support.v4.widget.SwipeRefreshLayout
             android:id="@+id/swipe_refresh"

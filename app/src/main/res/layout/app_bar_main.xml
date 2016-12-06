@@ -30,8 +30,7 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/fragment_area"
-        android:background="@drawable/background">
+        android:id="@+id/fragment_area">
     </FrameLayout>
 
 </android.support.design.widget.CoordinatorLayout>

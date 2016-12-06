@@ -89,7 +89,11 @@ public class SubtitleFragment extends Fragment implements SubtitleAdapter.OnItem
         ((SwipeRefreshLayout)view.findViewById(R.id.swipe_refresh)).setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-            load();
+                Snackbar.make(getView(), "サブタイトルデータの要求", Snackbar.LENGTH_SHORT).show();
+                Intent intent = new Intent(getContext(),NaroReceiver.class);
+                intent.putExtra("ncode",mNCode);
+                //受信要求
+                getContext().sendBroadcast(intent.setAction(NaroReceiver.ACTION_NOVELSUB));
             }
 
 
@@ -99,25 +103,14 @@ public class SubtitleFragment extends Fragment implements SubtitleAdapter.OnItem
         return view;
     }
 
-
-    void load(){
-        Snackbar.make(getView(), "サブタイトルデータの要求", Snackbar.LENGTH_SHORT).show();
-        Intent intent = new Intent(getContext(),NaroReceiver.class);
-        intent.putExtra("ncode",mNCode);
-        //受信要求
-        getContext().sendBroadcast(intent.setAction(NaroReceiver.ACTION_NOVELSUB));
-    }
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
         //イベント通知受け取りの宣言
         getContext().registerReceiver(mReceiver,new IntentFilter(NaroReceiver.NOTIFI_NOVELSUB));
-        //ネットワークから情報の取得
-        load();
         //初回更新
         update();
-
     }
 
     @Override

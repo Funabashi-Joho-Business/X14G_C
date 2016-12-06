@@ -38,13 +38,6 @@ public class NovelDB extends AppDB {
         db.execSQL(sql);
         sql = createSqlCreateClass(NovelInfo.class,"t_novel_info","ncode");
         db.execSQL(sql);
-
-        sql = "create table t_novel_sub(n_code text,sub_no int,sub_title text,sub_regdate date,sub_update date,primary key(n_code,sub_no))";
-        db.execSQL(sql);
-
-        sql = "create table t_novel_content(n_code text,sub_no int,content_update date,content_body text,content_tag text,primary key(n_code,sub_no))";
-        db.execSQL(sql);
-
     }
 
     @Override
@@ -122,19 +115,6 @@ public class NovelDB extends AppDB {
             return null;
         return list.get(0);
 
-    }
-    public List<NovelInfo> getNovelInfo(List<String> listNcode){
-        StringBuilder sb = new StringBuilder();
-        for(String s : listNcode){
-            if(sb.length() > 0)
-                sb.append(",");
-            sb.append(String.format("'%s'",s.toUpperCase()));
-        }
-        String sql = String.format("select * from t_novel_info where ncode in (%s)",sb.toString());
-        return queryClass(sql,NovelInfo.class);
-    }
-    public void clearBookmark(){
-        exec("delete from t_bookmark");
     }
     public void addBookmark(String ncode, String name, Date update, int category){
         String d = new java.sql.Timestamp(update.getTime()).toString();

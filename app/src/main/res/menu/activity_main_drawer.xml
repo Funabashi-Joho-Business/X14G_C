@@ -2,7 +2,10 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <group android:checkableBehavior="single">
-
+        <item
+            android:id="@+id/nav_titles"
+            android:icon="@drawable/ic_menu_manage"
+            android:title="作品一覧" />
         <item
             android:id="@+id/nav_bookmark"
             android:icon="@drawable/ic_book_black"
@@ -10,18 +13,12 @@
 
         <item
             android:id="@+id/nav_ranking"
-            android:icon="@drawable/ic_rank_black"
             android:title="ランキング" />
 
         <item
             android:id="@+id/nav_search"
             android:icon="@drawable/ic_search_black"
             android:title="検索" />
-
-        <item
-            android:id="@+id/nav_titles"
-            android:icon="@drawable/ic_book2_black"
-            android:title="閲覧履歴" />
 
         <item
             android:id="@+id/nav_log"
