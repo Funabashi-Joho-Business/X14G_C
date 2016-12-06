@@ -2,99 +2,104 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ContentsFragment">
 
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/swipe_refresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent">>
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <WebView
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="98"
-            android:id="@+id/mWebView" >
+            android:layout_height="match_parent">
 
-        </WebView>
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:alpha="0.7">
-
-            <LinearLayout
-                android:orientation="vertical"
+            <android.support.v4.widget.NestedScrollView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true">
+                android:layout_height="match_parent"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior">
+                <WebView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="98"
+                    android:id="@+id/mWebView" >
 
+                </WebView>
+            </android.support.v4.widget.NestedScrollView>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:alpha="0.7">
 
                 <LinearLayout
-                    android:orientation="horizontal"
+                    android:orientation="vertical"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1">
+                    android:layout_alignParentBottom="true">
 
-                    <Button
-                        android:text="戻る"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/Hback"
-                        android:layout_weight="1" />
 
-                    <TextView
-                        android:text="ページ数（？）"
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:id="@+id/textView6"
-                        android:layout_weight="1"
-                        android:gravity="center" />
+                        android:layout_weight="1">
 
-                    <Button
-                        android:text="次へ"
-                        android:layout_width="wrap_content"
+                        <Button
+                            android:text="戻る"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/Hback"
+                            android:layout_weight="1" />
+
+                        <TextView
+                            android:text="ページ数（？）"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/textView6"
+                            android:layout_weight="1"
+                            android:gravity="center" />
+
+                        <Button
+                            android:text="次へ"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/Hnext"
+                            android:layout_weight="1" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:id="@+id/Hnext"
-                        android:layout_weight="1" />
+                        android:layout_weight="1">
+
+                        <Button
+                            android:text="しおりをはさむ"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/shiori"
+                            android:layout_weight="1" />
+
+                        <Button
+                            android:text="ブックマークに保存"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/insertBookmark"
+                            android:layout_weight="1" />
+
+                        <Button
+                            android:text="ホーム画面へ"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/backhome"
+                            android:layout_weight="1" />
+
+                    </LinearLayout>
 
                 </LinearLayout>
+            </RelativeLayout>
 
-                <LinearLayout
-                    android:orientation="horizontal"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1">
-
-                    <Button
-                        android:text="しおりをはさむ"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/shiori"
-                        android:layout_weight="1" />
-
-                    <Button
-                        android:text="ブックマークに保存"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/insertBookmark"
-                        android:layout_weight="1" />
-
-                    <Button
-                        android:text="ホーム画面へ"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/backhome"
-                        android:layout_weight="1" />
-
-                </LinearLayout>
-
-            </LinearLayout>
-        </RelativeLayout>
-
-    </FrameLayout>
+        </FrameLayout>
 
 
     </android.support.v4.widget.SwipeRefreshLayout>
