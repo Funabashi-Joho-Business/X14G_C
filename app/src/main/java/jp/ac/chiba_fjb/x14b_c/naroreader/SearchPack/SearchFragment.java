@@ -11,7 +11,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
+import java.util.Map;
+
+import jp.ac.chiba_fjb.x14b_c.naroreader.MainActivity;
 import jp.ac.chiba_fjb.x14b_c.naroreader.R;
+import jp.ac.chiba_fjb.x14b_c.naroreader.Subtitle.SubtitleFragment;
+import jp.ac.chiba_fjb.x14b_c.naroreader.Titles.TitlesAdapter;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelInfo;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.TbnReader;
 
@@ -20,7 +25,7 @@ import jp.ac.chiba_fjb.x14b_c.naroreader.data.TbnReader;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class SearchFragment extends Fragment implements View.OnClickListener{
+public class SearchFragment extends Fragment implements SearchAdapter.OnItemClickListener, View.OnClickListener{
 
 
     public SearchFragment() {
@@ -43,6 +48,7 @@ public class SearchFragment extends Fragment implements View.OnClickListener{
 
         //ブックマーク表示用アダプターの作成
         mSearch = new SearchAdapter();
+        mSearch.setOnItemClickListener(this);
 
         //データ表示用のビューを作成
         RecyclerView rv = (RecyclerView) view.findViewById(R.id.RecyclerView);
@@ -81,7 +87,13 @@ public class SearchFragment extends Fragment implements View.OnClickListener{
         mSearch.notifyDataSetChanged();   //データ再表示要求
     }
 
-    
+
+    @Override
+    public void onItemClick(NovelInfo value) {
+        Bundle bundle = new Bundle();
+        bundle.putString("ncode",value.ncode);
+        ((MainActivity)getActivity()).changeFragment(SubtitleFragment.class,bundle);
+    }
 
 }
 
