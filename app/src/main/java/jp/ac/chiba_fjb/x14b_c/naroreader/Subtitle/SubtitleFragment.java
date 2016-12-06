@@ -13,14 +13,19 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 
 import jp.ac.chiba_fjb.x14b_c.naroreader.ContentsFragment;
 import jp.ac.chiba_fjb.x14b_c.naroreader.MainActivity;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NaroReceiver;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NovelDB;
 import jp.ac.chiba_fjb.x14b_c.naroreader.R;
+import jp.ac.chiba_fjb.x14b_c.naroreader.RankPointFragment;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelInfo;
 
 
@@ -142,5 +147,30 @@ public class SubtitleFragment extends Fragment implements SubtitleAdapter.OnItem
         bundle.putString("ncode",mNCode);
         bundle.putInt("index",value);
         ((MainActivity)getActivity()).changeFragment(ContentsFragment.class,bundle);
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        //super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.subtitle_menu, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.rank_point) {
+            //ソフトキーボードを非表示
+            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+
+            RankPointFragment f = new RankPointFragment();
+            f.show(getFragmentManager(),"");
+        }
+        return true;
     }
 }

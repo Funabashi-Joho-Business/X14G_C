@@ -3,7 +3,6 @@ package jp.ac.chiba_fjb.x14b_c.naroreader;
 
 import android.app.Dialog;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -11,10 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-
-import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NovelDB;
-import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelInfo;
-import jp.ac.chiba_fjb.x14b_c.naroreader.data.TbnReader;
 
 /**
  * A simple {@link Fragment} subclass.
