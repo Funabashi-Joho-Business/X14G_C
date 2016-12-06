@@ -54,6 +54,11 @@ public class BookmarkFragment extends Fragment implements BookmarkAdapter.OnItem
                         update();
                     }
                     break;
+                case NaroReceiver.NOTIFI_NOVELINFO:
+                    if(getView()!=null) {
+                        update();
+                    }
+                    break;
             }
         }
     };
@@ -99,7 +104,7 @@ public class BookmarkFragment extends Fragment implements BookmarkAdapter.OnItem
 
         //イベント通知受け取りの宣言
         getContext().registerReceiver(mReceiver,new IntentFilter(NaroReceiver.NOTIFI_BOOKMARK));
-
+        getContext().registerReceiver(mReceiver,new IntentFilter(NaroReceiver.NOTIFI_NOVELINFO));
         //初回更新
         update();
         return view;

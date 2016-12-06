@@ -123,6 +123,12 @@ public class NovelDB extends AppDB {
         return list.get(0);
 
     }
+    public boolean isNovelInfo(String ndoce){
+        String sql = String.format("select 1 from t_novel_info where ncode = %s",ndoce.toUpperCase());
+        Cursor c = query(sql);
+        boolean flag = c.moveToNext();
+        return flag;
+    }
     public List<NovelInfo> getNovelInfo(List<String> listNcode){
         StringBuilder sb = new StringBuilder();
         for(String s : listNcode){
@@ -221,4 +227,5 @@ public class NovelDB extends AppDB {
         return content;
 
     }
+
 }

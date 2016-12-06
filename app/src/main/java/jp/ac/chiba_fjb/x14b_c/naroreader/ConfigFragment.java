@@ -1,7 +1,8 @@
 package jp.ac.chiba_fjb.x14b_c.naroreader;
 
 
-
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -13,14 +14,18 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 
+import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NaroReceiver;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NovelDB;
 
 public class ConfigFragment extends Fragment  {
 
+
+    private String mUserId;
 
     public ConfigFragment() {
         // Required empty public constructor
@@ -50,6 +55,8 @@ public class ConfigFragment extends Fragment  {
         String ss2 = settingDB.getSetting("fontColor");
         String ss3 = settingDB.getSetting("BackColor");
         settingDB.close();
+
+        mUserId = id;
 
         TextView textId = (TextView) view.findViewById(R.id.LoginID);
         TextView textPass = (TextView) view.findViewById(R.id.loginPass);
@@ -102,6 +109,10 @@ public class ConfigFragment extends Fragment  {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.menu_save) {
+            //ソフトキーボードを非表示
+            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+
             TextView id = (TextView) getView().findViewById(R.id.LoginID);
             TextView pass = (TextView) getView().findViewById(R.id.loginPass);
             Spinner s1 = (Spinner) getView().findViewById(R.id.spinner);
@@ -114,6 +125,15 @@ public class ConfigFragment extends Fragment  {
 
             settingSave(id.getText().toString(), pass.getText().toString(), t1, t2, t3);
             Snackbar.make(getView(), "保存完了", Snackbar.LENGTH_SHORT).show();
+
+            if(!mUserId.equals(id)){
+                //違うIDが設定されたら、ブックマークをクリア
+                NovelDB db = new NovelDB(getContext());
+                db.clearBookmark();;
+                db.close();
+                //ブックマークをネットから取得
+                getContext().sendBroadcast(new Intent(getContext(),NaroReceiver.class).setAction(NaroReceiver.ACTION_BOOKMARK));
+            }
         }
         return true;
     }

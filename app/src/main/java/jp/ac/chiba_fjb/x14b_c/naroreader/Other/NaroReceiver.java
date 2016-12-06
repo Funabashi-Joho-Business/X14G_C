@@ -4,7 +4,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelBody;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelBookmark;
@@ -29,7 +31,38 @@ public class NaroReceiver extends BroadcastReceiver {
     public static final String NOTIFI_NOVELCONTENT = "NOTIFI_NOVELCONTENT"; //本文取得終了後の通知
     public NaroReceiver() {
     }
+    public static void updateNovelInfo(Context con){
+        NovelDB db = new NovelDB(con);
+        List<NovelBookmark> boolmarks = db.getBookmark();
+        List<Map<String, String>> titles = db.getTitles();
+        db.close();
+        ArrayList<String> list = new ArrayList<String>();
+        for(NovelBookmark b : boolmarks)
+            list.add(b.getCode());
+        for(Map<String, String> t : titles)
+            list.add(t.get("ncode"));
 
+        con.sendBroadcast(new Intent(con,NaroReceiver.class).setAction(NaroReceiver.ACTION_NOVELINFO).putExtra("ncode",list));
+    }
+    public static void updateNovelInfoHistory(Context con){
+        NovelDB db = new NovelDB(con);
+        List<Map<String, String>> titles = db.getTitles();
+        db.close();
+        ArrayList<String> list = new ArrayList<String>();
+        for(Map<String, String> t : titles)
+            list.add(t.get("ncode"));
+
+        con.sendBroadcast(new Intent(con,NaroReceiver.class).setAction(NaroReceiver.ACTION_NOVELINFO).putExtra("ncode",list));
+    }
+    public static void updateNovelInfoBookmark(Context con){
+        NovelDB db = new NovelDB(con);
+        List<NovelBookmark> boolmarks = db.getBookmark();
+        db.close();
+        ArrayList<String> list = new ArrayList<String>();
+        for(NovelBookmark b : boolmarks)
+            list.add(b.getCode());
+        con.sendBroadcast(new Intent(con,NaroReceiver.class).setAction(NaroReceiver.ACTION_NOVELINFO).putExtra("ncode",list));
+    }
     @Override
     public void onReceive(final Context context, final Intent intent) {
         //処理要求の確認
@@ -64,6 +97,8 @@ public class NaroReceiver extends BroadcastReceiver {
                         LogService.output(context,"ブックマーク情報の読み込み完了");
                         //更新完了通知
                         context.sendBroadcast(new Intent().setAction(NOTIFI_BOOKMARK).putExtra("result",true));
+                        //作品情報を取得
+                        updateNovelInfoBookmark(context);
                     }
                 }.start();
                 break;
