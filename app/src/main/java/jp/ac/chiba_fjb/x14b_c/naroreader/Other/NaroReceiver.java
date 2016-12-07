@@ -43,6 +43,11 @@ public class NaroReceiver extends BroadcastReceiver {
 
         con.sendBroadcast(new Intent(con,NaroReceiver.class).setAction(NaroReceiver.ACTION_NOVELINFO).putExtra("ncode",list));
     }
+    public static void updateNovelInfo(Context con,String ncode){
+        ArrayList<String> list = new ArrayList<String>();
+        list.add(ncode);
+        con.sendBroadcast(new Intent(con,NaroReceiver.class).setAction(NaroReceiver.ACTION_NOVELINFO).putExtra("ncode",list));
+    }
     public static void updateNovelInfoHistory(Context con){
         NovelDB db = new NovelDB(con);
         List<NovelInfo> novelInfos = db.getHistorys();
@@ -90,7 +95,7 @@ public class NaroReceiver extends BroadcastReceiver {
                         //DBを利用
                         NovelDB db = new NovelDB(context);
                         for(NovelBookmark b : bookmarks){
-                            db.addBookmark(b.getCode(),b.getName(),b.getUpdate().getTime(),b.getCategory());
+                            db.addBookmark(b.getCode(),b.getUpdate().getTime(),b.getCategory());
                         }
                         db.close();
                         LogService.output(context,"ブックマーク情報の読み込み完了");

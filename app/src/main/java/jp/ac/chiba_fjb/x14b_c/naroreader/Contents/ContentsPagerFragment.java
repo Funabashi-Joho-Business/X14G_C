@@ -65,6 +65,6 @@ public class ContentsPagerFragment extends Fragment {
 
 		ViewPager viewPager = (ViewPager) getView().findViewById(R.id.pager);
 		viewPager.setAdapter(new PagerAdapter(getFragmentManager(),bundle.getString("ncode"),bundle.getInt("count")));
-		viewPager.setCurrentItem(bundle.getInt("index"));
+		viewPager.setCurrentItem(bundle.getInt("index")-1);
 	}
 }

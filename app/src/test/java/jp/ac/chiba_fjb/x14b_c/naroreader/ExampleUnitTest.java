@@ -3,12 +3,10 @@ package jp.ac.chiba_fjb.x14b_c.naroreader;
 import org.junit.Test;
 
 import java.lang.reflect.Field;
-import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Scanner;
 
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelBody;
-import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelBookmark;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelInfo;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelRanking;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelSeries;
@@ -36,25 +34,7 @@ public class ExampleUnitTest {
 		//TbnReader.setEvaluation(hash,"n7975cr",5,5);
 	}
 
-	//@Test
-	public void testBookmark() throws Exception {
-		String userId = "";
-		String userPass = "";
 
-		String hash = TbnReader.getLoginHash(userId,userPass);
-		if(hash == null){
-			System.out.println("ログイン失敗");
-		}else{
-			System.out.format("ハッシュコード: %s\n",hash);
-		}
-
-		SimpleDateFormat f = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
-
-		List<NovelBookmark> list = TbnReader.getBookmark(hash);
-		for(NovelBookmark b : list){
-			System.out.format("%s %02d %s %s\n",b.getCode(),b.getCategory(),f.format(b.getUpdate().getTime()),b.getName());
-		}
-	}
 	//@Test
 	public void testSetBookmark() throws Exception {
 		String userId = "";

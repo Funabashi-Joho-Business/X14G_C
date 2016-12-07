@@ -19,7 +19,6 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import jp.ac.chiba_fjb.x14b_c.naroreader.AddBookmarkFragment;
 import jp.ac.chiba_fjb.x14b_c.naroreader.MainActivity;
@@ -63,6 +62,7 @@ public class BookmarkFragment extends Fragment implements BookmarkAdapter.OnItem
         }
     };
     private BookmarkAdapter mBookmarkAdapter;
+    private HashMap<String, NovelInfo> mNovelMap;
 
     public BookmarkFragment() {
 
@@ -129,11 +129,11 @@ public class BookmarkFragment extends Fragment implements BookmarkAdapter.OnItem
             listNcode.add(n.getCode());
         }
         List<NovelInfo> novelInfo = db.getNovelInfo(listNcode);
-        Map<String,NovelInfo> map = new HashMap<String,NovelInfo>();
+        mNovelMap = new HashMap<String,NovelInfo>();
         for(NovelInfo n : novelInfo){
-            map.put(n.ncode,n);
+            mNovelMap.put(n.ncode,n);
         }
-        mBookmarkAdapter.setNovelInfos(map);
+        mBookmarkAdapter.setNovelInfos(mNovelMap);
         db.close();
 
 
@@ -151,9 +151,13 @@ public class BookmarkFragment extends Fragment implements BookmarkAdapter.OnItem
 
     @Override
     public void onItemLongClick(final NovelBookmark bookmark) {
+        NovelInfo novelInfo = mNovelMap.get(bookmark.getCode());
         Bundle bn = new Bundle();
         bn.putString("ncode",bookmark.getCode());
-        bn.putString("title",bookmark.getName());
+        if(novelInfo != null)
+            bn.putString("title",novelInfo.title);
+        else
+            bn.putString("title","");
         bn.putInt("mode",1);
         //フラグメントのインスタンスを作成
         AddBookmarkFragment f = new AddBookmarkFragment();

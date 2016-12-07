@@ -10,4 +10,8 @@
         android:visible="true"
         android:checkable="false"
         android:id="@+id/rank_point"/>
+    <item android:id="@+id/action_sort"
+          android:title="並び替え"
+          android:orderInCategory="100"
+          app:showAsAction="never" />
 </menu>

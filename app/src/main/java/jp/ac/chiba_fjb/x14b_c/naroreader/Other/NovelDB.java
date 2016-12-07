@@ -29,9 +29,6 @@ public class NovelDB extends AppDB {
         //ブックマーク用テーブルの作成
         sql = "create table t_bookmark(n_code text primary key,b_update date,b_category int)";
         db.execSQL(sql);
-        //ノベル名用テーブルの作成
-        sql = "create table t_novel(n_code text primary key,n_name text)";
-        db.execSQL(sql);
         //履歴用
         sql = "create table t_novel_history(ncode text primary key,his_date date)";
         db.execSQL(sql);
@@ -132,20 +129,17 @@ public class NovelDB extends AppDB {
     public void clearBookmark(){
         exec("delete from t_bookmark");
     }
-    public void addBookmark(String ncode, String name, Date update, int category){
+    public void addBookmark(String ncode,  Date update, int category){
         String d = new java.sql.Timestamp(update.getTime()).toString();
         String sql;
         //ブックマークデータの追加
         sql = String.format("replace into t_bookmark values('%s','%s','%d')",STR(ncode),d,category);
         exec(sql);
-        //ノベルデータの追加
-        sql = String.format("replace into t_novel values('%s','%s')",STR(ncode),STR(name));
-        exec(sql);
     }
 
     public List<NovelBookmark> getBookmark(){
         String sql;
-        sql = "select * from t_bookmark natural join t_novel";
+        sql = "select * from t_bookmark natural join t_novel order by b_update desc";
         Cursor r = query(sql);
 
         List<NovelBookmark> list = new ArrayList<NovelBookmark>();
@@ -182,8 +176,9 @@ public class NovelDB extends AppDB {
         String sql = String.format("select * from t_novel_sub where n_code='%s' order by sub_no",STR(ncode));
         Cursor c = query(sql);
         List<NovelSubTitle> list = new ArrayList<NovelSubTitle>();
-        while(c.moveToNext()){
+        for(int i=1;c.moveToNext();i++){
             NovelSubTitle n = new NovelSubTitle();
+            n.index = i;
             n.title = c.getString(2);
             n.date = java.sql.Timestamp.valueOf(c.getString(3));
             if(c.getString(4) != null)
