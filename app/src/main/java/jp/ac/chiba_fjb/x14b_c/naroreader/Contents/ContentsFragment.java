@@ -1,4 +1,4 @@
-package jp.ac.chiba_fjb.x14b_c.naroreader;
+package jp.ac.chiba_fjb.x14b_c.naroreader.Contents;
 
 
 import android.content.BroadcastReceiver;
@@ -13,11 +13,13 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NaroReceiver;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NovelDB;
+import jp.ac.chiba_fjb.x14b_c.naroreader.R;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelContent;
 
 
@@ -90,8 +92,10 @@ public class ContentsFragment extends Fragment implements View.OnClickListener {
         //mWebView.setWebViewClient(new WebViewClient());
         mWebView = (WebView)view.findViewById(R.id.mWebView);
         mWebView.setWebViewClient(mWebClient);
+        mWebView.addJavascriptInterface(this,"Java");
         mWebView.getSettings().setJavaScriptEnabled(true);  //JavaScript許可
         mWebView.loadUrl("file:///android_asset/Template.html");
+
 
         view.findViewById(R.id.Hnext).setOnClickListener(this);
         view.findViewById(R.id.Hback).setOnClickListener(this);
@@ -140,25 +144,25 @@ public class ContentsFragment extends Fragment implements View.OnClickListener {
         }
     }
 
+    private String mContent;
     public void update(){
         NovelDB db = new NovelDB(getContext());
         NovelContent nc = db.getNovelContent(mNCode,mIndex);
         db.close();
-
         if(nc == null){
-
-            setBody("読み込み中");
+            mContent = "読み込み中";
             load();
         }
         else {
-            setBody(nc.body);
+            mContent = nc.body;
         }
-        //Fullpage = SubtitleAdapter.pagelangth;
+        mWebView.loadUrl("javascript:update();");
     }
-    void setBody(String value){
-        String body = value.replaceAll("\"","\\\"");
-        mWebView.loadUrl("javascript:setBody(\""+ body +"\");");
+    @JavascriptInterface
+    public String getContent(){
+        return mContent;
     }
+
     void load(){
         Snackbar.make(getView(), "本文の要求", Snackbar.LENGTH_SHORT).show();
         Intent intent = new Intent(getContext(),NaroReceiver.class);
