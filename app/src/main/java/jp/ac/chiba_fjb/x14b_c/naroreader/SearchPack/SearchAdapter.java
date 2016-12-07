@@ -64,7 +64,7 @@ public class SearchAdapter extends RecyclerView.Adapter implements View.OnClickL
     @Override
     public void onClick(View view) {
         if(mListener != null) {
-            int pos = (int) view.getTag(R.layout.titles_item);
+            int pos = (int) view.getTag(R.layout.history_item);
             Map<String,String> value = mValues.get(pos);
             mListener.onItemClick(value);
         }

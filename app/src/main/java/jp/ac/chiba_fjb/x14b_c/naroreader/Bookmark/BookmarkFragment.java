@@ -144,11 +144,6 @@ public class BookmarkFragment extends Fragment implements BookmarkAdapter.OnItem
 
     @Override
     public void onItemClick(NovelBookmark bookmark) {
-        NovelDB db = new NovelDB(getContext());
-        db.addNovel(bookmark.getCode());
-        db.close();
-        //getContext().sendBroadcast(new Intent(getContext(),NaroReceiver.class).setAction(NaroReceiver.ACTION_NOVELINFO));
-
         Bundle bundle = new Bundle();
         bundle.putString("ncode",bookmark.getCode());
         ((MainActivity)getActivity()).changeFragment(SubtitleFragment.class,bundle);

@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelBookmark;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelContent;
@@ -19,7 +18,7 @@ import to.pns.lib.AppDB;
 
 public class NovelDB extends AppDB {
     public NovelDB(Context context) {
-        super(context, "novel4.db", 3);
+        super(context, "novel5.db", 3);
     }
 
     @Override
@@ -33,8 +32,8 @@ public class NovelDB extends AppDB {
         //ノベル名用テーブルの作成
         sql = "create table t_novel(n_code text primary key,n_name text)";
         db.execSQL(sql);
-
-        sql = "create table t_novel_reg(ncode text primary key)";
+        //履歴用
+        sql = "create table t_novel_history(ncode text primary key,his_date date)";
         db.execSQL(sql);
         sql = createSqlCreateClass(NovelInfo.class,"t_novel_info","ncode");
         db.execSQL(sql);
@@ -48,21 +47,11 @@ public class NovelDB extends AppDB {
     }
 
     @Override
+    public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
 
-    public void onUpgrade(SQLiteDatabase db,  int oldVersion, int newVersion) {
-        if(oldVersion < 2){
-            //サブタイトル用テーブルの作成
-            String sql;
-            sql = "create table t_novel_sub(n_code text,sub_no int,sub_title text,sub_regdate date,sub_update date,primary key(n_code,sub_no))";
-            db.execSQL(sql);
-        }
-        if(oldVersion < 3){
-            //本文用テーブルの作成
-            String sql;
-            sql = "create table t_novel_content(n_code text,sub_no int,content_update date,content_body text,content_tag text,primary key(n_code,sub_no))";
-            db.execSQL(sql);
-        }
     }
+
+
     public void addSubTitle(String ncode,List<NovelSubTitle> list){
         begin();
 
@@ -92,17 +81,18 @@ public class NovelDB extends AppDB {
         values.put("content_tag",tag);
         replace("t_novel_content",values);
     }
-    public void addNovel(String ncode){
-        String sql = String.format("replace into t_novel_reg values(UPPER('%s'))",STR(ncode));
+    public void addNovelHistory(String ncode){
+        String sql = String.format("replace into t_novel_history values('%s','%s')",
+            STR(ncode.toUpperCase()),new java.sql.Timestamp(new Date().getTime()).toString());
         exec(sql);
     }
-    public void delNovel(String ncode){
-        String sql = String.format("delete from t_novel_reg where n_code = '%s'",STR(ncode));
+    public void delNovelHistory(String ncode){
+        String sql = String.format("delete from t_novel_history where ncode = '%s'",STR(ncode));
         exec(sql);
     }
-    public List<String> getNovel(){
+    public List<String> getNovelHistory(){
         List<String> list = new ArrayList<String>();
-        String sql = String.format("select * from t_novel_reg");
+        String sql = String.format("select * from t_novel_history where his_date desc");
         Cursor c = query(sql);
         while(c.moveToNext()){
             list.add(c.getString(0));
@@ -183,10 +173,8 @@ public class NovelDB extends AppDB {
         System.out.println(sql);
 
     }
-    public List<Map<String,String>> getTitles(){
-        //メインに登録されているデータを抽出
-        String sql = "select * from t_novel_reg natural left join t_novel_info";
-        return queryMap(sql);
+    public List<NovelInfo> getHistorys(){
+        return this.queryClass("select * from t_novel_info natural join t_novel_history order by his_date desc",NovelInfo.class);
     }
 
     public List<NovelSubTitle> getSubTitles(String ncode) {

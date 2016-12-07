@@ -246,10 +246,6 @@ public class RankingFragment extends Fragment implements AdapterView.OnItemSelec
 
     @Override
     public void onItemClick(NovelRanking item) {
-        NovelDB db = new NovelDB(getContext());
-        db.addNovel(item.ncode);
-        db.close();
-
         Bundle bundle = new Bundle();
         bundle.putString("ncode",item.ncode);
         ((MainActivity)getActivity()).changeFragment(SubtitleFragment.class,bundle);

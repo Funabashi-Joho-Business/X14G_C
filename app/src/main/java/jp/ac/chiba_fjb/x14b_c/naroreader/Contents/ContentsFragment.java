@@ -113,7 +113,7 @@ public class ContentsFragment extends Fragment implements View.OnClickListener {
 
         //イベント通知受け取りの宣言
         getContext().registerReceiver(mReceiver,new IntentFilter(NaroReceiver.NOTIFI_NOVELCONTENT));
-        
+
     }
 
     @Override

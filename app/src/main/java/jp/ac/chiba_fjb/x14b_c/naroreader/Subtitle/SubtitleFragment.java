@@ -72,6 +72,7 @@ public class SubtitleFragment extends Fragment implements SubtitleAdapter.OnItem
 
         NovelDB db = new NovelDB(getContext());
         NovelInfo ni = db.getNovelInfo(mNCode);
+        db.addNovelHistory(mNCode);
         db.close();
 
         if(ni != null)
@@ -99,7 +100,6 @@ public class SubtitleFragment extends Fragment implements SubtitleAdapter.OnItem
 
 
         });
-
 
         return view;
     }

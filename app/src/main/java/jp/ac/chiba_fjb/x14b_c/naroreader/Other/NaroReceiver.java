@@ -6,7 +6,6 @@ import android.content.Intent;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelBody;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelBookmark;
@@ -34,23 +33,23 @@ public class NaroReceiver extends BroadcastReceiver {
     public static void updateNovelInfo(Context con){
         NovelDB db = new NovelDB(con);
         List<NovelBookmark> boolmarks = db.getBookmark();
-        List<Map<String, String>> titles = db.getTitles();
+        List<NovelInfo> novelInfos = db.getHistorys();
         db.close();
         ArrayList<String> list = new ArrayList<String>();
         for(NovelBookmark b : boolmarks)
             list.add(b.getCode());
-        for(Map<String, String> t : titles)
-            list.add(t.get("ncode"));
+        for(NovelInfo t : novelInfos)
+            list.add(t.ncode);
 
         con.sendBroadcast(new Intent(con,NaroReceiver.class).setAction(NaroReceiver.ACTION_NOVELINFO).putExtra("ncode",list));
     }
     public static void updateNovelInfoHistory(Context con){
         NovelDB db = new NovelDB(con);
-        List<Map<String, String>> titles = db.getTitles();
+        List<NovelInfo> novelInfos = db.getHistorys();
         db.close();
         ArrayList<String> list = new ArrayList<String>();
-        for(Map<String, String> t : titles)
-            list.add(t.get("ncode"));
+        for(NovelInfo t : novelInfos)
+            list.add(t.ncode);
 
         con.sendBroadcast(new Intent(con,NaroReceiver.class).setAction(NaroReceiver.ACTION_NOVELINFO).putExtra("ncode",list));
     }
