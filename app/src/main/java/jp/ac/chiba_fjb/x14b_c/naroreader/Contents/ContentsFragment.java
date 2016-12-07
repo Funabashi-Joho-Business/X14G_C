@@ -21,6 +21,7 @@ import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NaroReceiver;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NovelDB;
 import jp.ac.chiba_fjb.x14b_c.naroreader.R;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelContent;
+import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelInfo;
 
 
 /**
@@ -38,7 +39,7 @@ public class ContentsFragment extends Fragment implements View.OnClickListener {
                         Snackbar.make(getView(), "本文の受信完了", Snackbar.LENGTH_SHORT).show();
                     else
                         Snackbar.make(getView(), "本文の受信失敗", Snackbar.LENGTH_SHORT).show();
-                    update();
+                    update(false);
                     break;
             }
         }
@@ -57,7 +58,7 @@ public class ContentsFragment extends Fragment implements View.OnClickListener {
         @Override
         public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
-            update();
+            update(true);
         }
 
 
@@ -112,9 +113,7 @@ public class ContentsFragment extends Fragment implements View.OnClickListener {
 
         //イベント通知受け取りの宣言
         getContext().registerReceiver(mReceiver,new IntentFilter(NaroReceiver.NOTIFI_NOVELCONTENT));
-        update();
-
-
+        
     }
 
     @Override
@@ -145,13 +144,17 @@ public class ContentsFragment extends Fragment implements View.OnClickListener {
     }
 
     private String mContent;
-    public void update(){
+    public void update(boolean flag){
         NovelDB db = new NovelDB(getContext());
         NovelContent nc = db.getNovelContent(mNCode,mIndex);
         db.close();
         if(nc == null){
-            mContent = "読み込み中";
-            load();
+            if(flag) {
+                mContent = "読み込み中";
+                load();
+            }
+            else
+                mContent = "データ無し";
         }
         else {
             mContent = nc.body;
@@ -164,10 +167,19 @@ public class ContentsFragment extends Fragment implements View.OnClickListener {
     }
 
     void load(){
+        NovelDB db = new NovelDB(getContext());
+        NovelInfo novelInfo = db.getNovelInfo(mNCode);
+        db.close();
+
+        //短編確認
+        int index = 0;
+        if(novelInfo == null || novelInfo.novel_type != 2)
+            index = mIndex;
+
         Snackbar.make(getView(), "本文の要求", Snackbar.LENGTH_SHORT).show();
         Intent intent = new Intent(getContext(),NaroReceiver.class);
         intent.putExtra("ncode",mNCode);
-        intent.putExtra("index",mIndex);
+        intent.putExtra("index",index);
         //受信要求
         getContext().sendBroadcast(intent.setAction(NaroReceiver.ACTION_NOVELCONTENT));
     }

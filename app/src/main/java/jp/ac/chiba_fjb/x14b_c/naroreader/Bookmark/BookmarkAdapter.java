@@ -59,7 +59,7 @@ public class BookmarkAdapter extends RecyclerView.Adapter implements View.OnClic
         if(novelInfo != null){
             ((TextView)holder.itemView.findViewById(R.id.textWritter)).setText(novelInfo.writer);
             ((TextView)holder.itemView.findViewById(R.id.textPoint)).setText(NumberFormat.getNumberInstance().format(novelInfo.all_point)+"pt");
-            ((TextView)holder.itemView.findViewById(R.id.textCount)).setText(novelInfo.fav_novel_cnt+"話");
+            ((TextView)holder.itemView.findViewById(R.id.textCount)).setText(novelInfo.general_all_no+"話");
         }else{
             ((TextView)holder.itemView.findViewById(R.id.textWritter)).setText("");
             ((TextView)holder.itemView.findViewById(R.id.textPoint)).setText("pt");
