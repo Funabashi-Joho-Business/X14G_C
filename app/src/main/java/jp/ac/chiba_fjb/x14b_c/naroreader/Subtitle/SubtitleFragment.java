@@ -16,7 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import jp.ac.chiba_fjb.x14b_c.naroreader.ContentsFragment;
+import jp.ac.chiba_fjb.x14b_c.naroreader.Contents.ContentsPagerFragment;
 import jp.ac.chiba_fjb.x14b_c.naroreader.MainActivity;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NaroReceiver;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NovelDB;
@@ -141,6 +141,7 @@ public class SubtitleFragment extends Fragment implements SubtitleAdapter.OnItem
         Bundle bundle = new Bundle();
         bundle.putString("ncode",mNCode);
         bundle.putInt("index",value);
-        ((MainActivity)getActivity()).changeFragment(ContentsFragment.class,bundle);
+        bundle.putInt("count",mSubtitleAdapter.getItemCount());
+        ((MainActivity)getActivity()).changeFragment(ContentsPagerFragment.class,bundle);
     }
 }

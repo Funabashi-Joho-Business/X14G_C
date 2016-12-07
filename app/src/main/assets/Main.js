@@ -1,4 +1,4 @@
-function setBody(value){
+function update(){
     var output = document.querySelector("div.output");
-    output.innerHTML = value;
+    output.innerHTML = Java.getContent();
 }
