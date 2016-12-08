@@ -21,6 +21,15 @@ public class RankPointFragment extends DialogFragment implements View.OnClickLis
     public RankPointFragment() {
         // Required empty public constructor
     }
+    //インタフェイスの定義
+    public interface OnDialogButtonListener{
+        void onDialogButton();
+    }
+    //インタフェイスのインスタンス保存用
+    OnDialogButtonListener mListener;
+
+    //ボタン動作のインスタンスを受け取る
+    public void setOnDialogButtonListener(OnDialogButtonListener listener){mListener =  listener;}
 
 
     @Override
