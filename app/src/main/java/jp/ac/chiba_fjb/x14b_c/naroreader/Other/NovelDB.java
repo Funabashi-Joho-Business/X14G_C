@@ -139,7 +139,7 @@ public class NovelDB extends AppDB {
 
     public List<NovelBookmark> getBookmark(){
         String sql;
-        sql = "select * from t_bookmark natural join t_novel order by b_update desc";
+        sql = "select * from t_bookmark order by b_update desc";
         Cursor r = query(sql);
 
         List<NovelBookmark> list = new ArrayList<NovelBookmark>();
@@ -147,7 +147,7 @@ public class NovelDB extends AppDB {
             String d = r.getString(1);
             Calendar cal = Calendar.getInstance();
             cal.setTime(java.sql.Timestamp.valueOf(r.getString(1)));
-            NovelBookmark b = new NovelBookmark(r.getString(0),r.getString(3),r.getInt(2),cal);
+            NovelBookmark b = new NovelBookmark(r.getString(0),r.getInt(2),cal);
             list.add(b);
         }
         r.close();

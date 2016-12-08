@@ -365,7 +365,7 @@ public class TbnReader {
 
                         Calendar cal = Calendar.getInstance();
                         cal.setTime(sdf.parse(m.group(3)));
-                        NovelBookmark bookmark = new NovelBookmark(m.group(1),m.group(2),i+1,cal);
+                        NovelBookmark bookmark = new NovelBookmark(m.group(1),i+1,cal);
                         list.add(bookmark);
                 }
 
