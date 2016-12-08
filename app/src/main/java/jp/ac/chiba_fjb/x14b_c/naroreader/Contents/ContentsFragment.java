@@ -54,12 +54,16 @@ public class ContentsFragment extends Fragment {
     }
 
     private WebView mWebView;
-    private int Fullpage;
     private WebViewClient mWebClient = new WebViewClient(){
         @Override
         public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
             update(true);
+
+            NovelDB db = new NovelDB(getContext());
+            String size = db.getSetting("fontSize","10");
+            db.close();
+            setStyle(".body","font-size",size+"pt");
         }
 
 
@@ -134,32 +138,33 @@ public class ContentsFragment extends Fragment {
             else
                 msg = "データ無し";
 
-            setBody("",msg,"");
+            setBody(msg);
         }
         else {
-            setBody(nc.title,nc.body,nc.tag);
+            setText(".title",nc.title);
+            setText(".tag",nc.tag);
+            setBody(nc.body);
         }
 
     }
-
-    public void setBody(String title,String body,String tag){
-        mTitle = title;
+    public void setStyle(String tag,String name,String value){
+        String script = String.format("javascript:setStyle('%s','%s','%s');",tag,name,value);
+        mWebView.loadUrl(script);
+    }
+    public void setBody(String body){
         mBody = body;
-        mTag = tag;
         mWebView.loadUrl("javascript:update();");
     }
-    @JavascriptInterface
-    public String getTitle(){
-        return mTitle;
+    public void setText(String name,String body){
+        String v = body.replaceAll("'","\\'");
+        String script = String.format("javascript:setText('%s','%s');",name,v);
+        mWebView.loadUrl(script);
     }
     @JavascriptInterface
     public String getBody(){
         return mBody;
     }
-    @JavascriptInterface
-    public String getRankTag(){
-        return mTag;
-    }
+
 
     void load(){
         NovelDB db = new NovelDB(getContext());

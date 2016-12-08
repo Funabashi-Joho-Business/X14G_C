@@ -1,8 +1,12 @@
 function update(){
-    var title = document.querySelector("div.title");
     var body = document.querySelector("div.body");
-    var tag = document.querySelector("div.tag");
-    title.innerHTML = Java.getTitle();
     body.innerHTML = Java.getBody();
-    tag,innerHTML = Java.getRankTag();
+}
+function setText(tag,msg){
+    var node = document.querySelector(tag);
+    node.innerHTML = msg;
+}
+function setStyle(tag,name,value){
+    var node = document.querySelector(tag);
+    node.style[name] = value;
 }
