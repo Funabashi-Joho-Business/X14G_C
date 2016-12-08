@@ -151,7 +151,7 @@ public class BookmarkFragment extends Fragment implements BookmarkAdapter.OnItem
 
     @Override
     public void onItemLongClick(final NovelBookmark bookmark) {
-        NovelInfo novelInfo = mNovelMap.get(bookmark.getCode());
+        NovelInfo novelInfo = mNovelMap.get(bookmark.getCode().toUpperCase());
         Bundle bn = new Bundle();
         bn.putString("ncode",bookmark.getCode());
         if(novelInfo != null)
