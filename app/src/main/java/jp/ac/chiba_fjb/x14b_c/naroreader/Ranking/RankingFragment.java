@@ -19,6 +19,7 @@ import java.util.List;
 
 import jp.ac.chiba_fjb.x14b_c.naroreader.AddBookmarkFragment;
 import jp.ac.chiba_fjb.x14b_c.naroreader.MainActivity;
+import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NaroReceiver;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NovelDB;
 import jp.ac.chiba_fjb.x14b_c.naroreader.R;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Subtitle.SubtitleFragment;
@@ -278,8 +279,10 @@ public class RankingFragment extends Fragment implements AdapterView.OnItemSelec
                         String hash = TbnReader.getLoginHash(id,pass);
                         if(item.ncode != null){
                             String mNcode = item.ncode;
-                            if (TbnReader.setBookmark(hash, mNcode)) //ブックマーク処理
+                            if (TbnReader.setBookmark(hash, mNcode)) { //ブックマーク処理
                                 snack("ブックマークしました");
+                                NaroReceiver.updateBookmark(getContext());
+                            }
                             else
                                 snack("ブックマークできませんでした");
                         }

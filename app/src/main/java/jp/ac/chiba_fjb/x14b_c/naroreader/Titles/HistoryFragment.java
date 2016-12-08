@@ -146,9 +146,11 @@ public class HistoryFragment extends Fragment implements HistoryAdapter.OnItemCl
 						String hash = TbnReader.getLoginHash(id,pass);
 						if(value.ncode != null){
 							String mNcode = value.ncode;
-							if (TbnReader.setBookmark(hash, mNcode))
+							if (TbnReader.setBookmark(hash, mNcode)) {
 								//ブックマーク処理
 								snack("ブックマークしました");
+								NaroReceiver.updateBookmark(getContext());
+							}
 							else
 								snack("ブックマークできませんでした");
 						}

@@ -30,6 +30,9 @@ public class NaroReceiver extends BroadcastReceiver {
     public static final String NOTIFI_NOVELCONTENT = "NOTIFI_NOVELCONTENT"; //本文取得終了後の通知
     public NaroReceiver() {
     }
+    public static void updateBookmark(Context con){
+        con.sendBroadcast(new Intent(con,NaroReceiver.class).setAction(NaroReceiver.ACTION_BOOKMARK));
+    }
     public static void updateNovelInfo(Context con){
         NovelDB db = new NovelDB(con);
         List<NovelBookmark> boolmarks = db.getBookmark();
@@ -75,7 +78,6 @@ public class NaroReceiver extends BroadcastReceiver {
                 new Thread(){
                     @Override
                     public void run() {
-
                         NovelDB settingDB = new NovelDB(context);
                         String id = settingDB.getSetting("loginId","");
                         String pass = settingDB.getSetting("loginPass","");
@@ -94,6 +96,7 @@ public class NaroReceiver extends BroadcastReceiver {
                         List<NovelBookmark> bookmarks = TbnReader.getBookmark(hash);
                         //DBを利用
                         NovelDB db = new NovelDB(context);
+                        db.clearBookmark();
                         for(NovelBookmark b : bookmarks){
                             db.addBookmark(b.getCode(),b.getUpdate().getTime(),b.getCategory());
                         }
@@ -106,7 +109,6 @@ public class NaroReceiver extends BroadcastReceiver {
                     }
                 }.start();
                 break;
-
 
             case ACTION_NOVELINFO:
                 new Thread(){
