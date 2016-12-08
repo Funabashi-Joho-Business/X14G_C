@@ -20,6 +20,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 
+import java.util.List;
+
 import jp.ac.chiba_fjb.x14b_c.naroreader.Contents.ContentsPagerFragment;
 import jp.ac.chiba_fjb.x14b_c.naroreader.MainActivity;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NaroReceiver;
@@ -27,6 +29,7 @@ import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NovelDB;
 import jp.ac.chiba_fjb.x14b_c.naroreader.R;
 import jp.ac.chiba_fjb.x14b_c.naroreader.RankPointFragment;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelInfo;
+import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelSubTitle;
 
 
 /**
@@ -50,11 +53,21 @@ public class SubtitleFragment extends Fragment implements SubtitleAdapter.OnItem
                         update();
                     }
                     break;
+                case NaroReceiver.NOTIFI_NOVELINFO:
+                    NovelDB db = new NovelDB(getContext());
+                    NovelInfo ni = db.getNovelInfo(mNCode);
+                    db.addNovelHistory(mNCode);
+                    List<NovelSubTitle> subTitles = db.getSubTitles(mNCode);
+                    db.close();
+                    if(subTitles.size() < ni.general_all_no)
+                        load();
+                    break;
             }
         }
     };
     private SubtitleAdapter mSubtitleAdapter;
     private String mNCode;
+    private int mSort;
 
 
     public SubtitleFragment() {
@@ -66,16 +79,6 @@ public class SubtitleFragment extends Fragment implements SubtitleAdapter.OnItem
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-
-        if(getArguments() != null)
-            mNCode = getArguments().getString("ncode");
-
-        NovelDB db = new NovelDB(getContext());
-        NovelInfo ni = db.getNovelInfo(mNCode);
-        db.close();
-
-        if(ni != null)
-            getActivity().setTitle(ni.title);
 
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_subtitle, container, false);
@@ -100,6 +103,17 @@ public class SubtitleFragment extends Fragment implements SubtitleAdapter.OnItem
 
         });
 
+        if(getArguments() != null)
+            mNCode = getArguments().getString("ncode");
+
+        NovelDB db = new NovelDB(getContext());
+        NovelInfo ni = db.getNovelInfo(mNCode);
+        db.addNovelHistory(mNCode);
+        mSort = db.getSetting("SUB_SORT",0);
+        db.close();
+
+        if(ni != null)
+            getActivity().setTitle(ni.title);
 
         return view;
     }
@@ -118,8 +132,9 @@ public class SubtitleFragment extends Fragment implements SubtitleAdapter.OnItem
 
         //イベント通知受け取りの宣言
         getContext().registerReceiver(mReceiver,new IntentFilter(NaroReceiver.NOTIFI_NOVELSUB));
+        getContext().registerReceiver(mReceiver,new IntentFilter(NaroReceiver.NOTIFI_NOVELINFO));
         //ネットワークから情報の取得
-        load();
+        NaroReceiver.updateNovelInfo(getContext(),mNCode);
         //初回更新
         update();
 
@@ -133,6 +148,7 @@ public class SubtitleFragment extends Fragment implements SubtitleAdapter.OnItem
     }
 
     void update(){
+        mSubtitleAdapter.setSort(mSort);
         //アダプターにデータを設定
         NovelDB db = new NovelDB(getContext());
         mSubtitleAdapter.setValues(mNCode,db.getSubTitles(mNCode));
@@ -171,6 +187,13 @@ public class SubtitleFragment extends Fragment implements SubtitleAdapter.OnItem
 
             RankPointFragment f = new RankPointFragment();
             f.show(getFragmentManager(),"");
+        }
+        if (item.getItemId() == R.id.action_sort) {
+            mSort = (mSort+1)%2;
+            NovelDB db = new NovelDB(getContext());
+            db.setSetting("SUB_SORT",mSort);
+            db.close();
+            update();
         }
         return true;
     }

@@ -52,15 +52,17 @@ public class BookmarkAdapter extends RecyclerView.Adapter implements View.OnClic
        // ((TextView)holder.itemView.findViewById(R.id.textCode)).setText(b.getCode());
 //        ((TextView)holder.itemView.findViewById(R.id.textGenre)).setText(""+b.getCategory());
         ((TextView)holder.itemView.findViewById(R.id.textDate)).setText(dateString);
-        ((TextView)holder.itemView.findViewById(R.id.textTitle)).setText(b.getName());
+
 
         //ノベル情報の読み出し
         NovelInfo novelInfo = mNovelInfos.get(b.getCode().toUpperCase());
         if(novelInfo != null){
+            ((TextView)holder.itemView.findViewById(R.id.textTitle)).setText(novelInfo.title);
             ((TextView)holder.itemView.findViewById(R.id.textWritter)).setText(novelInfo.writer);
             ((TextView)holder.itemView.findViewById(R.id.textPoint)).setText(NumberFormat.getNumberInstance().format(novelInfo.all_point)+"pt");
-            ((TextView)holder.itemView.findViewById(R.id.textCount)).setText(novelInfo.fav_novel_cnt+"話");
+            ((TextView)holder.itemView.findViewById(R.id.textCount)).setText(novelInfo.general_all_no+"話");
         }else{
+            ((TextView)holder.itemView.findViewById(R.id.textTitle)).setText("");
             ((TextView)holder.itemView.findViewById(R.id.textWritter)).setText("");
             ((TextView)holder.itemView.findViewById(R.id.textPoint)).setText("pt");
             ((TextView)holder.itemView.findViewById(R.id.textCount)).setText("話");

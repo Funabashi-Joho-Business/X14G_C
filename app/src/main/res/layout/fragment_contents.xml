@@ -15,11 +15,12 @@
 
         <android.support.v4.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:scrollbars="vertical"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
         <WebView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="98"
             android:id="@+id/mWebView" >
 
@@ -43,13 +44,6 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1">
 
-                    <Button
-                        android:text="戻る"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/Hback"
-                        android:layout_weight="1" />
-
                     <TextView
                         android:text="ページ数（？）"
                         android:layout_width="wrap_content"
@@ -58,13 +52,6 @@
                         android:layout_weight="1"
                         android:gravity="center" />
 
-                    <Button
-                        android:text="次へ"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/Hnext"
-                        android:layout_weight="1" />
-
                 </LinearLayout>
 
                 <LinearLayout
@@ -72,27 +59,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1">
-
-                    <Button
-                        android:text="しおりをはさむ"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/shiori"
-                        android:layout_weight="1" />
-
-                    <Button
-                        android:text="ブックマークに保存"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/insertBookmark"
-                        android:layout_weight="1" />
-
-                    <Button
-                        android:text="ホーム画面へ"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/backhome"
-                        android:layout_weight="1" />
 
                 </LinearLayout>
 

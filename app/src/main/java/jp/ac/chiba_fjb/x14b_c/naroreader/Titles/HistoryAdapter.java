@@ -9,22 +9,22 @@ import android.widget.TextView;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import jp.ac.chiba_fjb.x14b_c.naroreader.R;
+import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelInfo;
 
 /**
 リサイクルビューに使用するデータ関連づけ用アダプター
  */
 
-public class TitlesAdapter extends RecyclerView.Adapter implements View.OnClickListener, View.OnLongClickListener {
+public class HistoryAdapter extends RecyclerView.Adapter implements View.OnClickListener, View.OnLongClickListener {
 
     public interface OnItemClickListener{
-        public void onItemClick(Map<String,String> value);
-        public void onItemLongClick(Map<String,String> value);
+        public void onItemClick(NovelInfo value);
+        public void onItemLongClick(NovelInfo value);
     }
     private OnItemClickListener mListener;
-    private List<Map<String,String>> mValues;
+    private List<NovelInfo> mValues;
     void setOnItemClickListener(OnItemClickListener listener){
         mListener = listener;
     }
@@ -32,7 +32,7 @@ public class TitlesAdapter extends RecyclerView.Adapter implements View.OnClickL
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         //レイアウトを設定
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.titles_item, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.history_item, parent, false);
         view.setOnClickListener(this);
         view.setOnLongClickListener(this);
 
@@ -43,15 +43,15 @@ public class TitlesAdapter extends RecyclerView.Adapter implements View.OnClickL
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         //positionから必要なデータをビューに設定する
 
-        Map<String,String> value = mValues.get(position);
+        NovelInfo value = mValues.get(position);
         String dateString = "";
-        if(value.get("general_lastup")!=null) {
-            Date date = java.sql.Timestamp.valueOf(value.get("general_lastup"));
+        if(value.general_lastup != null) {
+            Date date = value.general_lastup;
             dateString = new SimpleDateFormat("yyyy年MM月dd日").format(date);
         }
-        holder.itemView.setTag(R.layout.titles_item,position);  //現在位置の設定
-        ((TextView)holder.itemView.findViewById(R.id.textCode)).setText(value.get("ncode"));
-        ((TextView)holder.itemView.findViewById(R.id.textTitle)).setText(value.get("title")!=null?value.get("title"):"");
+        holder.itemView.setTag(R.layout.history_item,position);  //現在位置の設定
+        ((TextView)holder.itemView.findViewById(R.id.textCode)).setText(value.ncode);
+        ((TextView)holder.itemView.findViewById(R.id.textTitle)).setText(value.title!=null?value.title:"");
         ((TextView)holder.itemView.findViewById(R.id.textDate)).setText(dateString);
     }
 
@@ -64,15 +64,15 @@ public class TitlesAdapter extends RecyclerView.Adapter implements View.OnClickL
 
 
 
-    public void setValues(List<Map<String,String>> values){
+    public void setValues(List<NovelInfo> values){
         mValues = values;
     }
 
     @Override
     public void onClick(View view) {
         if(mListener != null) {
-            int pos = (int) view.getTag(R.layout.titles_item);
-            Map<String,String> value = mValues.get(pos);
+            int pos = (int) view.getTag(R.layout.history_item);
+            NovelInfo value = mValues.get(pos);
             mListener.onItemClick(value);
         }
     }
@@ -80,8 +80,8 @@ public class TitlesAdapter extends RecyclerView.Adapter implements View.OnClickL
     @Override
     public boolean onLongClick(View view) {
         if(mListener != null) {
-            int pos = (int) view.getTag(R.layout.titles_item);
-            Map<String,String> value = mValues.get(pos);
+            int pos = (int) view.getTag(R.layout.history_item);
+            NovelInfo value = mValues.get(pos);
             mListener.onItemLongClick(value);
         }
         return false;

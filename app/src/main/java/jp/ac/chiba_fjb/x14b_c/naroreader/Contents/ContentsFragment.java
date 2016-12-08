@@ -21,12 +21,13 @@ import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NaroReceiver;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NovelDB;
 import jp.ac.chiba_fjb.x14b_c.naroreader.R;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelContent;
+import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelInfo;
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ContentsFragment extends Fragment implements View.OnClickListener {
+public class ContentsFragment extends Fragment {
     //通知処理
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
@@ -34,11 +35,9 @@ public class ContentsFragment extends Fragment implements View.OnClickListener {
             switch(intent.getAction()){
                 case NaroReceiver.NOTIFI_NOVELCONTENT:
                     ((SwipeRefreshLayout)getView().findViewById(R.id.swipe_refresh)).setRefreshing(false);
-                    if(intent.getBooleanExtra("result",false))
-                        Snackbar.make(getView(), "本文の受信完了", Snackbar.LENGTH_SHORT).show();
-                    else
+                    if(!intent.getBooleanExtra("result",false))
                         Snackbar.make(getView(), "本文の受信失敗", Snackbar.LENGTH_SHORT).show();
-                    update();
+                    update(false);
                     break;
             }
         }
@@ -46,6 +45,9 @@ public class ContentsFragment extends Fragment implements View.OnClickListener {
 
     private String mNCode;
     private int mIndex;
+    private String mTitle;
+    private String mBody;
+    private String mTag;
 
     public ContentsFragment() {
         // Required empty public constructor
@@ -57,7 +59,7 @@ public class ContentsFragment extends Fragment implements View.OnClickListener {
         @Override
         public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
-            update();
+            update(true);
         }
 
 
@@ -97,12 +99,6 @@ public class ContentsFragment extends Fragment implements View.OnClickListener {
         mWebView.loadUrl("file:///android_asset/Template.html");
 
 
-        view.findViewById(R.id.Hnext).setOnClickListener(this);
-        view.findViewById(R.id.Hback).setOnClickListener(this);
-        view.findViewById(R.id.shiori).setOnClickListener(this);
-        view.findViewById(R.id.backhome).setOnClickListener(this);
-        view.findViewById(R.id.insertBookmark).setOnClickListener(this);
-
         return view;
     }
 
@@ -112,8 +108,6 @@ public class ContentsFragment extends Fragment implements View.OnClickListener {
 
         //イベント通知受け取りの宣言
         getContext().registerReceiver(mReceiver,new IntentFilter(NaroReceiver.NOTIFI_NOVELCONTENT));
-        update();
-
 
     }
 
@@ -124,50 +118,62 @@ public class ContentsFragment extends Fragment implements View.OnClickListener {
         super.onDestroy();
     }
 
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()){
-            case R.id.Hnext:
-                //次ページに飛ぶ
-                break;
-            case R.id.Hback:
-                //1ページ前に飛ぶ
-                break;
-            case R.id.shiori:
-                //しおりをはさむ
-                break;
-            case R.id.insertBookmark:
-                //ブックマークの設定or解除
-            case R.id.backhome:
-                //帰る
-                break;
-        }
-    }
+
 
     private String mContent;
-    public void update(){
+    public void update(boolean flag){
         NovelDB db = new NovelDB(getContext());
         NovelContent nc = db.getNovelContent(mNCode,mIndex);
         db.close();
+        String msg = "";
         if(nc == null){
-            mContent = "読み込み中";
-            load();
+            if(flag) {
+                msg = "読み込み中";
+                load();
+            }
+            else
+                msg = "データ無し";
+
+            setBody("",msg,"");
         }
         else {
-            mContent = nc.body;
+            setBody(nc.title,nc.body,nc.tag);
         }
+
+    }
+
+    public void setBody(String title,String body,String tag){
+        mTitle = title;
+        mBody = body;
+        mTag = tag;
         mWebView.loadUrl("javascript:update();");
     }
     @JavascriptInterface
-    public String getContent(){
-        return mContent;
+    public String getTitle(){
+        return mTitle;
+    }
+    @JavascriptInterface
+    public String getBody(){
+        return mBody;
+    }
+    @JavascriptInterface
+    public String getRankTag(){
+        return mTag;
     }
 
     void load(){
-        Snackbar.make(getView(), "本文の要求", Snackbar.LENGTH_SHORT).show();
+        NovelDB db = new NovelDB(getContext());
+        NovelInfo novelInfo = db.getNovelInfo(mNCode);
+        db.close();
+
+        //短編確認
+        int index = 0;
+        if(novelInfo == null || novelInfo.novel_type != 2)
+            index = mIndex;
+
         Intent intent = new Intent(getContext(),NaroReceiver.class);
         intent.putExtra("ncode",mNCode);
-        intent.putExtra("index",mIndex);
+        intent.putExtra("index",index);
         //受信要求
         getContext().sendBroadcast(intent.setAction(NaroReceiver.ACTION_NOVELCONTENT));
     }

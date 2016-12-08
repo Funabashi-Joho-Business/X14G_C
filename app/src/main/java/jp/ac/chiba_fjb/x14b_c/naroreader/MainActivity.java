@@ -1,7 +1,5 @@
 package jp.ac.chiba_fjb.x14b_c.naroreader;
 
-import android.animation.ObjectAnimator;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -13,16 +11,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.animation.DecelerateInterpolator;
-
-import java.util.concurrent.CompletableFuture;
 
 import jp.ac.chiba_fjb.x14b_c.naroreader.Bookmark.BookmarkFragment;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Other.FragmentLog;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Ranking.RankingFragment;
 import jp.ac.chiba_fjb.x14b_c.naroreader.SearchPack.SearchFragment;
-import jp.ac.chiba_fjb.x14b_c.naroreader.Titles.TitlesFragment;
+import jp.ac.chiba_fjb.x14b_c.naroreader.Titles.HistoryFragment;
 import to.pns.lib.LogService;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -58,7 +52,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch(item.getItemId()){
             case R.id.nav_titles:
-                changeFragment(TitlesFragment.class);
+                changeFragment(HistoryFragment.class);
                 break;
             case R.id.nav_bookmark:
                 changeFragment(BookmarkFragment.class);

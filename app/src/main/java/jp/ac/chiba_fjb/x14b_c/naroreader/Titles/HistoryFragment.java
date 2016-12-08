@@ -16,20 +16,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.util.Map;
-
 import jp.ac.chiba_fjb.x14b_c.naroreader.AddBookmarkFragment;
 import jp.ac.chiba_fjb.x14b_c.naroreader.MainActivity;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NaroReceiver;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NovelDB;
 import jp.ac.chiba_fjb.x14b_c.naroreader.R;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Subtitle.SubtitleFragment;
+import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelInfo;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.TbnReader;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class TitlesFragment extends Fragment implements TitlesAdapter.OnItemClickListener {
+public class HistoryFragment extends Fragment implements HistoryAdapter.OnItemClickListener {
 
 	//通知処理
 	private BroadcastReceiver mReceiver = new BroadcastReceiver() {
@@ -49,9 +48,9 @@ public class TitlesFragment extends Fragment implements TitlesAdapter.OnItemClic
 	};
 
 
-	private TitlesAdapter mAdapter;
+	private HistoryAdapter mAdapter;
 
-	public TitlesFragment() {
+	public HistoryFragment() {
 		// Required empty public constructor
 	}
 
@@ -62,7 +61,7 @@ public class TitlesFragment extends Fragment implements TitlesAdapter.OnItemClic
 		getActivity().setTitle("閲覧履歴");
 
 		//ブックマーク表示用アダプターの作成
-		mAdapter = new TitlesAdapter();
+		mAdapter = new HistoryAdapter();
 		mAdapter.setOnItemClickListener(this);
 
 		//データ表示用のビューを作成
@@ -92,7 +91,7 @@ public class TitlesFragment extends Fragment implements TitlesAdapter.OnItemClic
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 	                         Bundle savedInstanceState) {
 
-		return inflater.inflate(R.layout.fragment_titles, container, false);
+		return inflater.inflate(R.layout.fragment_history, container, false);
 	}
 
 	@Override
@@ -107,24 +106,24 @@ public class TitlesFragment extends Fragment implements TitlesAdapter.OnItemClic
 	void update(){
 		//アダプターにデータを設定
 		NovelDB db = new NovelDB(getContext());
-		mAdapter.setValues(db.getTitles());
+		mAdapter.setValues(db.getHistorys());
 		db.close();
 		mAdapter.notifyDataSetChanged();   //データ再表示要求
 
 		((SwipeRefreshLayout)getView().findViewById(R.id.swipe_refresh)).setRefreshing(false);
 	}
 	@Override
-	public void onItemClick(Map<String, String> value) {
+	public void onItemClick(NovelInfo value) {
 		Bundle bundle = new Bundle();
-		bundle.putString("ncode",value.get("ncode"));
+		bundle.putString("ncode",value.ncode);
 		((MainActivity)getActivity()).changeFragment(SubtitleFragment.class,bundle);
 	}
 
 	@Override
-	public void onItemLongClick(final Map<String, String> value) {
+	public void onItemLongClick(final NovelInfo value) {
 		Bundle bn = new Bundle();
-		bn.putString("ncode",value.get("ncode"));
-		bn.putString("title",value.get("title"));
+		bn.putString("ncode",value.ncode);
+		bn.putString("title",value.title);
 		bn.putInt("mode",0);
 		//フラグメントのインスタンスを作成
 		AddBookmarkFragment f = new AddBookmarkFragment();
@@ -145,8 +144,8 @@ public class TitlesFragment extends Fragment implements TitlesAdapter.OnItemClic
 
 						//ログイン処理
 						String hash = TbnReader.getLoginHash(id,pass);
-						if(value.get("ncode") != null){
-							String mNcode = value.get("ncode");
+						if(value.ncode != null){
+							String mNcode = value.ncode;
 							if (TbnReader.setBookmark(hash, mNcode))
 								//ブックマーク処理
 								snack("ブックマークしました");
