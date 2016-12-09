@@ -17,13 +17,13 @@ import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelInfo;
  * Created by x14g019 on 2016/11/08.
  */
 
-public class SearchAdapter extends RecyclerView.Adapter implements View.OnClickListener{
+public class SearchAdapter extends RecyclerView.Adapter implements View.OnClickListener,View.OnLongClickListener{
     public interface OnItemClickListener{
-        public void onItemClick(Map<String,String> value);
+        public void onItemClick(NovelInfo value);
+        public void onItemLongClick(NovelInfo item);
     }
     private NovelInfo[] mSearch;
     private OnItemClickListener mListener;
-    private List<Map<String,String>> mValues;
     void setOnItemClickListener(SearchAdapter.OnItemClickListener listener){
         mListener = listener;
     }
@@ -33,6 +33,9 @@ public class SearchAdapter extends RecyclerView.Adapter implements View.OnClickL
     public RecyclerView.ViewHolder onCreateViewHolder (ViewGroup parent,int viewType) {
         //レイアウトを設定
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.search_item, parent, false);
+        view.setOnClickListener(this);
+        view.setOnLongClickListener(this);
+
         return new RecyclerView.ViewHolder(view) {
         }; //本当はここでアイテム設定を実装するのだけれど、簡単にするためスルー
     }
@@ -65,9 +68,19 @@ public class SearchAdapter extends RecyclerView.Adapter implements View.OnClickL
     public void onClick(View view) {
         if(mListener != null) {
             int pos = (int) view.getTag(R.layout.history_item);
-            Map<String,String> value = mValues.get(pos);
+            NovelInfo value = mSearch[pos];
             mListener.onItemClick(value);
         }
+    }
+
+    @Override
+    public boolean onLongClick(View view) {
+        if(mListener != null) {
+            int pos = (int) view.getTag(R.layout.titles_item);
+            NovelInfo item = mSearch[pos];
+            mListener.onItemLongClick(item);
+        }
+        return false;
     }
 
 }

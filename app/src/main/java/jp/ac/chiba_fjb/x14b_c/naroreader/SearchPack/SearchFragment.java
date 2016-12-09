@@ -19,7 +19,7 @@ import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NaroReceiver;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NovelDB;
 import jp.ac.chiba_fjb.x14b_c.naroreader.R;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Subtitle.SubtitleFragment;
-import jp.ac.chiba_fjb.x14b_c.naroreader.Titles.TitlesFragment;
+import jp.ac.chiba_fjb.x14b_c.naroreader.Titles.HistoryFragment;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelInfo;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.TbnReader;
 
@@ -94,10 +94,10 @@ public class SearchFragment extends Fragment implements SearchAdapter.OnItemClic
     @Override
     public void onItemClick(NovelInfo value) {
         NovelDB db = new NovelDB(getContext());
-        db.addNovel(value.ncode);
+        //db.addNovel(value.ncode);
         db.close();
         getContext().sendBroadcast(new Intent(getContext(),NaroReceiver.class).setAction(NaroReceiver.ACTION_NOVELINFO));
-        ((MainActivity)getActivity()).changeFragment(TitlesFragment.class);
+        ((MainActivity)getActivity()).changeFragment(HistoryFragment.class);
     }
 
     @Override
