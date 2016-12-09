@@ -100,6 +100,7 @@ public class ContentsFragment extends Fragment {
         mWebView.setWebViewClient(mWebClient);
         mWebView.addJavascriptInterface(this,"Java");
         mWebView.getSettings().setJavaScriptEnabled(true);  //JavaScript許可
+        mWebView.getSettings().setBuiltInZoomControls(true);
         mWebView.loadUrl("file:///android_asset/Template.html");
 
 
