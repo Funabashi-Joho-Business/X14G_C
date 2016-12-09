@@ -7,26 +7,19 @@ import java.util.Calendar;
  */
 
 public class NovelBookmark {
-    public NovelBookmark(String ncode,String name,int category,Calendar update){
+    public NovelBookmark(String ncode,int category,Calendar update){
         //書籍情報を取り込む
         mNCode = ncode;         //作品コード
-        mName = name;           //作品名
         mUpdate = update;       //更新日
         mCategory = category;   //カテゴリ
     }
     String mNCode;
-    String mName;
     Calendar mUpdate;
     int mCategory;
 
     public String getCode() {
         return mNCode;
     }
-
-    public String getName() {
-        return mName;
-    }
-
     public Calendar getUpdate() {
         return mUpdate;
     }

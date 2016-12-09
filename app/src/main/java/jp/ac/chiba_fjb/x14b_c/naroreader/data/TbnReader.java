@@ -365,7 +365,7 @@ public class TbnReader {
 
                         Calendar cal = Calendar.getInstance();
                         cal.setTime(sdf.parse(m.group(3)));
-                        NovelBookmark bookmark = new NovelBookmark(m.group(1),m.group(2),i+1,cal);
+                        NovelBookmark bookmark = new NovelBookmark(m.group(1),i+1,cal);
                         list.add(bookmark);
                 }
 
@@ -506,8 +506,19 @@ public class TbnReader {
         } catch (ParseException e) {
             return null;
         }
-        if(list.size() == 0)
-            return null;
+        if(list.size() == 0) {
+            //短編処理
+            NovelInfo novelInfo = getNovelInfo(ncode);
+            if(novelInfo == null)
+                return null;
+
+            NovelSubTitle subTitle = new NovelSubTitle();
+            subTitle.title = novelInfo.title;
+            subTitle.date = novelInfo.general_firstup;
+            if(!novelInfo.general_firstup.equals(novelInfo.novelupdated_at))
+                subTitle.update = novelInfo.novelupdated_at;
+            list.add(subTitle);
+        }
         return list;
     }
 

@@ -2,7 +2,9 @@ package jp.ac.chiba_fjb.x14b_c.naroreader.SearchPack;
 
 
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -11,9 +13,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
+import jp.ac.chiba_fjb.x14b_c.naroreader.AddBookmarkFragment;
 import jp.ac.chiba_fjb.x14b_c.naroreader.MainActivity;
+import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NaroReceiver;
+import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NovelDB;
 import jp.ac.chiba_fjb.x14b_c.naroreader.R;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Subtitle.SubtitleFragment;
+import jp.ac.chiba_fjb.x14b_c.naroreader.Titles.TitlesFragment;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelInfo;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.TbnReader;
 
@@ -87,10 +93,63 @@ public class SearchFragment extends Fragment implements SearchAdapter.OnItemClic
 
     @Override
     public void onItemClick(NovelInfo value) {
-        Bundle bundle = new Bundle();
-        bundle.putString("ncode",value.ncode);
-        ((MainActivity)getActivity()).changeFragment(SubtitleFragment.class,bundle);
+        NovelDB db = new NovelDB(getContext());
+        db.addNovel(value.ncode);
+        db.close();
+        getContext().sendBroadcast(new Intent(getContext(),NaroReceiver.class).setAction(NaroReceiver.ACTION_NOVELINFO));
+        ((MainActivity)getActivity()).changeFragment(TitlesFragment.class);
     }
+
+    @Override
+    public void onItemLongClick(final NovelInfo item) {
+        Bundle bn = new Bundle();
+        bn.putString("ncode",item.ncode);
+        bn.putString("title",item.title);
+        bn.putInt("mode",0);
+        //フラグメントのインスタンスを作成
+        AddBookmarkFragment f = new AddBookmarkFragment();
+        f.setArguments(bn);
+
+        //ダイアログボタンの処理
+        f.setOnDialogButtonListener(new AddBookmarkFragment.OnDialogButtonListener() {
+            @Override
+            public void onDialogButton() {
+                new Thread(){
+                    @Override
+                    public void run() {
+
+                        NovelDB settingDB = new NovelDB(getContext());
+                        String id = settingDB.getSetting("loginId","");
+                        String pass = settingDB.getSetting("loginPass","");
+                        settingDB.close();
+
+                        //ログイン処理
+                        String hash = TbnReader.getLoginHash(id,pass);
+                        if(item.ncode != null){
+                            String mNcode = item.ncode;
+                            if (TbnReader.setBookmark(hash, mNcode)) //ブックマーク処理
+                                snack("ブックマークしました");
+                            else
+                                snack("ブックマークできませんでした");
+                        }
+                    }
+                }.start();
+            }
+        });
+
+        //フラグメントをダイアログとして表示
+        f.show(getFragmentManager(),"");
+    }
+
+    void snack (final String data) {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Snackbar.make(getView(), data, Snackbar.LENGTH_SHORT).show();
+            }
+        });
+    }
+
 
 }
 

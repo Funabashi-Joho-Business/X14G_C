@@ -7,11 +7,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import java.text.SimpleDateFormat;
 import java.util.List;
 
 import jp.ac.chiba_fjb.x14b_c.naroreader.R;
-import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelBookmark;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelSubTitle;
 
 /**
@@ -22,6 +20,10 @@ public class SubtitleAdapter extends RecyclerView.Adapter implements View.OnClic
 
 
     private String mNCode;
+    private int mSort;
+    public void setSort(int v) {
+        mSort = v;
+    }
 
     public interface OnItemClickListener{
         public void onItemClick(int value);
@@ -43,10 +45,16 @@ public class SubtitleAdapter extends RecyclerView.Adapter implements View.OnClic
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         //positionから必要なデータをビューに設定する
+        int pos;
+        if(mSort == 0)
+            pos = position;
+        else
+            pos = mValues.size()-position-1;
 
-        NovelSubTitle v = mValues.get(position);
 
-        holder.itemView.setTag(R.layout.bookmark_item,position);
+        NovelSubTitle v = mValues.get(pos);
+
+        holder.itemView.setTag(R.layout.bookmark_item,pos);
         ((TextView)holder.itemView.findViewById(R.id.textTitle)).setText(v.title);
 
         String dateString;
@@ -56,7 +64,7 @@ public class SubtitleAdapter extends RecyclerView.Adapter implements View.OnClic
             dateString = v.update.toString();
         }
         ((TextView)holder.itemView.findViewById(R.id.textDate)).setText(dateString);
-        ((TextView)holder.itemView.findViewById(R.id.textNo)).setText(""+(position+1));
+        ((TextView)holder.itemView.findViewById(R.id.textNo)).setText(""+(pos+1));
     }
 
     @Override
@@ -76,7 +84,7 @@ public class SubtitleAdapter extends RecyclerView.Adapter implements View.OnClic
     public void onClick(View view) {
         if(mListener != null) {
             int pos = (int) view.getTag(R.layout.bookmark_item);
-            mListener.onItemClick(pos+1);
+            mListener.onItemClick(mValues.get(pos).index);
         }
     }
 }

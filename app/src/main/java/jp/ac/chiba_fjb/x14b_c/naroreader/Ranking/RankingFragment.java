@@ -1,7 +1,6 @@
 package jp.ac.chiba_fjb.x14b_c.naroreader.Ranking;
 
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -23,7 +22,7 @@ import jp.ac.chiba_fjb.x14b_c.naroreader.MainActivity;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NaroReceiver;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NovelDB;
 import jp.ac.chiba_fjb.x14b_c.naroreader.R;
-import jp.ac.chiba_fjb.x14b_c.naroreader.Titles.TitlesFragment;
+import jp.ac.chiba_fjb.x14b_c.naroreader.Subtitle.SubtitleFragment;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelRanking;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.TbnReader;
 
@@ -248,11 +247,9 @@ public class RankingFragment extends Fragment implements AdapterView.OnItemSelec
 
     @Override
     public void onItemClick(NovelRanking item) {
-        NovelDB db = new NovelDB(getContext());
-        db.addNovel(item.ncode);
-        db.close();
-        getContext().sendBroadcast(new Intent(getContext(),NaroReceiver.class).setAction(NaroReceiver.ACTION_NOVELINFO));
-        ((MainActivity)getActivity()).changeFragment(TitlesFragment.class);
+        Bundle bundle = new Bundle();
+        bundle.putString("ncode",item.ncode);
+        ((MainActivity)getActivity()).changeFragment(SubtitleFragment.class,bundle);
     }
 
     @Override
@@ -282,8 +279,10 @@ public class RankingFragment extends Fragment implements AdapterView.OnItemSelec
                         String hash = TbnReader.getLoginHash(id,pass);
                         if(item.ncode != null){
                             String mNcode = item.ncode;
-                            if (TbnReader.setBookmark(hash, mNcode)) //ブックマーク処理
+                            if (TbnReader.setBookmark(hash, mNcode)) { //ブックマーク処理
                                 snack("ブックマークしました");
+                                NaroReceiver.updateBookmark(getContext());
+                            }
                             else
                                 snack("ブックマークできませんでした");
                         }

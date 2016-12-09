@@ -6,7 +6,6 @@ import android.content.Intent;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelBody;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelBookmark;
@@ -31,26 +30,34 @@ public class NaroReceiver extends BroadcastReceiver {
     public static final String NOTIFI_NOVELCONTENT = "NOTIFI_NOVELCONTENT"; //本文取得終了後の通知
     public NaroReceiver() {
     }
+    public static void updateBookmark(Context con){
+        con.sendBroadcast(new Intent(con,NaroReceiver.class).setAction(NaroReceiver.ACTION_BOOKMARK));
+    }
     public static void updateNovelInfo(Context con){
         NovelDB db = new NovelDB(con);
         List<NovelBookmark> boolmarks = db.getBookmark();
-        List<Map<String, String>> titles = db.getTitles();
+        List<NovelInfo> novelInfos = db.getHistorys();
         db.close();
         ArrayList<String> list = new ArrayList<String>();
         for(NovelBookmark b : boolmarks)
             list.add(b.getCode());
-        for(Map<String, String> t : titles)
-            list.add(t.get("ncode"));
+        for(NovelInfo t : novelInfos)
+            list.add(t.ncode);
 
+        con.sendBroadcast(new Intent(con,NaroReceiver.class).setAction(NaroReceiver.ACTION_NOVELINFO).putExtra("ncode",list));
+    }
+    public static void updateNovelInfo(Context con,String ncode){
+        ArrayList<String> list = new ArrayList<String>();
+        list.add(ncode);
         con.sendBroadcast(new Intent(con,NaroReceiver.class).setAction(NaroReceiver.ACTION_NOVELINFO).putExtra("ncode",list));
     }
     public static void updateNovelInfoHistory(Context con){
         NovelDB db = new NovelDB(con);
-        List<Map<String, String>> titles = db.getTitles();
+        List<NovelInfo> novelInfos = db.getHistorys();
         db.close();
         ArrayList<String> list = new ArrayList<String>();
-        for(Map<String, String> t : titles)
-            list.add(t.get("ncode"));
+        for(NovelInfo t : novelInfos)
+            list.add(t.ncode);
 
         con.sendBroadcast(new Intent(con,NaroReceiver.class).setAction(NaroReceiver.ACTION_NOVELINFO).putExtra("ncode",list));
     }
@@ -71,7 +78,6 @@ public class NaroReceiver extends BroadcastReceiver {
                 new Thread(){
                     @Override
                     public void run() {
-
                         NovelDB settingDB = new NovelDB(context);
                         String id = settingDB.getSetting("loginId","");
                         String pass = settingDB.getSetting("loginPass","");
@@ -90,8 +96,9 @@ public class NaroReceiver extends BroadcastReceiver {
                         List<NovelBookmark> bookmarks = TbnReader.getBookmark(hash);
                         //DBを利用
                         NovelDB db = new NovelDB(context);
+                        db.clearBookmark();
                         for(NovelBookmark b : bookmarks){
-                            db.addBookmark(b.getCode(),b.getName(),b.getUpdate().getTime(),b.getCategory());
+                            db.addBookmark(b.getCode(),b.getUpdate().getTime(),b.getCategory());
                         }
                         db.close();
                         LogService.output(context,"ブックマーク情報の読み込み完了");
@@ -102,7 +109,6 @@ public class NaroReceiver extends BroadcastReceiver {
                     }
                 }.start();
                 break;
-
 
             case ACTION_NOVELINFO:
                 new Thread(){
@@ -159,15 +165,18 @@ public class NaroReceiver extends BroadcastReceiver {
                         if(ncode == null)
                             return;
 
-                        LogService.format(context,"%s(%d)の本分の取得",ncode,index);
+                        LogService.format(context,"%s(%d)の本文の取得",ncode,index);
                         NovelBody body = TbnReader.getNovelBody(ncode,index);
                         if(body != null){
+                            if(index == 0)
+                                index = 1;
                             NovelDB db = new NovelDB(context);
                             db.addNovelContents(ncode,index,body.body,body.tag);
                             db.close();
+                            context.sendBroadcast(new Intent().setAction(NOTIFI_NOVELCONTENT).putExtra("result",true));
                         }
-                        //更新完了通知
-                        context.sendBroadcast(new Intent().setAction(NOTIFI_NOVELCONTENT).putExtra("result",true));
+                        else
+                            context.sendBroadcast(new Intent().setAction(NOTIFI_NOVELCONTENT).putExtra("result",false));
                     }
                 }.start();
                 break;
