@@ -65,9 +65,12 @@ public class RankPointFragment extends DialogFragment implements View.OnClickLis
                 //評価ポイントをつける処理
                 RadioGroup rg1 = (RadioGroup) getView().findViewById(R.id.RgBunpou);
                 RadioGroup rg2 = (RadioGroup) getView().findViewById(R.id.RgStory);
-                
-                RadioButton rb = (RadioButton) getView().findViewById(rg1.getCheckedRadioButtonId());
-                String rb1 = (String) rb.getText();
+                if(rg1.getCheckedRadioButtonId() != -1){
+                    RadioButton rb = (RadioButton) getView().findViewById(rg1.getCheckedRadioButtonId());
+                    String rb1 = (String) rb.getText();
+                    rb1.substring(0,1);
+                    int rbi = Integer.parseInt(rb1);
+                }
 
                 getDialog().cancel();
                 break;
