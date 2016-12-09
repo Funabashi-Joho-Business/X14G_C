@@ -35,7 +35,7 @@ import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelSubTitle;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class SubtitleFragment extends Fragment implements SubtitleAdapter.OnItemClickListener {
+public class SubtitleFragment extends Fragment implements SubtitleAdapter.OnItemClickListener, RankPointFragment.OnDialogButtonListener {
 
     //通知処理
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
@@ -186,6 +186,10 @@ public class SubtitleFragment extends Fragment implements SubtitleAdapter.OnItem
             imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
 
             RankPointFragment f = new RankPointFragment();
+
+            //ダイアログボタンの処理
+            f.setOnDialogButtonListener(this);
+
             f.show(getFragmentManager(),"");
         }
         if (item.getItemId() == R.id.action_sort) {
@@ -196,5 +200,10 @@ public class SubtitleFragment extends Fragment implements SubtitleAdapter.OnItem
             update();
         }
         return true;
+    }
+
+    @Override
+    public void onDialogButton() {
+
     }
 }

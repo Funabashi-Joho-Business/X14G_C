@@ -9,6 +9,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 
@@ -42,6 +44,8 @@ public class RankPointFragment extends DialogFragment implements View.OnClickLis
         Button b1 = (Button) view.findViewById(R.id.button1);
         Button b2 = (Button) view.findViewById(R.id.button2);
 
+
+
         b1.setOnClickListener(this);
         b2.setOnClickListener(this);
 
@@ -59,6 +63,12 @@ public class RankPointFragment extends DialogFragment implements View.OnClickLis
         switch (view.getId()){
             case R.id.button2:
                 //評価ポイントをつける処理
+                RadioGroup rg1 = (RadioGroup) getView().findViewById(R.id.RgBunpou);
+                RadioGroup rg2 = (RadioGroup) getView().findViewById(R.id.RgStory);
+                
+                RadioButton rb = (RadioButton) getView().findViewById(rg1.getCheckedRadioButtonId());
+                String rb1 = (String) rb.getText();
+
                 getDialog().cancel();
                 break;
             case R.id.button1:
