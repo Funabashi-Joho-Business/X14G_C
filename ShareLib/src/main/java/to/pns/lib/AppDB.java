@@ -154,6 +154,17 @@ public abstract class AppDB extends SQLite {
             return defValue;
         return Integer.valueOf(v);
     }
+    public float getSetting(String name,float defValue)
+    {
+        try {
+            String v = getSetting(name);
+            if(v == null)
+                return defValue;
+            return Integer.valueOf(v);
+        } catch (NumberFormatException e) {
+            return defValue;
+        }
+    }
     public long getSetting(String name,long defValue)
     {
         String v = getSetting(name);

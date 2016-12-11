@@ -32,7 +32,7 @@ public class SearchAdapter extends RecyclerView.Adapter implements View.OnClickL
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder (ViewGroup parent,int viewType) {
         //レイアウトを設定
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.search_item, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_search, parent, false);
         return new RecyclerView.ViewHolder(view) {
         }; //本当はここでアイテム設定を実装するのだけれど、簡単にするためスルー
     }
@@ -64,7 +64,7 @@ public class SearchAdapter extends RecyclerView.Adapter implements View.OnClickL
     @Override
     public void onClick(View view) {
         if(mListener != null) {
-            int pos = (int) view.getTag(R.layout.history_item);
+            int pos = (int) view.getTag(R.layout.item_history);
             Map<String,String> value = mValues.get(pos);
             mListener.onItemClick(value);
         }

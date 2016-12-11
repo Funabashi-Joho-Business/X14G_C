@@ -3,14 +3,20 @@ package jp.ac.chiba_fjb.x14b_c.naroreader.Contents;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 
+import jp.ac.chiba_fjb.x14b_c.naroreader.BottomFragment;
 import jp.ac.chiba_fjb.x14b_c.naroreader.R;
 
 /**
@@ -66,5 +72,32 @@ public class ContentsPagerFragment extends Fragment {
 		ViewPager viewPager = (ViewPager) getView().findViewById(R.id.pager);
 		viewPager.setAdapter(new PagerAdapter(getFragmentManager(),bundle.getString("ncode"),bundle.getInt("count")));
 		viewPager.setCurrentItem(bundle.getInt("index")-1);
+
+
+	}
+
+	@Override
+	public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+		setHasOptionsMenu(true);
+		super.onActivityCreated(savedInstanceState);
+	}
+	@Override
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		inflater.inflate(R.menu.option, menu);
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		if(item.getItemId() == R.id.menu_more) {
+			ViewPager viewPager = (ViewPager) getView().findViewById(R.id.pager);
+			int index = viewPager.getCurrentItem();
+			Fragment parent = (Fragment)viewPager.getAdapter().instantiateItem(viewPager,index);
+
+			BottomFragment f = new BottomFragment();
+			f.setMenu(R.menu.contents,parent);
+			f.show(getFragmentManager(), null);
+		}
+
+		return super.onOptionsItemSelected(item);
 	}
 }

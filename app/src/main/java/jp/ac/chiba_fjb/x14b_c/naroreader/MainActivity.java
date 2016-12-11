@@ -1,5 +1,7 @@
 package jp.ac.chiba_fjb.x14b_c.naroreader;
 
+import android.content.Intent;
+import android.content.IntentSender;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -12,11 +14,17 @@ import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.MenuItem;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import jp.ac.chiba_fjb.x14b_c.naroreader.Bookmark.BookmarkFragment;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Other.FragmentLog;
+import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NaroReceiver;
+import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NovelDB;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Ranking.RankingFragment;
 import jp.ac.chiba_fjb.x14b_c.naroreader.SearchPack.SearchFragment;
-import jp.ac.chiba_fjb.x14b_c.naroreader.Titles.HistoryFragment;
+import jp.ac.chiba_fjb.x14b_c.naroreader.History.HistoryFragment;
+import jp.ac.chiba_fjb.x14b_c.naroreader.data.TbnReader;
 import to.pns.lib.LogService;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -25,6 +33,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Intent intent = getIntent();
+        if(intent != null){
+            if(intent.getAction().equals(Intent.ACTION_SEND)){
+                String url = intent.getStringExtra(Intent.EXTRA_TEXT);
+                if(url != null){
+                    addBookmark(url);
+                }
+            }
+        }
+
         setContentView(R.layout.activity_main);
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
@@ -46,6 +65,37 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         LogService.output(getApplicationContext(),"アプリ起動");
 
+    }
+
+    private void addBookmark(String url) {
+        Pattern p = Pattern.compile("ncode.syosetu.com/(.*?)/");
+        final Matcher m = p.matcher(url);
+        if (!m.find())
+            return;
+
+        NovelDB db = new NovelDB(this);
+        final String userId = db.getSetting("loginId","");
+        final String userPass = db.getSetting("loginPass","");
+        db.close();
+
+        new Thread(){
+            @Override
+            public void run() {
+                String hash = TbnReader.getLoginHash(userId,userPass);
+                if(hash != null){
+                    TbnReader.setBookmark(hash,m.group(1).toUpperCase());
+                    NaroReceiver.updateBookmark(MainActivity.this);
+                }
+            }
+        }.start();
+
+
+
+    }
+
+    @Override
+    public void startIntentSender(IntentSender intent, Intent fillInIntent, int flagsMask, int flagsValues, int extraFlags) throws IntentSender.SendIntentException {
+        super.startIntentSender(intent, fillInIntent, flagsMask, flagsValues, extraFlags);
     }
 
     @Override
@@ -100,6 +150,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             e.printStackTrace();
         }
     }
+
 
     @Override
     public void onBackPressed() {

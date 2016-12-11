@@ -1,4 +1,4 @@
-package jp.ac.chiba_fjb.x14b_c.naroreader.Titles;
+package jp.ac.chiba_fjb.x14b_c.naroreader.History;
 
 
 import android.content.BroadcastReceiver;

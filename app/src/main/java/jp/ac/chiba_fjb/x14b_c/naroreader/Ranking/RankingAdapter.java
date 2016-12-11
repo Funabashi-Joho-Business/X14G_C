@@ -35,7 +35,7 @@ public class RankingAdapter extends RecyclerView.Adapter implements View.OnClick
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         //レイアウトを設定
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.ranking_item, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_ranking, parent, false);
         view.setOnClickListener(this);
         view.setOnLongClickListener(this);
 
@@ -48,7 +48,7 @@ public class RankingAdapter extends RecyclerView.Adapter implements View.OnClick
 
         NovelRanking b = mValues.get(position);
         String dateString = new SimpleDateFormat("yyyy年MM月dd日").format(b.update);
-        holder.itemView.setTag(R.layout.ranking_item,position);
+        holder.itemView.setTag(R.layout.item_ranking,position);
         ((TextView)holder.itemView.findViewById(R.id.textRank)).setText((position+1)+"位");
         ((TextView)holder.itemView.findViewById(R.id.textCode)).setText(b.ncode+1);
         ((TextView)holder.itemView.findViewById(R.id.textGenre)).setText(""+b.genre);
@@ -76,7 +76,7 @@ public class RankingAdapter extends RecyclerView.Adapter implements View.OnClick
     @Override
     public void onClick(View view) {
         if(mListener != null) {
-            int pos = (int) view.getTag(R.layout.ranking_item);
+            int pos = (int) view.getTag(R.layout.item_ranking);
             NovelRanking item = mValues.get(pos);
             mListener.onItemClick(item);
         }
@@ -85,7 +85,7 @@ public class RankingAdapter extends RecyclerView.Adapter implements View.OnClick
     @Override
     public boolean onLongClick(View view) {
         if(mListener != null) {
-            int pos = (int) view.getTag(R.layout.ranking_item);
+            int pos = (int) view.getTag(R.layout.item_ranking);
             NovelRanking item = mValues.get(pos);
             mListener.onItemLongClick(item);
         }

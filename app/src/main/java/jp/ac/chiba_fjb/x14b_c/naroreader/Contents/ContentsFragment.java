@@ -11,6 +11,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.JavascriptInterface;
@@ -54,16 +55,14 @@ public class ContentsFragment extends Fragment {
     }
 
     private WebView mWebView;
+    private int mFontSize;
     private WebViewClient mWebClient = new WebViewClient(){
         @Override
         public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
             update(true);
 
-            NovelDB db = new NovelDB(getContext());
-            String size = db.getSetting("fontSize","10");
-            db.close();
-            setStyle(".body","font-size",size+"pt");
+            setStyle(".body","font-size",mFontSize+"pt");
         }
 
 
@@ -72,13 +71,14 @@ public class ContentsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        NovelDB db = new NovelDB(getContext());
+        mFontSize = db.getSetting("fontSize",10);
+        db.close();
+
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_contents, container, false);
 
-        /*
-        値をサブタイトルから受け取ってURLに叩き込む
-        nコードとページ数だけ貰えればOK
-         */
         Bundle bundle = getArguments();
         mNCode = bundle.getString("ncode");
         mIndex = bundle.getInt("index");
@@ -100,11 +100,16 @@ public class ContentsFragment extends Fragment {
         mWebView.setWebViewClient(mWebClient);
         mWebView.addJavascriptInterface(this,"Java");
         mWebView.getSettings().setJavaScriptEnabled(true);  //JavaScript許可
-        mWebView.getSettings().setBuiltInZoomControls(true);
+        mWebView.getSettings().setBuiltInZoomControls(false);
         mWebView.loadUrl("file:///android_asset/Template.html");
 
 
         return view;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
     }
 
     @Override
@@ -182,5 +187,29 @@ public class ContentsFragment extends Fragment {
         intent.putExtra("index",index);
         //受信要求
         getContext().sendBroadcast(intent.setAction(NaroReceiver.ACTION_NOVELCONTENT));
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()){
+            case R.id.menu_zoom_down:
+                setFontSize(mFontSize-1);
+                break;
+            case R.id.menu_zoom_up:
+                setFontSize(mFontSize+1);
+
+                break;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+    void setFontSize(int size){
+        if(mFontSize != size){
+            mFontSize = size;
+            NovelDB db = new NovelDB(getContext());
+            db.setSetting("fontSize",size);
+            db.close();
+        }
+        setStyle(".body","font-size",mFontSize+"pt");
     }
 }

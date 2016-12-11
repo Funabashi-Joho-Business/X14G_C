@@ -5,8 +5,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -41,17 +43,18 @@ public class ConfigFragment extends Fragment  {
         toolbar.setTitle("設定");
 
 
+        CoordinatorLayout l = (CoordinatorLayout)getActivity().findViewById(R.id.coordinator);
+
+
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_config, container, false);
 
-        Spinner s1 = (Spinner) view.findViewById(R.id.spinner);
         Spinner s2 = (Spinner) view.findViewById(R.id.spinner3);
         Spinner s3 = (Spinner) view.findViewById(R.id.spinner4);
 
         NovelDB settingDB = new NovelDB(getContext());
         String id = settingDB.getSetting("loginId","");
         String pass = settingDB.getSetting("loginPass","");
-        String ss1 = settingDB.getSetting("fontSize");
         String ss2 = settingDB.getSetting("fontColor");
         String ss3 = settingDB.getSetting("BackColor");
         settingDB.close();
@@ -63,7 +66,6 @@ public class ConfigFragment extends Fragment  {
         textId.setText(id);
         textPass.setText(pass);
 
-        setSelection(s1,ss1);
         setSelection(s2,ss2);
         setSelection(s3,ss3);
 
@@ -71,10 +73,9 @@ public class ConfigFragment extends Fragment  {
     }
 
 
-    public void settingSave(String id,String pass,String fontSize,String fontColor,String backColor){
+    public void settingSave(String id,String pass,String fontColor,String backColor){
         NovelDB settingDB = new NovelDB(getContext());
 
-        settingDB.setSetting("fontSize",fontSize);
         settingDB.setSetting("fontColor",fontColor);
         settingDB.setSetting("backColor",backColor);
         settingDB.setSetting("loginId",id);
@@ -115,21 +116,19 @@ public class ConfigFragment extends Fragment  {
 
             TextView id = (TextView) getView().findViewById(R.id.LoginID);
             TextView pass = (TextView) getView().findViewById(R.id.loginPass);
-            Spinner s1 = (Spinner) getView().findViewById(R.id.spinner);
             Spinner s2 = (Spinner) getView().findViewById(R.id.spinner3);
             Spinner s3 = (Spinner) getView().findViewById(R.id.spinner4);
 
-            String t1 = (String) s1.getSelectedItem();
             String t2 = (String) s2.getSelectedItem();
             String t3 = (String) s3.getSelectedItem();
 
-            settingSave(id.getText().toString(), pass.getText().toString(), t1, t2, t3);
+            settingSave(id.getText().toString(), pass.getText().toString(), t2, t3);
             Snackbar.make(getView(), "保存完了", Snackbar.LENGTH_SHORT).show();
 
             if(!mUserId.equals(id)){
                 //違うIDが設定されたら、ブックマークをクリア
                 NovelDB db = new NovelDB(getContext());
-                db.clearBookmark();;
+                db.clearBookmark();
                 db.close();
                 //ブックマークをネットから取得
                 getContext().sendBroadcast(new Intent(getContext(),NaroReceiver.class).setAction(NaroReceiver.ACTION_BOOKMARK));

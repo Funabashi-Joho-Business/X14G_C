@@ -122,7 +122,7 @@ public class RankingFragment extends Fragment implements AdapterView.OnItemSelec
         getActivity().setTitle("ランキング");
 
         ArrayAdapter<String> arrayAdapter
-            = new ArrayAdapter<String>(getContext(), R.layout.adapter_item, RANKING_FILTER1_NAME);
+            = new ArrayAdapter<String>(getContext(), R.layout.item_adapter, RANKING_FILTER1_NAME);
         View view =  inflater.inflate(R.layout.fragment_ranking, container, false);
         mSpiner1 = (Spinner) view.findViewById(R.id.spinnerRFilter1);
         mSpiner2 = (Spinner) view.findViewById(R.id.spinnerRFilter2);
@@ -207,12 +207,12 @@ public class RankingFragment extends Fragment implements AdapterView.OnItemSelec
         int f1 = mSpiner1.getSelectedItemPosition();
 
         ArrayAdapter<String> arrayAdapter
-            = new ArrayAdapter<String>(getContext(), R.layout.adapter_item, RANKING_FILTER2_NAME[f1]);
+            = new ArrayAdapter<String>(getContext(), R.layout.item_adapter, RANKING_FILTER2_NAME[f1]);
         mSpiner2.setAdapter(arrayAdapter);
         mSpiner2.setSelection(0,false);
 
         ArrayAdapter<String> arrayAdapter2
-            = new ArrayAdapter<String>(getContext(), R.layout.adapter_item, RANKING_FILTER3_NAME[f1]);
+            = new ArrayAdapter<String>(getContext(), R.layout.item_adapter, RANKING_FILTER3_NAME[f1]);
         mSpiner3.setAdapter(arrayAdapter2);
         mSpiner3.setSelection(0,false);
 

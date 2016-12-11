@@ -37,7 +37,7 @@ public class SubtitleAdapter extends RecyclerView.Adapter implements View.OnClic
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         //レイアウトを設定
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.subtitles_item, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_subtitles, parent, false);
         view.setOnClickListener(this);
         return new RecyclerView.ViewHolder(view){}; //本当はここでアイテム設定を実装するのだけれど、簡単にするためスルー
     }
@@ -54,7 +54,7 @@ public class SubtitleAdapter extends RecyclerView.Adapter implements View.OnClic
 
         NovelSubTitle v = mValues.get(pos);
 
-        holder.itemView.setTag(R.layout.bookmark_item,pos);
+        holder.itemView.setTag(R.layout.item_bookmark,pos);
         ((TextView)holder.itemView.findViewById(R.id.textTitle)).setText(v.title);
 
         String dateString;
@@ -83,7 +83,7 @@ public class SubtitleAdapter extends RecyclerView.Adapter implements View.OnClic
     @Override
     public void onClick(View view) {
         if(mListener != null) {
-            int pos = (int) view.getTag(R.layout.bookmark_item);
+            int pos = (int) view.getTag(R.layout.item_bookmark);
             mListener.onItemClick(mValues.get(pos).index);
         }
     }
