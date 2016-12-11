@@ -73,11 +73,11 @@ public class BottomFragment extends BottomSheetDialogFragment implements View.On
             button.setCompoundDrawablesWithIntrinsicBounds(null,item.getIcon(),null,null);
             button.setText(item.getTitle());
             button.setLayoutParams(lp);
-            button.measure(-1,-1);
             button.setId(i+1);
-            button.setTextSize(12.0f);
+            button.setTextSize(10.0f);
             button.setTag(item);
             button.setOnClickListener(this);
+            button.measure(-1,-1);
             if(i >0){
                 if(width+button.getMeasuredWidth() < p.x){
                     lp.addRule(RelativeLayout.ALIGN_TOP, i);

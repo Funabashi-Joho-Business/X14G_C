@@ -5,11 +5,14 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 import jp.ac.chiba_fjb.x14b_c.naroreader.R;
+import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelInfo;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelSubTitle;
 
 /**
@@ -21,6 +24,9 @@ public class SubtitleAdapter extends RecyclerView.Adapter implements View.OnClic
 
     private String mNCode;
     private int mSort;
+    private NovelInfo mNovelInfo;
+    private View mInfoView;
+
     public void setSort(int v) {
         mSort = v;
     }
@@ -44,38 +50,67 @@ public class SubtitleAdapter extends RecyclerView.Adapter implements View.OnClic
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        //positionから必要なデータをビューに設定する
-        int pos;
-        if(mSort == 0)
-            pos = position;
-        else
-            pos = mValues.size()-position-1;
+        ViewGroup viewInfo = (ViewGroup) holder.itemView.findViewById(R.id.layoutInfo);
+        ViewGroup viewSub =  (ViewGroup) holder.itemView.findViewById(R.id.layoutSubtitle);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd(E)");
 
+        if(position == 0) {
+            viewInfo.setVisibility(View.VISIBLE);
+            viewSub.setVisibility(View.GONE);
 
-        NovelSubTitle v = mValues.get(pos);
+            if(mInfoView == null)
+                mInfoView = LayoutInflater.from(holder.itemView.getContext()).inflate(R.layout.item_info, null, false);
+            if(mInfoView.getParent() != null)
+                ((ViewGroup)mInfoView.getParent()).removeView(mInfoView);
+            viewInfo.addView(mInfoView);
 
-        holder.itemView.setTag(R.layout.item_bookmark,pos);
-        ((TextView)holder.itemView.findViewById(R.id.textTitle)).setText(v.title);
-
-        String dateString;
-        if (v.update == null){
-            dateString = v.date.toString();
-        } else {
-            dateString = v.update.toString();
+            ((TextView)mInfoView.findViewById(R.id.textTitle)).setText(mNovelInfo.title);
+            ((TextView)mInfoView.findViewById(R.id.textInfo)).setText(mNovelInfo.story);
+            ((TextView)mInfoView.findViewById(R.id.textDate)).setText(sdf.format(mNovelInfo.updated_at));
+            ((TextView)mInfoView.findViewById(R.id.textWritter)).setText(mNovelInfo.writer);
+            ((TextView)mInfoView.findViewById(R.id.textPoint)).setText(mNovelInfo.global_point+"pt");
         }
-        ((TextView)holder.itemView.findViewById(R.id.textDate)).setText(dateString);
-        ((TextView)holder.itemView.findViewById(R.id.textNo)).setText(""+(pos+1));
+        else{
+            if(viewInfo.getChildCount() > 0)
+                viewInfo.removeAllViews();
+
+            //positionから必要なデータをビューに設定する
+            int pos;
+            if(mSort == 0)
+                pos = position;
+            else
+                pos = mValues.size()-position+1;
+
+
+            NovelSubTitle v = mValues.get(pos-1);
+
+            holder.itemView.findViewById(R.id.layoutSubtitle).setVisibility(View.VISIBLE);
+            holder.itemView.findViewById(R.id.layoutInfo).setVisibility(View.GONE);
+
+            holder.itemView.setTag(R.layout.item_bookmark,pos-1);
+            ((TextView)holder.itemView.findViewById(R.id.textNo)).setText(""+pos);
+            ((TextView)holder.itemView.findViewById(R.id.textTitle)).setText(v.title);
+
+
+            String dateString = sdf.format(v.date);
+            if (v.update != null)
+                dateString += "  改稿"+sdf.format(v.update);
+            ((TextView)holder.itemView.findViewById(R.id.textDate)).setText(dateString);
+        }
+
+
     }
 
     @Override
     public int getItemCount() {
         if(mValues == null)
             return 0;
-        return mValues.size();
+        return mValues.size()+1;
     }
 
-    public void setValues(String ncode, List<NovelSubTitle> values) {
+    public void setValues(String ncode, NovelInfo info, List<NovelSubTitle> values) {
         mNCode = ncode;
+        mNovelInfo = info;
         mValues = values;
     }
 

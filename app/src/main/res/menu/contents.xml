@@ -1,20 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <item android:title="Zoom\nDown"
-        android:icon="@android:drawable/ic_menu_zoom"
-        android:id="@+id/menu_zoom_down"/>
 
-    <item android:title="Zoom\nUp"
+    <item android:title="ズーム\nアップ"
         android:icon="@android:drawable/ic_menu_zoom"
         android:id="@+id/menu_zoom_up"/>
 
-    <item android:title="Bookmark\nAdd"
+    <item android:title="ズーム\nダウン"
+        android:icon="@android:drawable/ic_menu_zoom"
+        android:id="@+id/menu_zoom_down"/>
+
+    <item android:title="ブック\nマーク"
         android:icon="@android:drawable/ic_menu_add"
         android:id="@+id/menu_bookmark_add"/>
 
-    <item android:title="Bookmark\nDel"
+    <item android:title="ブック\nマーク解除"
         android:icon="@android:drawable/ic_menu_delete"
         android:id="@+id/menu_bookmark_del"/>
+
+    <item android:title="感想\n"
+        android:icon="@android:drawable/sym_action_chat"
+        android:id="@+id/menu_bbs"/>
 
 </menu>

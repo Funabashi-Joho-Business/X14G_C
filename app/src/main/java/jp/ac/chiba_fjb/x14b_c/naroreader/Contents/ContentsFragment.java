@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -23,6 +24,7 @@ import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NovelDB;
 import jp.ac.chiba_fjb.x14b_c.naroreader.R;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelContent;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelInfo;
+import jp.ac.chiba_fjb.x14b_c.naroreader.data.TbnReader;
 
 
 /**
@@ -197,7 +199,11 @@ public class ContentsFragment extends Fragment {
                 break;
             case R.id.menu_zoom_up:
                 setFontSize(mFontSize+1);
-
+                break;
+            case R.id.menu_bbs:
+                Uri uri = Uri.parse("http://novelcom.syosetu.com/impression/list/ncode/"+ TbnReader.convertNcode(mNCode)+"/");
+                Intent i = new Intent(Intent.ACTION_VIEW,uri);
+                startActivity(i);
                 break;
         }
 
