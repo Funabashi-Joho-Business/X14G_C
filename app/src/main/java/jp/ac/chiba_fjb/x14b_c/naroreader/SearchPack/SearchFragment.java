@@ -2,7 +2,6 @@ package jp.ac.chiba_fjb.x14b_c.naroreader.SearchPack;
 
 
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -13,14 +12,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
+import java.util.Arrays;
+import java.util.List;
+
 import jp.ac.chiba_fjb.x14b_c.naroreader.AddBookmarkFragment;
 import jp.ac.chiba_fjb.x14b_c.naroreader.MainActivity;
-import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NaroReceiver;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NovelDB;
 import jp.ac.chiba_fjb.x14b_c.naroreader.R;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Subtitle.SubtitleFragment;
-import jp.ac.chiba_fjb.x14b_c.naroreader.Titles.HistoryFragment;
-import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelInfo;
+import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelSearch;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.TbnReader;
 
 
@@ -38,7 +38,7 @@ public class SearchFragment extends Fragment implements SearchAdapter.OnItemClic
 
     private SearchAdapter mSearch;
     private EditText mwordsearch;
-    public NovelInfo[] flashdata;
+    public List<NovelSearch> flashdata;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -69,8 +69,6 @@ public class SearchFragment extends Fragment implements SearchAdapter.OnItemClic
         new Thread() {
             @Override
             public void run() {
-
-
                 String word = mwordsearch.getText().toString();
                 flashdata = TbnReader.getKeyword(word);
                 mSearch.getItemCount();
@@ -92,16 +90,14 @@ public class SearchFragment extends Fragment implements SearchAdapter.OnItemClic
     }
 
     @Override
-    public void onItemClick(NovelInfo value) {
-        NovelDB db = new NovelDB(getContext());
-        //db.addNovel(value.ncode);
-        db.close();
-        getContext().sendBroadcast(new Intent(getContext(),NaroReceiver.class).setAction(NaroReceiver.ACTION_NOVELINFO));
-        ((MainActivity)getActivity()).changeFragment(HistoryFragment.class);
+    public void onItemClick(NovelSearch value) {
+        Bundle bundle = new Bundle();
+        bundle.putString("ncode",value.ncode);
+        ((MainActivity)getActivity()).changeFragment(SubtitleFragment.class,bundle);
     }
 
     @Override
-    public void onItemLongClick(final NovelInfo item) {
+    public void onItemLongClick(final NovelSearch item) {
         Bundle bn = new Bundle();
         bn.putString("ncode",item.ncode);
         bn.putString("title",item.title);

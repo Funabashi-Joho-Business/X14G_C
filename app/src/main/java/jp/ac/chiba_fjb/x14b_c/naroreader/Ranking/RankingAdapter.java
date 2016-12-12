@@ -26,9 +26,8 @@ public class RankingAdapter extends RecyclerView.Adapter implements View.OnClick
     void setOnItemClickListener(OnItemClickListener listener){
         mListener = listener;
     }
-    private OnItemClickListener mListener;
-;
 
+    private OnItemClickListener mListener;
     private List<NovelRanking> mValues;
 
 
