@@ -26,7 +26,6 @@ import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelContent;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelInfo;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.TbnReader;
 
-
 /**
  * A simple {@link Fragment} subclass.
  */

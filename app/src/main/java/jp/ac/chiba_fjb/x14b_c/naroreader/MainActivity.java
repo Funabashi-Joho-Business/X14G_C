@@ -1,5 +1,6 @@
 package jp.ac.chiba_fjb.x14b_c.naroreader;
 
+
 import android.content.Intent;
 import android.content.IntentSender;
 import android.os.Bundle;
