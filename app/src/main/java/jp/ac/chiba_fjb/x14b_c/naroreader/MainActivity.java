@@ -31,10 +31,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private Bundle mBundle;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        Intent intent = getIntent();
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
         if(intent != null){
             if(intent.getAction().equals(Intent.ACTION_SEND)){
                 String url = intent.getStringExtra(Intent.EXTRA_TEXT);
@@ -43,6 +41,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 }
             }
         }
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+
 
         setContentView(R.layout.activity_main);
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
