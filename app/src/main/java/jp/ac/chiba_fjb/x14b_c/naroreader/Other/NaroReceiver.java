@@ -170,16 +170,18 @@ public class NaroReceiver extends BroadcastReceiver {
 
                         LogService.format(context,"%s(%d)の本文の取得",ncode,index);
                         NovelBody body = TbnReader.getNovelBody(ncode,index);
+                        Intent intent = new Intent().setAction(NOTIFI_NOVELCONTENT).putExtra("index",index);
                         if(body != null){
                             if(index == 0)
                                 index = 1;
                             NovelDB db = new NovelDB(context);
                             db.addNovelContents(ncode,index,body.body,body.tag);
                             db.close();
-                            context.sendBroadcast(new Intent().setAction(NOTIFI_NOVELCONTENT).putExtra("result",true));
+
+                            context.sendBroadcast(intent.putExtra("result",true));
                         }
                         else
-                            context.sendBroadcast(new Intent().setAction(NOTIFI_NOVELCONTENT).putExtra("result",false));
+                            context.sendBroadcast(intent.putExtra("result",false));
                     }
                 }.start();
                 break;
