@@ -188,11 +188,14 @@ public class SubtitleFragment extends Fragment implements SubtitleAdapter.OnItem
             InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
 
+
+            Bundle bn = new Bundle();
+            bn.putString("ncode",mNCode);
             RankPointFragment f = new RankPointFragment();
 
             //ダイアログボタンの処理
             f.setOnDialogButtonListener(this);
-
+            f.setArguments(bn);
             f.show(getFragmentManager(),"");
         }
         if (item.getItemId() == R.id.action_sort) {
@@ -206,7 +209,20 @@ public class SubtitleFragment extends Fragment implements SubtitleAdapter.OnItem
     }
 
     @Override
-    public void onDialogButton() {
+    public void onDialogButton(boolean end) {
+        if(end == true){
+            snack("評価しました");
+        }else{
+            snack("評価できませんでした。");
+        }
+    }
 
+    void snack (final String data){
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Snackbar.make(getView(), data, Snackbar.LENGTH_SHORT).show();
+            }
+        });
     }
 }
