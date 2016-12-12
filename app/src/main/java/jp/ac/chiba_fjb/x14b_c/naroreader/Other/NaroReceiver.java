@@ -125,9 +125,12 @@ public class NaroReceiver extends BroadcastReceiver {
                             db.addNovelInfo(info);
                             db.close();
                             LogService.output(context, "ノベル情報の取得完了");
-                        }
-                        //更新完了通知
-                        context.sendBroadcast(new Intent().setAction(NOTIFI_NOVELINFO).putExtra("result",true));
+                            //更新完了通知
+                            context.sendBroadcast(new Intent().setAction(NOTIFI_NOVELINFO).putExtra("result",true));
+                        }else
+                            //更新完了通知
+                            context.sendBroadcast(new Intent().setAction(NOTIFI_NOVELINFO).putExtra("result",false));
+
                     }
                 }.start();
                 break;

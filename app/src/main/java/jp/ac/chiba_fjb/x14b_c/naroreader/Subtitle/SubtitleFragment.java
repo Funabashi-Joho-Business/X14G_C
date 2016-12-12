@@ -54,13 +54,16 @@ public class SubtitleFragment extends Fragment implements SubtitleAdapter.OnItem
                     }
                     break;
                 case NaroReceiver.NOTIFI_NOVELINFO:
-                    NovelDB db = new NovelDB(getContext());
-                    NovelInfo ni = db.getNovelInfo(mNCode);
-                    db.addNovelHistory(mNCode);
-                    List<NovelSubTitle> subTitles = db.getSubTitles(mNCode);
-                    db.close();
-                    if(subTitles.size() < ni.general_all_no)
-                        load();
+                    if(intent.getBooleanExtra("result",false)){
+                        NovelDB db = new NovelDB(getContext());
+                        NovelInfo ni = db.getNovelInfo(mNCode);
+                        db.addNovelHistory(mNCode);
+                        List<NovelSubTitle> subTitles = db.getSubTitles(mNCode);
+                        db.close();
+                        if(subTitles.size() < ni.general_all_no)
+                            load();
+                    }
+
                     break;
             }
         }
@@ -153,10 +156,16 @@ public class SubtitleFragment extends Fragment implements SubtitleAdapter.OnItem
         //アダプターにデータを設定
         NovelDB db = new NovelDB(getContext());
         NovelInfo novelInfo = db.getNovelInfo(mNCode);
-        mSubtitleAdapter.setValues(mNCode,novelInfo,db.getSubTitles(mNCode));
-        db.close();
-        mRecycleView.scrollToPosition(1);
-        mSubtitleAdapter.notifyDataSetChanged();   //データ再表示要求
+        if(novelInfo != null) {
+            mSubtitleAdapter.setValues(mNCode, novelInfo, db.getSubTitles(mNCode));
+            db.close();
+            mRecycleView.scrollToPosition(1);
+            mSubtitleAdapter.notifyDataSetChanged();   //データ再表示要求
+        }else{
+            //ノベル情報を要求
+            NaroReceiver.updateNovelInfo(getContext(),mNCode);
+        }
+
     }
 
 
