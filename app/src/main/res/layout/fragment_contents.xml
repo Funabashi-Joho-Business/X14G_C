@@ -1,73 +1,33 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:tools="http://schemas.android.com/tools"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent"
-             xmlns:app="http://schemas.android.com/apk/res-auto"
-             tools:context=".Contents.ContentsFragment">
+<android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/swipe_refresh"
+    tools:context=".Contents.ContentsFragment">
 
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/swipe_refresh"
+
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">>
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
+
 
         <android.support.v4.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:scrollbars="vertical"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
-        <WebView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="98"
-            android:id="@+id/mWebView" >
+            android:layout_height="match_parent">
 
-        </WebView>
-        </android.support.v4.widget.NestedScrollView>
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:alpha="0.7">
-
-            <LinearLayout
-                android:orientation="vertical"
+            <WebView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true">
+                android:id="@+id/mWebView" >
+
+            </WebView>
+
+        </android.support.v4.widget.NestedScrollView>
+
+    </RelativeLayout>
 
 
-                <LinearLayout
-                    android:orientation="horizontal"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1">
-
-                    <TextView
-                        android:text="ページ数（？）"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/textView6"
-                        android:layout_weight="1"
-                        android:gravity="center" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:orientation="horizontal"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1">
-
-                </LinearLayout>
-
-            </LinearLayout>
-        </RelativeLayout>
-
-    </FrameLayout>
+</android.support.v4.widget.SwipeRefreshLayout>
 
 
-    </android.support.v4.widget.SwipeRefreshLayout>
-
-</FrameLayout>

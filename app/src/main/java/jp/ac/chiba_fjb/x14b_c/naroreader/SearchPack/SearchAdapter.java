@@ -31,7 +31,7 @@ public class SearchAdapter extends RecyclerView.Adapter implements View.OnClickL
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         //レイアウトを設定
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.search_item, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_search, parent, false);
         view.setOnClickListener(this);
         view.setOnLongClickListener(this);
 
@@ -44,7 +44,7 @@ public class SearchAdapter extends RecyclerView.Adapter implements View.OnClickL
 
         NovelSearch s = mSearch.get(position+1);        //position＝番地
         String dateString = new SimpleDateFormat("yyyy年MM月dd日(E)").format(s.novelupdated_at);
-        holder.itemView.setTag(R.layout.search_item,position);
+        holder.itemView.setTag(R.layout.item_search,position);
         ((TextView) holder.itemView.findViewById(R.id.textView)).setText(s.ncode);
         ((TextView) holder.itemView.findViewById(R.id.textView2)).setText(""+s.genre);
         ((TextView) holder.itemView.findViewById(R.id.textView3)).setText(dateString);
@@ -65,8 +65,8 @@ public class SearchAdapter extends RecyclerView.Adapter implements View.OnClickL
     @Override
     public void onClick(View view) {
         if(mListener != null) {
-            int pos = (int) view.getTag(R.layout.search_item);
-            NovelSearch value = mSearch.get(pos);
+            int pos = (int) view.getTag(R.layout.item_history);
+            NovelSearch value = mSearch.get(pos);   //エラーだったらNovelSearchをMap<String,String>にすること
             mListener.onItemClick(value);
         }
     }
@@ -74,7 +74,7 @@ public class SearchAdapter extends RecyclerView.Adapter implements View.OnClickL
     @Override
     public boolean onLongClick(View view) {
         if(mListener != null) {
-            int pos = (int) view.getTag(R.layout.search_item);
+            int pos = (int) view.getTag(R.layout.item_search);
             NovelSearch item = mSearch.get(pos);
             mListener.onItemLongClick(item);
         }

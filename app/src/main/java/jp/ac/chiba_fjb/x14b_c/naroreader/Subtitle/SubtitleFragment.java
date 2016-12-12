@@ -68,6 +68,7 @@ public class SubtitleFragment extends Fragment implements SubtitleAdapter.OnItem
     private SubtitleAdapter mSubtitleAdapter;
     private String mNCode;
     private int mSort;
+    private RecyclerView mRecycleView;
 
 
     public SubtitleFragment() {
@@ -88,9 +89,9 @@ public class SubtitleFragment extends Fragment implements SubtitleAdapter.OnItem
         mSubtitleAdapter.setOnItemClickListener(this);
 
         //データ表示用のビューを作成
-        RecyclerView rv = (RecyclerView) view.findViewById(R.id.RecyclerView);
-        rv.setLayoutManager(new LinearLayoutManager(getContext()));     //アイテムを縦に並べる
-        rv.setAdapter(mSubtitleAdapter);                              //アダプターを設定
+        mRecycleView = (RecyclerView) view.findViewById(R.id.RecyclerView);
+        mRecycleView.setLayoutManager(new LinearLayoutManager(getContext()));     //アイテムを縦に並べる
+        mRecycleView.setAdapter(mSubtitleAdapter);                              //アダプターを設定
 
 
         //ボタンが押され場合の処理
@@ -151,8 +152,10 @@ public class SubtitleFragment extends Fragment implements SubtitleAdapter.OnItem
         mSubtitleAdapter.setSort(mSort);
         //アダプターにデータを設定
         NovelDB db = new NovelDB(getContext());
-        mSubtitleAdapter.setValues(mNCode,db.getSubTitles(mNCode));
+        NovelInfo novelInfo = db.getNovelInfo(mNCode);
+        mSubtitleAdapter.setValues(mNCode,novelInfo,db.getSubTitles(mNCode));
         db.close();
+        mRecycleView.scrollToPosition(1);
         mSubtitleAdapter.notifyDataSetChanged();   //データ再表示要求
     }
 
@@ -162,7 +165,8 @@ public class SubtitleFragment extends Fragment implements SubtitleAdapter.OnItem
         Bundle bundle = new Bundle();
         bundle.putString("ncode",mNCode);
         bundle.putInt("index",value);
-        bundle.putInt("count",mSubtitleAdapter.getItemCount());
+
+        bundle.putInt("count",mSubtitleAdapter.getItemCount()-1);
         ((MainActivity)getActivity()).changeFragment(ContentsPagerFragment.class,bundle);
     }
 
@@ -185,11 +189,15 @@ public class SubtitleFragment extends Fragment implements SubtitleAdapter.OnItem
             InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
 
+
+
+            Bundle bn = new Bundle();
+            bn.putString("ncode",mNCode);
             RankPointFragment f = new RankPointFragment();
 
             //ダイアログボタンの処理
             f.setOnDialogButtonListener(this);
-
+            f.setArguments(bn);
             f.show(getFragmentManager(),"");
         }
         if (item.getItemId() == R.id.action_sort) {
@@ -203,7 +211,20 @@ public class SubtitleFragment extends Fragment implements SubtitleAdapter.OnItem
     }
 
     @Override
-    public void onDialogButton() {
+    public void onDialogButton(boolean end) {
+        if(end == true){
+            snack("評価しました");
+        }else{
+            snack("評価できませんでした。");
+        }
+    }
 
+    void snack (final String data){
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Snackbar.make(getView(), data, Snackbar.LENGTH_SHORT).show();
+            }
+        });
     }
 }

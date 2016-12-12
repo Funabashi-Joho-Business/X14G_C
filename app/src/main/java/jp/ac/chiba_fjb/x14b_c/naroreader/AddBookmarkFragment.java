@@ -3,7 +3,6 @@ package jp.ac.chiba_fjb.x14b_c.naroreader;
 
 import android.app.Dialog;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -11,10 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-
-import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NovelDB;
-import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelInfo;
-import jp.ac.chiba_fjb.x14b_c.naroreader.data.TbnReader;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -41,6 +36,7 @@ public class AddBookmarkFragment extends DialogFragment implements View.OnClickL
         View view = inflater.inflate(R.layout.fragment_add_bookmark, container, false);
 
         TextView tv = (TextView) view.findViewById(R.id.textTitle);
+        TextView tv2 = (TextView) view.findViewById(R.id.textMode);
         Button b1 = (Button) view.findViewById(R.id.addYes);
         Button b2 = (Button) view.findViewById(R.id.addNo);
 
@@ -50,6 +46,10 @@ public class AddBookmarkFragment extends DialogFragment implements View.OnClickL
             String mTitle = bn.getString("title");
 
             tv.setText(mTitle);
+            if(bn.getInt("mode") == 0)
+                tv2.setText("ブックマークしますか？");
+            else
+                tv2.setText("ブックマーク解除しますか？");
         }
 
         b1.setOnClickListener(this);

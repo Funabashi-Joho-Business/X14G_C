@@ -15,4 +15,8 @@
 
     <style name="a" parent="Theme.AppCompat.Light.NoActionBar"/>
 
+    <style name="TransparentDialogTheme" parent="@android:style/Theme.Dialog">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
 </resources>

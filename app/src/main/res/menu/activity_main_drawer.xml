@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <group android:checkableBehavior="single">
 
         <item
             android:id="@+id/nav_bookmark"
@@ -11,7 +10,7 @@
         <item
             android:id="@+id/nav_ranking"
             android:icon="@drawable/ic_rank_black"
-            android:title="ランキング" />
+            android:title="ランキング"/>
 
         <item
             android:id="@+id/nav_search"
@@ -32,6 +31,6 @@
             android:id="@+id/nav_config"
             android:icon="@drawable/ic_settings_black"
             android:title="設定" />
-    </group>
+
 
 </menu>

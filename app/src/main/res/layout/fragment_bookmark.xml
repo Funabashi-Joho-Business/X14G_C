@@ -1,19 +1,17 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<android.support.v4.widget.SwipeRefreshLayout app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    android:id="@+id/swipe_refresh"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:context="jp.ac.chiba_fjb.x14b_c.naroreader.Bookmark.BookmarkFragment">
 
-
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/swipe_refresh"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
         <android.support.v7.widget.RecyclerView
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
             android:id="@+id/RecyclerView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:clipToPadding="false"
-            tools:listitem="@layout/bookmark_item" />
-    </android.support.v4.widget.SwipeRefreshLayout>
-</FrameLayout>
+            tools:listitem="@layout/item_bookmark" />
+</android.support.v4.widget.SwipeRefreshLayout>
+

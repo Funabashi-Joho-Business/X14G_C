@@ -35,7 +35,7 @@ public class BookmarkAdapter extends RecyclerView.Adapter implements View.OnClic
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         //レイアウトを設定
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.bookmark_item, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_bookmark, parent, false);
         view.setOnClickListener(this);
         view.setOnLongClickListener(this);
 
@@ -48,7 +48,7 @@ public class BookmarkAdapter extends RecyclerView.Adapter implements View.OnClic
 
         NovelBookmark b = mBookmarks.get(position);
         String dateString = new SimpleDateFormat("yyyy年MM月dd日(E)").format(b.getUpdate().getTime());
-        holder.itemView.setTag(R.layout.bookmark_item,position);
+        holder.itemView.setTag(R.layout.item_bookmark,position);
        // ((TextView)holder.itemView.findViewById(R.id.textCode)).setText(b.getCode());
 //        ((TextView)holder.itemView.findViewById(R.id.textGenre)).setText(""+b.getCategory());
         ((TextView)holder.itemView.findViewById(R.id.textDate)).setText(dateString);
@@ -87,7 +87,7 @@ public class BookmarkAdapter extends RecyclerView.Adapter implements View.OnClic
     @Override
     public void onClick(View view) {
         if(mListener != null) {
-            int pos = (int) view.getTag(R.layout.bookmark_item);
+            int pos = (int) view.getTag(R.layout.item_bookmark);
             NovelBookmark bookmark = mBookmarks.get(pos);
             mListener.onItemClick(bookmark);
         }
@@ -96,7 +96,7 @@ public class BookmarkAdapter extends RecyclerView.Adapter implements View.OnClic
     @Override
     public boolean onLongClick(View view) {
         if(mListener != null) {
-            int pos = (int) view.getTag(R.layout.bookmark_item);
+            int pos = (int) view.getTag(R.layout.item_bookmark);
             NovelBookmark bookmark = mBookmarks.get(pos);
             mListener.onItemLongClick(bookmark);
         }

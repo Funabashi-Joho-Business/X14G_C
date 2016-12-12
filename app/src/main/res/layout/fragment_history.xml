@@ -2,7 +2,7 @@
              xmlns:tools="http://schemas.android.com/tools"
              android:layout_width="match_parent"
              android:layout_height="match_parent"
-             tools:context="jp.ac.chiba_fjb.x14b_c.naroreader.Titles.HistoryFragment">
+             tools:context="jp.ac.chiba_fjb.x14b_c.naroreader.History.HistoryFragment">
 
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/swipe_refresh"
@@ -13,7 +13,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:clipToPadding="false"
-            tools:listitem="@layout/history_item" />
+            tools:listitem="@layout/item_history" />
     </android.support.v4.widget.SwipeRefreshLayout>
 
 </FrameLayout>
