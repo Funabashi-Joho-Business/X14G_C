@@ -174,7 +174,6 @@ public class SubtitleFragment extends Fragment implements SubtitleAdapter.OnItem
         Bundle bundle = new Bundle();
         bundle.putString("ncode",mNCode);
         bundle.putInt("index",value);
-
         bundle.putInt("count",mSubtitleAdapter.getItemCount()-1);
         ((MainActivity)getActivity()).changeFragment(ContentsPagerFragment.class,bundle);
     }
@@ -197,7 +196,6 @@ public class SubtitleFragment extends Fragment implements SubtitleAdapter.OnItem
             //ソフトキーボードを非表示
             InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-
 
 
             Bundle bn = new Bundle();
