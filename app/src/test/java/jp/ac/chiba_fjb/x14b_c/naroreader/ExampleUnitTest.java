@@ -1,5 +1,7 @@
 package jp.ac.chiba_fjb.x14b_c.naroreader;
 
+import android.os.Bundle;
+
 import org.junit.Test;
 
 import java.lang.reflect.Field;
@@ -19,7 +21,40 @@ import jp.ac.chiba_fjb.x14b_c.naroreader.data.TbnReader;
  * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
  */
 public class ExampleUnitTest {
+
 	@Test
+
+	public void testseries(){
+		/*
+		引数みたいな操作
+		クラス名(引っ張るもの　Bundle bundle)で自動的に引っ張る
+		その際の行き先はMainactivityのChangefragment
+		"　"の中はわりと適当でもよい
+		*/
+		Bundle bn = new Bundle();
+		String ncode = "n6240cp";
+		String scode = TbnReader.getSeries(ncode);
+		NovelSeries Test1 = TbnReader.getSeriesInfo(scode);
+		System.out.println(Test1);
+		if(Test1 != null)
+		{
+			//シリーズコードが存在した場合
+		}
+		else{
+			//シリーズコードが無い場合
+		}
+		/*
+		bn.putString("ncode",item.ncode);
+		bn.putString("scode",item.scode);
+		bn.putInt("mode",0);
+		//フラグメントのインスタンスを作成
+		AddBookmarkFragment f = new AddBookmarkFragment();
+		//フラグメントに実行結果を飛ばす
+		f.setArguments(bn);
+		*/
+	}
+
+	//@Test
 	public void testEvo(){
 		String userId = "";
 		String userPass = "";
@@ -60,20 +95,9 @@ public class ExampleUnitTest {
 			System.out.format("%s\n%s\n",info.title,info.story);
 		}
 	}
-	//@Test
-	public void testNovelBody(){
-		NovelBody body = TbnReader.getNovelBody("n7733dl",1);
-		//NovelBody body = TbnReader.getNovelBody("n3998dn",0);
 
-		System.out.println(body.title);
-		System.out.println("-----------------------------");
-		System.out.println(body.body);
-		System.out.println("-----------------------------");
-		System.out.println(body.tag);
-		System.out.println("-----------------------------");
 
-	}
-   // @Test
+	// @Test
 	public void testClearBookmark(){
 		String userId = "";
 		String userPass = "";
