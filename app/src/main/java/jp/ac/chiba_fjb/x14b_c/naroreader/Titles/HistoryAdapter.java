@@ -32,7 +32,7 @@ public class HistoryAdapter extends RecyclerView.Adapter implements View.OnClick
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         //レイアウトを設定
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.history_item, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_history, parent, false);
         view.setOnClickListener(this);
         view.setOnLongClickListener(this);
 
@@ -49,7 +49,7 @@ public class HistoryAdapter extends RecyclerView.Adapter implements View.OnClick
             Date date = value.general_lastup;
             dateString = new SimpleDateFormat("yyyy年MM月dd日").format(date);
         }
-        holder.itemView.setTag(R.layout.history_item,position);  //現在位置の設定
+        holder.itemView.setTag(R.layout.item_history,position);  //現在位置の設定
         ((TextView)holder.itemView.findViewById(R.id.textCode)).setText(value.ncode);
         ((TextView)holder.itemView.findViewById(R.id.textTitle)).setText(value.title!=null?value.title:"");
         ((TextView)holder.itemView.findViewById(R.id.textDate)).setText(dateString);
@@ -71,7 +71,7 @@ public class HistoryAdapter extends RecyclerView.Adapter implements View.OnClick
     @Override
     public void onClick(View view) {
         if(mListener != null) {
-            int pos = (int) view.getTag(R.layout.history_item);
+            int pos = (int) view.getTag(R.layout.item_history);
             NovelInfo value = mValues.get(pos);
             mListener.onItemClick(value);
         }
@@ -80,7 +80,7 @@ public class HistoryAdapter extends RecyclerView.Adapter implements View.OnClick
     @Override
     public boolean onLongClick(View view) {
         if(mListener != null) {
-            int pos = (int) view.getTag(R.layout.history_item);
+            int pos = (int) view.getTag(R.layout.item_history);
             NovelInfo value = mValues.get(pos);
             mListener.onItemLongClick(value);
         }

@@ -65,8 +65,8 @@ public class SearchAdapter extends RecyclerView.Adapter implements View.OnClickL
     @Override
     public void onClick(View view) {
         if(mListener != null) {
-            int pos = (int) view.getTag(R.layout.item_history);
-            NovelSearch value = mSearch.get(pos);   //エラーだったらNovelSearchをMap<String,String>にすること
+            int pos = (int) view.getTag(R.layout.item_search);
+            NovelSearch value = mSearch.get(pos+1);   //エラーだったらNovelSearchをMap<String,String>にすること
             mListener.onItemClick(value);
         }
     }
@@ -75,7 +75,7 @@ public class SearchAdapter extends RecyclerView.Adapter implements View.OnClickL
     public boolean onLongClick(View view) {
         if(mListener != null) {
             int pos = (int) view.getTag(R.layout.item_search);
-            NovelSearch item = mSearch.get(pos);
+            NovelSearch item = mSearch.get(pos+1);
             mListener.onItemLongClick(item);
         }
         return false;

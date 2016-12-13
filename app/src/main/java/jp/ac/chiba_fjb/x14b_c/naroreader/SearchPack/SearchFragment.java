@@ -90,7 +90,7 @@ public class SearchFragment extends Fragment implements SearchAdapter.OnItemClic
     }
 
     @Override
-    public void onItemClick(NovelSearch value) {
+    public void onItemClick(NovelSearch value) { //ncodeがnull
         Bundle bundle = new Bundle();
         bundle.putString("ncode",value.ncode);
         ((MainActivity)getActivity()).changeFragment(SubtitleFragment.class,bundle);
