@@ -45,11 +45,11 @@ public class ColorPickerFragment extends DialogFragment implements SeekBar.OnSee
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_color_picker, container, false);
 
-        seekRed = (SeekBar) getView().findViewById(R.id.seekBar);
-        seekBlue = (SeekBar) getView().findViewById(R.id.seekBar2);
-        seekGreen = (SeekBar) getView().findViewById(R.id.seekBar3);
-        TextView tx = (TextView) getView().findViewById(R.id.textView);
-        Button b1 = (Button) getView().findViewById(R.id.button);
+        seekRed = (SeekBar) view.findViewById(R.id.seekBar);
+        seekBlue = (SeekBar) view.findViewById(R.id.seekBar2);
+        seekGreen = (SeekBar) view.findViewById(R.id.seekBar3);
+        TextView tx = (TextView) view.findViewById(R.id.textView);
+        Button b1 = (Button) view.findViewById(R.id.Button);
 
         seekRed.setOnSeekBarChangeListener(this);
         seekBlue.setOnSeekBarChangeListener(this);

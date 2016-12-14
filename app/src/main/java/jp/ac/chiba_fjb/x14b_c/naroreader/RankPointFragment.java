@@ -15,9 +15,11 @@ import android.widget.TextView;
 
 
 import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NovelDB;
+import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelEvaluation;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.TbnReader;
 
 import static com.google.common.collect.ComparisonChain.start;
+import static jp.ac.chiba_fjb.x14b_c.naroreader.data.TbnReader.getEvaluation;
 import static jp.ac.chiba_fjb.x14b_c.naroreader.data.TbnReader.setEvaluation;
 
 
@@ -51,8 +53,8 @@ public class RankPointFragment extends DialogFragment implements View.OnClickLis
 
         Button b1 = (Button) view.findViewById(R.id.button1);
         Button b2 = (Button) view.findViewById(R.id.button2);
-
-
+        RadioGroup rg1 = (RadioGroup) view.findViewById(R.id.RgBunpou);
+        RadioGroup rg2 = (RadioGroup) view.findViewById(R.id.RgStory);
 
         b1.setOnClickListener(this);
         b2.setOnClickListener(this);
