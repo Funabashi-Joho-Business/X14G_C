@@ -245,8 +245,15 @@ public class TbnReader {
         if(info == null)
             return false;
 
-        String address = String.format("http://ncode.syosetu.com/%s/%d/",ncode,info.general_all_no);
+        String address;
+        if(info.novel_type == 1)
+            address = String.format("http://ncode.syosetu.com/%s/%d/",ncode,info.general_all_no);
+        else
+            address = String.format("http://ncode.syosetu.com/%s/",ncode);
         WebData webData = getContent2(address,hash,null,null);
+        if(webData == null)
+            return false;
+
         Pattern p = Pattern.compile("name=\"token\" value=\"(.*?)\"");
         Matcher m = p.matcher(webData.content);
         if(!m.find())
@@ -282,7 +289,29 @@ public class TbnReader {
         }
         return list;
     }
+    public static NovelEvaluation getEvaluation(String hash,String ncode){
+        int id = getUserID(hash);
+        if(id == 0)
+            return null;
 
+        String address = String.format("http://mypage.syosetu.com/mypagenovelhyoka/list/userid/%d/",id);
+        String content = getContent(address);
+        if(content == null)
+            return null;
+
+        Pattern p = Pattern.compile("<a href=\"http://ncode.syosetu.com/(.*?)/\">.*?ストーリー評価：(\\d?+)pt.*?文章評価：(\\d?+)pt",Pattern.DOTALL);
+        Matcher m = p.matcher(content);
+        while(m.find()){
+            if(m.group(1).equals(ncode)){
+                NovelEvaluation e = new NovelEvaluation();
+                e.ncode = m.group(1);
+                e.storypoint = Integer.parseInt(m.group(2));
+                e.bunsyopoint = Integer.parseInt(m.group(3));
+                return e;
+            }
+        }
+        return null;
+    }
     //ブックマークの設定
     //hash ログイントークン
     //ncode ノベルコード
