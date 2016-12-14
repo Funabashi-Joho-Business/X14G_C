@@ -26,9 +26,8 @@ public class RankingAdapter extends RecyclerView.Adapter implements View.OnClick
     void setOnItemClickListener(OnItemClickListener listener){
         mListener = listener;
     }
-    private OnItemClickListener mListener;
-;
 
+    private OnItemClickListener mListener;
     private List<NovelRanking> mValues;
 
 
@@ -48,6 +47,7 @@ public class RankingAdapter extends RecyclerView.Adapter implements View.OnClick
 
         NovelRanking b = mValues.get(position);
         String dateString = new SimpleDateFormat("yyyy年MM月dd日").format(b.update);
+
         holder.itemView.setTag(R.layout.item_ranking,position);
         ((TextView)holder.itemView.findViewById(R.id.textRank)).setText((position+1)+"位");
         ((TextView)holder.itemView.findViewById(R.id.textCode)).setText(b.ncode+1);

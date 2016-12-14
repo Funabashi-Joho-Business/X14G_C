@@ -26,7 +26,6 @@ import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelContent;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelInfo;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.TbnReader;
 
-
 /**
  * A simple {@link Fragment} subclass.
  */
@@ -38,9 +37,11 @@ public class ContentsFragment extends Fragment {
             switch(intent.getAction()){
                 case NaroReceiver.NOTIFI_NOVELCONTENT:
                     ((SwipeRefreshLayout)getView().findViewById(R.id.swipe_refresh)).setRefreshing(false);
-                    if(!intent.getBooleanExtra("result",false))
-                        Snackbar.make(getView(), "本文の受信失敗", Snackbar.LENGTH_SHORT).show();
-                    update(false);
+                    if(intent.getIntExtra("index",0) == mIndex) {
+                        if (!intent.getBooleanExtra("result", false))
+                            Snackbar.make(getView(), "本文の受信失敗", Snackbar.LENGTH_SHORT).show();
+                        update(false);
+                    }
                     break;
             }
         }

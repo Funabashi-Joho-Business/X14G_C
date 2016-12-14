@@ -5,7 +5,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
@@ -69,6 +68,7 @@ public class SubtitleAdapter extends RecyclerView.Adapter implements View.OnClic
             ((TextView)mInfoView.findViewById(R.id.textDate)).setText(sdf.format(mNovelInfo.updated_at));
             ((TextView)mInfoView.findViewById(R.id.textWritter)).setText(mNovelInfo.writer);
             ((TextView)mInfoView.findViewById(R.id.textPoint)).setText(mNovelInfo.global_point+"pt");
+            holder.itemView.setTag(R.layout.item_bookmark,-1);
         }
         else{
             if(viewInfo.getChildCount() > 0)
@@ -119,7 +119,8 @@ public class SubtitleAdapter extends RecyclerView.Adapter implements View.OnClic
     public void onClick(View view) {
         if(mListener != null) {
             int pos = (int) view.getTag(R.layout.item_bookmark);
-            mListener.onItemClick(mValues.get(pos).index);
+            if(pos >= 0)
+                mListener.onItemClick(mValues.get(pos).index);
         }
     }
 }

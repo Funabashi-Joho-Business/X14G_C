@@ -407,11 +407,21 @@ public class TbnReader {
     }
 
     //キーワード検索用
-    public static NovelInfo[] getKeyword(String word){
+    public static List<NovelSearch> getKeyword(String word){
         String address = String.format("http://api.syosetu.com/novelapi/api/?out=json&word=%s",word);
-        NovelInfo[] Keyword = Json.send(address,null,NovelInfo[].class);
-        if(Keyword != null && Keyword.length > 1)
-            return Keyword;
+        NovelInfo[] search = Json.send(address,null,NovelInfo[].class);
+        if(search != null && search.length > 1) {
+            List<NovelSearch> list = new ArrayList<NovelSearch>();
+            for(NovelInfo i : search){
+                NovelSearch s = new NovelSearch();
+                s.title = i.title;
+                s.ncode = i.ncode;
+                s.genre = i.genre;
+                s.novelupdated_at = i.novelupdated_at;
+                list.add(s);
+            }
+            return list;
+        }
         return null;
     }
 

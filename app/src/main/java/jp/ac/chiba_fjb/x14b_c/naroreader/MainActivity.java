@@ -1,10 +1,12 @@
 package jp.ac.chiba_fjb.x14b_c.naroreader;
 
+
 import android.content.Intent;
 import android.content.IntentSender;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
@@ -30,24 +32,18 @@ import to.pns.lib.LogService;
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private Bundle mBundle;
 
+
+
+
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        if(intent != null){
-            if(intent.getAction().equals(Intent.ACTION_SEND)){
-                String url = intent.getStringExtra(Intent.EXTRA_TEXT);
-                if(url != null){
-                    addBookmark(url);
-                }
-            }
-        }
+        addBookmark(intent);
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
 
         setContentView(R.layout.activity_main);
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
@@ -70,32 +66,41 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         LogService.output(getApplicationContext(),"アプリ起動");
 
+        addBookmark(getIntent());
+
     }
+    void bookmarkIntent(Intent intent){
 
-    private void addBookmark(String url) {
-        Pattern p = Pattern.compile("ncode.syosetu.com/(.*?)/");
-        final Matcher m = p.matcher(url);
-        if (!m.find())
-            return;
+    }
+    private void addBookmark(Intent intent) {
+        if(intent != null){
+            if(intent.getAction().equals(Intent.ACTION_SEND)){
+                String url = intent.getStringExtra(Intent.EXTRA_TEXT);
+                if(url != null){
+                    Pattern p = Pattern.compile("ncode.syosetu.com/(.*?)/");
+                    final Matcher m = p.matcher(url);
+                    if (!m.find())
+                        return;
 
-        NovelDB db = new NovelDB(this);
-        final String userId = db.getSetting("loginId","");
-        final String userPass = db.getSetting("loginPass","");
-        db.close();
+                    NovelDB db = new NovelDB(this);
+                    final String userId = db.getSetting("loginId","");
+                    final String userPass = db.getSetting("loginPass","");
+                    db.close();
+                    Snackbar.make(findViewById(R.id.fragment_area), "ブックマーク追加中", Snackbar.LENGTH_SHORT).show();
+                    new Thread(){
+                        @Override
+                        public void run() {
+                            String hash = TbnReader.getLoginHash(userId,userPass);
+                            if(hash != null){
+                                TbnReader.setBookmark(hash,m.group(1).toUpperCase());
+                                NaroReceiver.updateBookmark(MainActivity.this);
+                            }
+                        }
+                    }.start();
 
-        new Thread(){
-            @Override
-            public void run() {
-                String hash = TbnReader.getLoginHash(userId,userPass);
-                if(hash != null){
-                    TbnReader.setBookmark(hash,m.group(1).toUpperCase());
-                    NaroReceiver.updateBookmark(MainActivity.this);
                 }
             }
-        }.start();
-
-
-
+        }
     }
 
     @Override
@@ -166,5 +171,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         else
             super.onBackPressed();
     }
+
 
 }

@@ -13,6 +13,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+
 import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NovelDB;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.TbnReader;
 
@@ -111,7 +112,6 @@ public class RankPointFragment extends DialogFragment implements View.OnClickLis
                         }
                     }.start();
                 }
-
                 getDialog().cancel();
                 break;
             case R.id.button1:
