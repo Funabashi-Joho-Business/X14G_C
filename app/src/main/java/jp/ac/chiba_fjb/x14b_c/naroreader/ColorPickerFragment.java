@@ -1,6 +1,7 @@
 package jp.ac.chiba_fjb.x14b_c.naroreader;
 
 
+import android.app.Dialog;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
@@ -56,6 +57,12 @@ public class ColorPickerFragment extends DialogFragment implements SeekBar.OnSee
         seekGreen.setOnSeekBarChangeListener(this);
         b1.setOnClickListener(this);
         return view;
+    }
+
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+        Dialog dialog = super.onCreateDialog(savedInstanceState);
+        dialog.setTitle("ColorPicker");
+        return dialog;
     }
 
     @Override

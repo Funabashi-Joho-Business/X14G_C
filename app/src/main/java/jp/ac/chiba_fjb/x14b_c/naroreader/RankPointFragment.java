@@ -53,8 +53,8 @@ public class RankPointFragment extends DialogFragment implements View.OnClickLis
 
         Button b1 = (Button) view.findViewById(R.id.button1);
         Button b2 = (Button) view.findViewById(R.id.button2);
-        RadioGroup rg1 = (RadioGroup) view.findViewById(R.id.RgBunpou);
-        RadioGroup rg2 = (RadioGroup) view.findViewById(R.id.RgStory);
+        final RadioGroup rg1 = (RadioGroup) view.findViewById(R.id.RgBunpou);
+        final RadioGroup rg2 = (RadioGroup) view.findViewById(R.id.RgStory);
 
         b1.setOnClickListener(this);
         b2.setOnClickListener(this);
