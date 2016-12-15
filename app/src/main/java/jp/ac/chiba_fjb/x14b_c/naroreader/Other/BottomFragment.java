@@ -50,9 +50,6 @@ public class BottomFragment extends BottomSheetDialogFragment implements View.On
 
         Point p = new Point();
         ((WindowManager)getContext().getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getSize(p);
-        float d = getContext().getResources().getDisplayMetrics().density;
-        int margin = (int)(3*d);
-
         int size = menu.size();
 
         int width = 0;

@@ -1,15 +1,16 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_height="match_parent"
-    tools:context="jp.ac.chiba_fjb.x14b_c.naroreader.AddBookmarkFragment"
-    android:layout_width="match_parent">
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_height="match_parent"
+             tools:context="jp.ac.chiba_fjb.x14b_c.naroreader.AddBookmarkFragment"
+             android:layout_width="match_parent"
+             android:padding="10dp">
 
     <!-- TODO: Update blank fragment layout -->
 
     <LinearLayout
         android:orientation="vertical"
-        android:layout_height="match_parent"
-        android:layout_width="300dp">
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content">
 
         <TextView
             android:text="作品名"
@@ -17,7 +18,8 @@
             android:layout_height="wrap_content"
             android:id="@+id/textTitle"
             android:layout_gravity="center"
-            android:textSize="24sp" />
+            android:textSize="24sp"
+            android:textAlignment="center"/>
 
         <TextView
             android:text="mode"
@@ -25,7 +27,8 @@
             android:layout_height="wrap_content"
             android:id="@+id/textMode"
             android:layout_gravity="center"
-            android:textSize="18sp" />
+            android:textSize="18sp"
+            android:textAlignment="center"/>
 
         <LinearLayout
             android:orientation="horizontal"

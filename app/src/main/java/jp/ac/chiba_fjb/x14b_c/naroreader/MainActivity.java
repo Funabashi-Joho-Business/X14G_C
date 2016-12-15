@@ -20,12 +20,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import jp.ac.chiba_fjb.x14b_c.naroreader.Bookmark.BookmarkFragment;
+import jp.ac.chiba_fjb.x14b_c.naroreader.History.HistoryFragment;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Other.FragmentLog;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NaroReceiver;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NovelDB;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Ranking.RankingFragment;
 import jp.ac.chiba_fjb.x14b_c.naroreader.SearchPack.SearchFragment;
-import jp.ac.chiba_fjb.x14b_c.naroreader.History.HistoryFragment;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.TbnReader;
 import to.pns.lib.LogService;
 
@@ -58,14 +58,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
-        //drawer.openDrawer(Gravity.LEFT);//起動時にドロわーを開く
+//        AdView adView = (AdView)findViewById(R.id.ad_view);
+//        AdRequest adRequest = new AdRequest.Builder()
+//                                  .addTestDevice("6DB381F1EC310CCE075C40F06962EDFA")
+//                                  .build();
+//        adView.loadAd(adRequest);
 
         mBundle = new Bundle();
-
         changeFragment(BookmarkFragment.class);
-
         LogService.output(getApplicationContext(),"アプリ起動");
-
         addBookmark(getIntent());
 
     }
