@@ -1,33 +1,25 @@
-package jp.ac.chiba_fjb.x14b_c.naroreader;
+package jp.ac.chiba_fjb.x14b_c.naroreader.Other;
 
 import android.app.Dialog;
-import android.support.v4.app.Fragment;
-import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.BottomSheetDialogFragment;
-import android.support.v4.view.MenuItemCompat;
-import android.view.ActionProvider;
-import android.view.ContextMenu;
-import android.view.KeyEvent;
+import android.support.v4.app.Fragment;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.SubMenu;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.GridLayout;
 import android.widget.RelativeLayout;
+
+import jp.ac.chiba_fjb.x14b_c.naroreader.R;
 
 public class BottomFragment extends BottomSheetDialogFragment implements View.OnClickListener {
     int mMenuId;

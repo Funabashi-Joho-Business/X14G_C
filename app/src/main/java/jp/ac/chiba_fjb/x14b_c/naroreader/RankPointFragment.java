@@ -3,6 +3,7 @@ package jp.ac.chiba_fjb.x14b_c.naroreader;
 
 import android.app.Dialog;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -11,13 +12,11 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.TextView;
-
 
 import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NovelDB;
+import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelEvaluation;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.TbnReader;
 
-import static com.google.common.collect.ComparisonChain.start;
 import static jp.ac.chiba_fjb.x14b_c.naroreader.data.TbnReader.setEvaluation;
 
 
@@ -27,19 +26,11 @@ import static jp.ac.chiba_fjb.x14b_c.naroreader.data.TbnReader.setEvaluation;
 public class RankPointFragment extends DialogFragment implements View.OnClickListener {
 
 
+    private String mNCode;
+
     public RankPointFragment() {
         // Required empty public constructor
     }
-    //インタフェイスの定義
-    public interface OnDialogButtonListener{
-        void onDialogButton(boolean end);
-    }
-    //インタフェイスのインスタンス保存用
-    OnDialogButtonListener mListener;
-
-    //ボタン動作のインスタンスを受け取る
-    public void setOnDialogButtonListener(OnDialogButtonListener listener){mListener =  listener;}
-
     private boolean end2;
 
     @Override
@@ -51,11 +42,37 @@ public class RankPointFragment extends DialogFragment implements View.OnClickLis
 
         Button b1 = (Button) view.findViewById(R.id.button1);
         Button b2 = (Button) view.findViewById(R.id.button2);
-
-
-
         b1.setOnClickListener(this);
         b2.setOnClickListener(this);
+
+        mNCode = getArguments().getString("ncode");
+
+        //既存評価の確認
+        new Thread(){
+            @Override
+            public void run() {
+                NovelDB settingDB = new NovelDB(getContext());
+                String id = settingDB.getSetting("loginId","");
+                String pass = settingDB.getSetting("loginPass","");
+                settingDB.close();
+                String hash = TbnReader.getLoginHash(id,pass);
+                final NovelEvaluation eva = TbnReader.getEvaluation(hash,mNCode);
+                if(eva != null){
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            RadioGroup rg1 = (RadioGroup) getView().findViewById(R.id.RgBunpou);
+                            RadioGroup rg2 = (RadioGroup) getView().findViewById(R.id.RgStory);
+                            rg1.check(R.id.Rb1+eva.bunsyopoint-1);
+                            rg2.check(R.id.Rs1+eva.storypoint-1);
+                        }
+                    });
+                }
+
+
+
+            }
+        }.start();
 
         return view;
     }
@@ -103,16 +120,21 @@ public class RankPointFragment extends DialogFragment implements View.OnClickLis
                             //ログイン処理
                             Bundle bn = getArguments();
                             String hash = TbnReader.getLoginHash(id,pass);
-                            if(setEvaluation(hash,bn.getString("ncode"), finalRbi, finalRbs)){
-                                end2 = true;
-                            }else{
-                                end2 = false;
-                            }
-                            mListener.onDialogButton(end2);
+                            final boolean flag = setEvaluation(hash,bn.getString("ncode"), finalRbi, finalRbs);
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Snackbar.make(getTargetFragment().getView(), flag?"評価成功":"評価失敗", Snackbar.LENGTH_SHORT).show();
+                                    getDialog().cancel();
+                                }
+                            });
+
+
+
                         }
                     }.start();
                 }
-                getDialog().cancel();
+
                 break;
             case R.id.button1:
                 getDialog().cancel();

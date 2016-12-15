@@ -22,6 +22,8 @@ import android.view.inputmethod.InputMethodManager;
 
 import java.util.List;
 
+import jp.ac.chiba_fjb.x14b_c.naroreader.AddBookmarkFragment;
+import jp.ac.chiba_fjb.x14b_c.naroreader.Other.BottomFragment;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Contents.ContentsPagerFragment;
 import jp.ac.chiba_fjb.x14b_c.naroreader.MainActivity;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NaroReceiver;
@@ -35,7 +37,7 @@ import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelSubTitle;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class SubtitleFragment extends Fragment implements SubtitleAdapter.OnItemClickListener, RankPointFragment.OnDialogButtonListener {
+public class SubtitleFragment extends Fragment implements SubtitleAdapter.OnItemClickListener {
 
     //通知処理
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
@@ -72,6 +74,7 @@ public class SubtitleFragment extends Fragment implements SubtitleAdapter.OnItem
     private String mNCode;
     private int mSort;
     private RecyclerView mRecycleView;
+    private String mTitle;
 
 
     public SubtitleFragment() {
@@ -115,9 +118,10 @@ public class SubtitleFragment extends Fragment implements SubtitleAdapter.OnItem
         db.addNovelHistory(mNCode);
         mSort = db.getSetting("SUB_SORT",0);
         db.close();
-
+        mTitle = "";
         if(ni != null)
-            getActivity().setTitle(ni.title);
+            mTitle = ni.title;
+        getActivity().setTitle(mTitle);
 
         return view;
     }
@@ -187,51 +191,46 @@ public class SubtitleFragment extends Fragment implements SubtitleAdapter.OnItem
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         //super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.subtitle_menu, menu);
+        inflater.inflate(R.menu.option, menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.rank_point) {
-            //ソフトキーボードを非表示
-            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        switch(item.getItemId()){
+            case R.id.menu_more:
+                BottomFragment bottomFragment = new BottomFragment();
+                bottomFragment.setMenu(R.menu.panel_subtitle,this);
+                bottomFragment.show(getFragmentManager(), null);
+                break;
+            case R.id.menu_bookmark_add:
+                AddBookmarkFragment.show(this,mNCode,mTitle,true);
+                break;
+            case R.id.menu_bookmark_del:
+                AddBookmarkFragment.show(this,mNCode,mTitle,false);
+                break;
+            case R.id.rank_point:
+                //ソフトキーボードを非表示
+                InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
 
 
-            Bundle bn = new Bundle();
-            bn.putString("ncode",mNCode);
-            RankPointFragment f = new RankPointFragment();
-
-            //ダイアログボタンの処理
-            f.setOnDialogButtonListener(this);
-            f.setArguments(bn);
-            f.show(getFragmentManager(),"");
+                Bundle bn = new Bundle();
+                bn.putString("ncode",mNCode);
+                RankPointFragment f = new RankPointFragment();
+                f.setTargetFragment(this,0);
+                f.setArguments(bn);
+                f.show(getFragmentManager(),"");
+                break;
+            case R.id.action_sort:
+                mSort = (mSort+1)%2;
+                NovelDB db = new NovelDB(getContext());
+                db.setSetting("SUB_SORT",mSort);
+                db.close();
+                update();
         }
-        if (item.getItemId() == R.id.action_sort) {
-            mSort = (mSort+1)%2;
-            NovelDB db = new NovelDB(getContext());
-            db.setSetting("SUB_SORT",mSort);
-            db.close();
-            update();
-        }
+
         return true;
     }
 
-    @Override
-    public void onDialogButton(boolean end) {
-        if(end == true){
-            snack("評価しました");
-        }else{
-            snack("評価できませんでした。");
-        }
-    }
 
-    void snack (final String data){
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Snackbar.make(getView(), data, Snackbar.LENGTH_SHORT).show();
-            }
-        });
-    }
 }

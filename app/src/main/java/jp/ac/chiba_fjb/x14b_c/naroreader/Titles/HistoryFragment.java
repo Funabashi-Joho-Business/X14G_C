@@ -23,7 +23,6 @@ import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NovelDB;
 import jp.ac.chiba_fjb.x14b_c.naroreader.R;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Subtitle.SubtitleFragment;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelInfo;
-import jp.ac.chiba_fjb.x14b_c.naroreader.data.TbnReader;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -127,52 +126,9 @@ public class HistoryFragment extends Fragment implements HistoryAdapter.OnItemCl
 		bn.putInt("mode",0);
 		//フラグメントのインスタンスを作成
 		AddBookmarkFragment f = new AddBookmarkFragment();
+		f.setTargetFragment(this,0);
 		f.setArguments(bn);
-
-		//ダイアログボタンの処理
-		f.setOnDialogButtonListener(new AddBookmarkFragment.OnDialogButtonListener() {
-			@Override
-			public void onDialogButton() {
-				new Thread(){
-					@Override
-					public void run() {
-
-						NovelDB settingDB = new NovelDB(getContext());
-						String id = settingDB.getSetting("loginId","");
-						String pass = settingDB.getSetting("loginPass","");
-						settingDB.close();
-
-						//ログイン処理
-						String hash = TbnReader.getLoginHash(id,pass);
-						if(value.ncode != null){
-							String mNcode = value.ncode;
-							if (TbnReader.setBookmark(hash, mNcode)) {
-								//ブックマーク処理
-								snack("ブックマークしました");
-								NaroReceiver.updateBookmark(getContext());
-							}
-							else
-								snack("ブックマークできませんでした");
-						}
-					}
-				}.start();
-			}
-		});
-
-		//フラグメントをダイアログとして表示
 		f.show(getFragmentManager(),"");
 	}
-
-
-	void snack (final String data){
-		getActivity().runOnUiThread(new Runnable() {
-			@Override
-			public void run() {
-				Snackbar.make(getView(), data, Snackbar.LENGTH_SHORT).show();
-			}
-		});
-	}
-
-
 }
 

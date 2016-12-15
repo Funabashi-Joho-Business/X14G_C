@@ -19,7 +19,6 @@ import java.util.List;
 
 import jp.ac.chiba_fjb.x14b_c.naroreader.AddBookmarkFragment;
 import jp.ac.chiba_fjb.x14b_c.naroreader.MainActivity;
-import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NaroReceiver;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NovelDB;
 import jp.ac.chiba_fjb.x14b_c.naroreader.R;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Subtitle.SubtitleFragment;
@@ -254,53 +253,6 @@ public class RankingFragment extends Fragment implements AdapterView.OnItemSelec
 
     @Override
     public void onItemLongClick(final NovelRanking item) {
-        Bundle bn = new Bundle();
-        bn.putString("ncode",item.ncode);
-        bn.putString("title",item.title);
-        bn.putInt("mode",0);
-        //フラグメントのインスタンスを作成
-        AddBookmarkFragment f = new AddBookmarkFragment();
-        f.setArguments(bn);
-
-        //ダイアログボタンの処理
-        f.setOnDialogButtonListener(new AddBookmarkFragment.OnDialogButtonListener() {
-            @Override
-            public void onDialogButton() {
-                new Thread(){
-                    @Override
-                    public void run() {
-
-                        NovelDB settingDB = new NovelDB(getContext());
-                        String id = settingDB.getSetting("loginId","");
-                        String pass = settingDB.getSetting("loginPass","");
-                        settingDB.close();
-
-                        //ログイン処理
-                        String hash = TbnReader.getLoginHash(id,pass);
-                        if(item.ncode != null){
-                            String mNcode = item.ncode;
-                            if (TbnReader.setBookmark(hash, mNcode)) { //ブックマーク処理
-                                snack("ブックマークしました");
-                                NaroReceiver.updateBookmark(getContext());
-                            }
-                            else
-                                snack("ブックマークできませんでした");
-                        }
-                    }
-                }.start();
-            }
-        });
-
-        //フラグメントをダイアログとして表示
-        f.show(getFragmentManager(),"");
-    }
-
-    void snack (final String data){
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Snackbar.make(getView(), data, Snackbar.LENGTH_SHORT).show();
-            }
-        });
+        AddBookmarkFragment.show(this,item.ncode,item.title,true);
     }
 }
