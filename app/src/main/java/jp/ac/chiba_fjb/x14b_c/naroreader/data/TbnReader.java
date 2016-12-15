@@ -318,7 +318,7 @@ public class TbnReader {
     public static boolean setBookmark(String hash,String ncode){
         String address = String.format("http://ncode.syosetu.com/novelview/infotop/ncode/%s/",ncode);
         String content = getContent(address,hash);
-        Pattern p = Pattern.compile("<li class=\"booklist\"><a href=\"(.*?)\">ブックマークに追加</a>");
+        Pattern p = Pattern.compile("<li class=\"booklist\"><a href=\"(.*?)\">ブックマーク");
         Matcher m = p.matcher(content);
         if(m.find()) {
             content = getContent(m.group(1),hash);

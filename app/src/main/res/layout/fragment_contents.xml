@@ -7,25 +7,23 @@
     tools:context=".Contents.ContentsFragment">
 
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+
 
 
         <android.support.v4.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:scrollbars="vertical">
 
             <WebView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/mWebView" >
+                android:id="@+id/mWebView">
 
             </WebView>
 
         </android.support.v4.widget.NestedScrollView>
 
-    </RelativeLayout>
 
 
 </android.support.v4.widget.SwipeRefreshLayout>

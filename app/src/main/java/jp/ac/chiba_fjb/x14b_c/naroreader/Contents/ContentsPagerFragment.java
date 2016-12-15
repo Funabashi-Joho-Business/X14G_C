@@ -3,7 +3,6 @@ package jp.ac.chiba_fjb.x14b_c.naroreader.Contents;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -14,9 +13,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 
-import jp.ac.chiba_fjb.x14b_c.naroreader.BottomFragment;
+import jp.ac.chiba_fjb.x14b_c.naroreader.Other.BottomFragment;
 import jp.ac.chiba_fjb.x14b_c.naroreader.R;
 
 /**
@@ -94,7 +92,7 @@ public class ContentsPagerFragment extends Fragment {
 			Fragment parent = (Fragment)viewPager.getAdapter().instantiateItem(viewPager,index);
 
 			BottomFragment f = new BottomFragment();
-			f.setMenu(R.menu.contents,parent);
+			f.setMenu(R.menu.panel_contents,parent);
 			f.show(getFragmentManager(), null);
 		}
 

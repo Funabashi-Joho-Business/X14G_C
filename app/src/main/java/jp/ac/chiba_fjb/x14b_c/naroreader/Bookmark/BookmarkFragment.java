@@ -28,7 +28,6 @@ import jp.ac.chiba_fjb.x14b_c.naroreader.R;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Subtitle.SubtitleFragment;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelBookmark;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelInfo;
-import jp.ac.chiba_fjb.x14b_c.naroreader.data.TbnReader;
 
 
 /**
@@ -152,49 +151,10 @@ public class BookmarkFragment extends Fragment implements BookmarkAdapter.OnItem
     @Override
     public void onItemLongClick(final NovelBookmark bookmark) {
         NovelInfo novelInfo = mNovelMap.get(bookmark.getCode().toUpperCase());
-        Bundle bn = new Bundle();
-        bn.putString("ncode",bookmark.getCode());
+        String title = "";
         if(novelInfo != null)
-            bn.putString("title",novelInfo.title);
-        else
-            bn.putString("title","");
-        bn.putInt("mode",1);
-        //フラグメントのインスタンスを作成
-        AddBookmarkFragment f = new AddBookmarkFragment();
-        f.setArguments(bn);
-
-        //ダイアログボタンの処理
-        f.setOnDialogButtonListener(new AddBookmarkFragment.OnDialogButtonListener() {
-            @Override
-            public void onDialogButton() {
-                new Thread(){
-                    @Override
-                    public void run() {
-
-                        NovelDB settingDB = new NovelDB(getContext());
-                        String id = settingDB.getSetting("loginId","");
-                        String pass = settingDB.getSetting("loginPass","");
-                        settingDB.close();
-
-                        //ログイン処理
-                        String hash = TbnReader.getLoginHash(id,pass);
-                        if(bookmark.getCode() != null){
-                            String mNcode = bookmark.getCode();
-                            if (TbnReader.clearBookmark(hash, mNcode)){ //ブックマーク処理
-                                snack("ブックマーク解除しました");
-                                NaroReceiver.updateBookmark(getContext());
-
-                            } else {
-                                snack("ブックマーク解除できませんでした");
-                            }
-                        }
-                    }
-                }.start();
-            }
-        });
-
-        //フラグメントをダイアログとして表示
-        f.show(getFragmentManager(),"");
+           title = novelInfo.title;
+        AddBookmarkFragment.show(this,bookmark.getCode(),title,false);
     }
 
     void snack (final String data){
@@ -205,4 +165,5 @@ public class BookmarkFragment extends Fragment implements BookmarkAdapter.OnItem
             }
         });
     }
+
 }
