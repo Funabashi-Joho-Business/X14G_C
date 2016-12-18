@@ -42,6 +42,7 @@ public class RankPointFragment extends DialogFragment implements View.OnClickLis
 
         Button b1 = (Button) view.findViewById(R.id.button1);
         Button b2 = (Button) view.findViewById(R.id.button2);
+
         b1.setOnClickListener(this);
         b2.setOnClickListener(this);
 
@@ -68,9 +69,6 @@ public class RankPointFragment extends DialogFragment implements View.OnClickLis
                         }
                     });
                 }
-
-
-
             }
         }.start();
 
@@ -128,9 +126,6 @@ public class RankPointFragment extends DialogFragment implements View.OnClickLis
                                     getDialog().cancel();
                                 }
                             });
-
-
-
                         }
                     }.start();
                 }
