@@ -6,28 +6,38 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
+
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import jp.ac.chiba_fjb.x14b_c.naroreader.AddBookmarkFragment;
 import jp.ac.chiba_fjb.x14b_c.naroreader.MainActivity;
+import jp.ac.chiba_fjb.x14b_c.naroreader.Other.BottomDialog;
+import jp.ac.chiba_fjb.x14b_c.naroreader.Other.BottomFragment;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NaroReceiver;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NovelDB;
 import jp.ac.chiba_fjb.x14b_c.naroreader.R;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Subtitle.SubtitleFragment;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelBookmark;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelInfo;
+import jp.ac.chiba_fjb.x14b_c.naroreader.data.TbnReader;
 
 
 /**
@@ -60,8 +70,9 @@ public class BookmarkFragment extends Fragment implements BookmarkAdapter.OnItem
             }
         }
     };
-    private BookmarkAdapter mBookmarkAdapter;
-    private HashMap<String, NovelInfo> mNovelMap;
+    private BookmarkAdapter mAdapter;
+    private Map<String, NovelInfo> mNovelMap;
+    private Handler mHandler = new Handler();
 
     public BookmarkFragment() {
 
@@ -71,23 +82,19 @@ public class BookmarkFragment extends Fragment implements BookmarkAdapter.OnItem
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
-        Toolbar toolbar = (Toolbar)getActivity().findViewById(R.id.toolbar);
         // タイトルを設定
-        toolbar.setTitle("ブックマーク");
+        getActivity().setTitle("ブックマーク");
 
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_bookmark, container, false);
-
         //ブックマーク表示用アダプターの作成
-        mBookmarkAdapter = new BookmarkAdapter();
-        mBookmarkAdapter.setOnItemClickListener(this);
+        mAdapter = new BookmarkAdapter();
+        mAdapter.setOnItemClickListener(this);
 
         //データ表示用のビューを作成
         RecyclerView rv = (RecyclerView) view.findViewById(R.id.RecyclerView);
         rv.setLayoutManager(new LinearLayoutManager(getContext()));     //アイテムを縦に並べる
-        rv.setAdapter(mBookmarkAdapter);                              //アダプターを設定
-
+        rv.setAdapter(mAdapter);                              //アダプターを設定
 
         //ボタンが押され場合の処理
         ((SwipeRefreshLayout)view.findViewById(R.id.swipe_refresh)).setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -115,30 +122,50 @@ public class BookmarkFragment extends Fragment implements BookmarkAdapter.OnItem
         getContext().unregisterReceiver(mReceiver);
         super.onDestroy();
     }
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.option, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()){
+            case R.id.menu_more:
+                BottomDialog bottomDialog = new BottomDialog();
+                bottomDialog.setMenu(R.menu.panel_bookmark,this);
+                bottomDialog.show(getFragmentManager(), null);
+                break;
+            case R.id.menu_bookmark_del:
+                delBookmark();
+                break;
+
+        }
+
+        return false;
+    }
     void update(){
         //アダプターにデータを設定
         NovelDB db = new NovelDB(getContext());
         List<NovelBookmark> list = db.getBookmark();
-        mBookmarkAdapter.setBookmarks(list);
+        mAdapter.setBookmarks(list);
 
 
         List<String > listNcode = new ArrayList<String>();
         for(NovelBookmark n : list){
             listNcode.add(n.getCode());
         }
-        List<NovelInfo> novelInfo = db.getNovelInfo(listNcode);
-        mNovelMap = new HashMap<String,NovelInfo>();
-        for(NovelInfo n : novelInfo){
-            mNovelMap.put(n.ncode,n);
-        }
-        mBookmarkAdapter.setNovelInfos(mNovelMap);
+
+        mNovelMap = db.getNovelInfoMap(listNcode);
+        mAdapter.setNovelInfos(mNovelMap);
         db.close();
 
-
-
-
-        mBookmarkAdapter.notifyDataSetChanged();   //データ再表示要求
+        mAdapter.notifyDataSetChanged();   //データ再表示要求
     }
 
     @Override
@@ -157,11 +184,57 @@ public class BookmarkFragment extends Fragment implements BookmarkAdapter.OnItem
         AddBookmarkFragment.show(this,bookmark.getCode(),title,false);
     }
 
-    void snack (final String data){
+    @Override
+    public void onItemCheck() {
+        setDelayMenu();
+    }
+    void setDelayMenu(){
+//        mHandler.removeCallbacks(null);
+//        if(mAdapter.getChecks().size() == 0)
+//            return;
+//        mHandler.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                ((MainActivity)getActivity()).showAppBar();
+//            }
+//        },1000);
+        ((MainActivity)getActivity()).setAppBarScroll(mAdapter.getChecks().size() == 0);
+    }
+
+
+
+    void delBookmark(){
+        Snackbar.make(getView(),"ブックマーク削除中", Snackbar.LENGTH_SHORT).show();
+        new Thread(){
+            @Override
+            public void run() {
+                NovelDB settingDB = new NovelDB(getContext());
+                String id = settingDB.getSetting("loginId","");
+                String pass = settingDB.getSetting("loginPass","");
+                settingDB.close();
+
+                //ログイン処理
+                String hash = TbnReader.getLoginHash(id,pass);
+                if(hash != null) {
+                    Set<String> checks = mAdapter.getChecks();
+                    for (String ncode : checks) {
+                        if(!TbnReader.clearBookmark(hash,ncode)){
+                            output(String.format("%s:ブックマーク解除失敗",ncode));
+                        }
+                    }
+                }else{
+                    output("認証エラー");
+                }
+                output("ブックマーク解除完了");
+                NaroReceiver.updateBookmark(getContext());
+            }
+        }.start();
+    }
+    void output(final String msg){
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Snackbar.make(getView(), data, Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(getView(),msg, Snackbar.LENGTH_SHORT).show();
             }
         });
     }

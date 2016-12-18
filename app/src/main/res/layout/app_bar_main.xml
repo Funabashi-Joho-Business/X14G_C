@@ -8,30 +8,35 @@
     android:fitsSystemWindows="true"
     tools:context="jp.ac.chiba_fjb.x14b_c.naroreader.MainActivity"
     android:id="@+id/coordinator">
+    <FrameLayout
+
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/fragment_area"
+        android:background="@drawable/background"
+        android:layout_marginTop="-58dp">
+    </FrameLayout>
+
+
 
     <android.support.design.widget.AppBarLayout
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        android:theme="@style/AppTheme.AppBarOverlay">
+        android:theme="@style/AppTheme.AppBarOverlay"
+        android:id="@+id/appbar"
+        android:alpha="0.8">
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="?attr/colorPrimary"
-            app:layout_scrollFlags="scroll|enterAlways"
+            app:layout_scrollFlags="scroll|enterAlways|snap"
             app:popupTheme="@style/AppTheme.PopupOverlay" >
         </android.support.v7.widget.Toolbar>
 
 
     </android.support.design.widget.AppBarLayout>
-
-    <FrameLayout
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/fragment_area"
-        android:background="@drawable/background">
-    </FrameLayout>
 
 </android.support.design.widget.CoordinatorLayout>

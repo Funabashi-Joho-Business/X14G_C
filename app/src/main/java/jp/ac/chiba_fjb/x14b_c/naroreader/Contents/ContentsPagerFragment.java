@@ -14,13 +14,37 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import jp.ac.chiba_fjb.x14b_c.naroreader.Other.BottomFragment;
+import com.google.android.gms.ads.AdView;
+
+import jp.ac.chiba_fjb.x14b_c.naroreader.Other.BottomDialog;
+import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NovelDB;
 import jp.ac.chiba_fjb.x14b_c.naroreader.R;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ContentsPagerFragment extends Fragment {
+public class ContentsPagerFragment extends Fragment implements ViewPager.OnPageChangeListener {
+
+	@Override
+	public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+	}
+
+	@Override
+	public void onPageSelected(int position) {
+		setReaded(position+1);
+	}
+	void setReaded(int index){
+		Bundle bundle = getArguments();
+		NovelDB db = new NovelDB(getContext());
+		db.setNovelReaded(bundle.getString("ncode"),index);
+		db.close();
+	}
+
+	@Override
+	public void onPageScrollStateChanged(int state) {
+
+	}
 
 	static class PagerAdapter extends FragmentStatePagerAdapter {
 
@@ -68,10 +92,10 @@ public class ContentsPagerFragment extends Fragment {
 		Bundle bundle = getArguments();
 
 		ViewPager viewPager = (ViewPager) getView().findViewById(R.id.pager);
+		viewPager.addOnPageChangeListener(this);
 		viewPager.setAdapter(new PagerAdapter(getFragmentManager(),bundle.getString("ncode"),bundle.getInt("count")));
 		viewPager.setCurrentItem(bundle.getInt("index")-1);
-
-
+		setReaded(bundle.getInt("index"));
 	}
 
 	@Override
@@ -91,11 +115,25 @@ public class ContentsPagerFragment extends Fragment {
 			int index = viewPager.getCurrentItem();
 			Fragment parent = (Fragment)viewPager.getAdapter().instantiateItem(viewPager,index);
 
-			BottomFragment f = new BottomFragment();
+			BottomDialog f = new BottomDialog();
 			f.setMenu(R.menu.panel_contents,parent);
 			f.show(getFragmentManager(), null);
 		}
 
 		return super.onOptionsItemSelected(item);
+	}
+
+	@Override
+	public void onStart() {
+		super.onStart();
+		AdView adView = (AdView)getActivity().findViewById(R.id.ad_view);
+		adView.setVisibility(View.GONE);
+	}
+
+	@Override
+	public void onStop() {
+		AdView adView = (AdView)getActivity().findViewById(R.id.ad_view);
+		adView.setVisibility(View.VISIBLE);
+		super.onStop();
 	}
 }

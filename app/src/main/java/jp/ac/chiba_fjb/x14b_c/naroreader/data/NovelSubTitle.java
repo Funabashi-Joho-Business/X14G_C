@@ -11,4 +11,6 @@ public class NovelSubTitle {
     public String title;
     public Date date;
     public Date update;
+    public Date readDate;
+    public Date contentDate;
 }

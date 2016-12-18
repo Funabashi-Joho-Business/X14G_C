@@ -1,14 +1,17 @@
+body{
+    background-color:#edf7ff;
+    color: #444444;
+}
 div.title{
     text-align: center;
     font-weight: bold;
     margin-top: 1em;
     margin-bottom: 3em;
+    font-size: 120%;
 }
 div.body{
-
-    background-color:#edf7ff;
-    color: #444444;
+    font-size: 100%;
 }
 div.space{
-    height: 20ex;
+    height: 10ex;
 }

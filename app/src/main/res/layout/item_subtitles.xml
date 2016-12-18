@@ -9,7 +9,7 @@
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:id="@+id/layoutInfo">
 
     </FrameLayout>
@@ -17,7 +17,7 @@
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:padding="2dp"
         android:id="@+id/layoutSubtitle">
 
@@ -34,13 +34,13 @@
             android:background="#aaffffaa"
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:paddingLeft="2dp"
             android:paddingRight="2dp">
 
             <RelativeLayout
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:padding="2dp"
                 android:layout_gravity="center"
                 android:background="#44ff8888">
@@ -79,16 +79,88 @@
                     android:padding="2dp" />
 
 
-                    <TextView
-                        android:text="更新日"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/textDate"
-                        android:layout_weight="1"
-                        android:textSize="12sp"
-                        android:padding="2dp" />
+                <TableLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
 
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" >
 
+                        <TextView
+                            android:text="公開日"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="4dp"
+                            android:layout_marginLeft="4dp" />
+
+                        <TextView
+                            android:text="1900年01月02日"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/textRegDate"
+                            android:layout_weight="1"
+                            android:textSize="12sp"
+                            android:padding="2dp" />
+
+                        <TextView
+                            android:text="取得日"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="4dp"
+                            android:layout_marginLeft="4dp" />
+
+                        <TextView
+                            android:text="1900年01月02日"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/textRecvDate"
+                            android:layout_weight="1"
+                            android:textSize="12sp"
+                            android:padding="2dp" />
+
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" >
+
+                        <TextView
+                            android:text="改稿日"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="4dp"
+                            android:layout_marginLeft="4dp" />
+
+                        <TextView
+                            android:text="1900年01月02日"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/textUpdate"
+                            android:layout_weight="1"
+                            android:textSize="12sp"
+                            android:padding="2dp" />
+
+                        <TextView
+                            android:text="既読日"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="4dp"
+                            android:layout_marginLeft="4dp" />
+
+                        <TextView
+                                android:text="1900年01月02日"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                                android:textSize="12sp"
+                                android:padding="2dp"
+                            android:id="@+id/textAlreadyDate"
+                            android:textColor="@color/colorAccent" />
+
+                    </TableRow>
+
+                </TableLayout>
 
 
             </LinearLayout>

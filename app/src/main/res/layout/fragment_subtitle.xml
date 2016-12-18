@@ -16,7 +16,7 @@
             android:layout_height="wrap_content"
             android:clipToPadding="false"
             tools:listitem="@layout/item_subtitles"
-            />
+            android:paddingTop="@dimen/bar_margin" />
     </android.support.v4.widget.SwipeRefreshLayout>
 </FrameLayout>
 

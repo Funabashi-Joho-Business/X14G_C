@@ -248,6 +248,7 @@ public class RankingFragment extends Fragment implements AdapterView.OnItemSelec
     public void onItemClick(NovelRanking item) {
         Bundle bundle = new Bundle();
         bundle.putString("ncode",item.ncode);
+        bundle.putString("title",item.title);
         ((MainActivity)getActivity()).changeFragment(SubtitleFragment.class,bundle);
     }
 

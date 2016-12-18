@@ -23,7 +23,7 @@ import android.view.inputmethod.InputMethodManager;
 import java.util.List;
 
 import jp.ac.chiba_fjb.x14b_c.naroreader.AddBookmarkFragment;
-import jp.ac.chiba_fjb.x14b_c.naroreader.Other.BottomFragment;
+import jp.ac.chiba_fjb.x14b_c.naroreader.Other.BottomDialog;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Contents.ContentsPagerFragment;
 import jp.ac.chiba_fjb.x14b_c.naroreader.MainActivity;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NaroReceiver;
@@ -62,7 +62,7 @@ public class SubtitleFragment extends Fragment implements SubtitleAdapter.OnItem
                         db.addNovelHistory(mNCode);
                         List<NovelSubTitle> subTitles = db.getSubTitles(mNCode);
                         db.close();
-                        if(subTitles.size() < ni.general_all_no)
+                        if(ni == null || subTitles.size() < ni.general_all_no)
                             load();
                     }
 
@@ -109,16 +109,19 @@ public class SubtitleFragment extends Fragment implements SubtitleAdapter.OnItem
 
 
         });
-
-        if(getArguments() != null)
+        mTitle = "";
+        if(getArguments() != null) {
             mNCode = getArguments().getString("ncode");
+            mTitle = getArguments().getString("title","");
+        }
+
 
         NovelDB db = new NovelDB(getContext());
         NovelInfo ni = db.getNovelInfo(mNCode);
         db.addNovelHistory(mNCode);
         mSort = db.getSetting("SUB_SORT",0);
         db.close();
-        mTitle = "";
+
         if(ni != null)
             mTitle = ni.title;
         getActivity().setTitle(mTitle);
@@ -126,14 +129,6 @@ public class SubtitleFragment extends Fragment implements SubtitleAdapter.OnItem
         return view;
     }
 
-
-    void load(){
-        Snackbar.make(getView(), "サブタイトルデータの要求", Snackbar.LENGTH_SHORT).show();
-        Intent intent = new Intent(getContext(),NaroReceiver.class);
-        intent.putExtra("ncode",mNCode);
-        //受信要求
-        getContext().sendBroadcast(intent.setAction(NaroReceiver.ACTION_NOVELSUB));
-    }
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -155,23 +150,6 @@ public class SubtitleFragment extends Fragment implements SubtitleAdapter.OnItem
         super.onDestroy();
     }
 
-    void update(){
-        mSubtitleAdapter.setSort(mSort);
-        //アダプターにデータを設定
-        NovelDB db = new NovelDB(getContext());
-        NovelInfo novelInfo = db.getNovelInfo(mNCode);
-        if(novelInfo != null) {
-            mSubtitleAdapter.setValues(mNCode, novelInfo, db.getSubTitles(mNCode));
-            db.close();
-            mRecycleView.scrollToPosition(1);
-            mSubtitleAdapter.notifyDataSetChanged();   //データ再表示要求
-        }else{
-            //ノベル情報を要求
-            NaroReceiver.updateNovelInfo(getContext(),mNCode);
-        }
-
-    }
-
 
     @Override
     public void onItemClick(int value) {
@@ -190,7 +168,6 @@ public class SubtitleFragment extends Fragment implements SubtitleAdapter.OnItem
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        //super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.option, menu);
     }
 
@@ -198,9 +175,9 @@ public class SubtitleFragment extends Fragment implements SubtitleAdapter.OnItem
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()){
             case R.id.menu_more:
-                BottomFragment bottomFragment = new BottomFragment();
-                bottomFragment.setMenu(R.menu.panel_subtitle,this);
-                bottomFragment.show(getFragmentManager(), null);
+                BottomDialog bottomDialog = new BottomDialog();
+                bottomDialog.setMenu(R.menu.panel_subtitle,this);
+                bottomDialog.show(getFragmentManager(), null);
                 break;
             case R.id.menu_bookmark_add:
                 AddBookmarkFragment.show(this,mNCode,mTitle,true);
@@ -233,4 +210,27 @@ public class SubtitleFragment extends Fragment implements SubtitleAdapter.OnItem
     }
 
 
+
+    void load(){
+        Snackbar.make(getView(), "サブタイトルデータの要求", Snackbar.LENGTH_SHORT).show();
+        Intent intent = new Intent(getContext(),NaroReceiver.class);
+        intent.putExtra("ncode",mNCode);
+        //受信要求
+        getContext().sendBroadcast(intent.setAction(NaroReceiver.ACTION_NOVELSUB));
+    }
+    void update(){
+        mSubtitleAdapter.setSort(mSort);
+        //アダプターにデータを設定
+        NovelDB db = new NovelDB(getContext());
+        NovelInfo novelInfo = db.getNovelInfo(mNCode);
+        if(novelInfo != null) {
+            mSubtitleAdapter.setValues(mNCode, novelInfo, db.getSubTitles(mNCode));
+            db.close();
+            mRecycleView.scrollToPosition(1);
+            mSubtitleAdapter.notifyDataSetChanged();   //データ再表示要求
+        }else{
+            Snackbar.make(getView(), "ノベル情報の取得中", Snackbar.LENGTH_SHORT).show();
+        }
+
+    }
 }

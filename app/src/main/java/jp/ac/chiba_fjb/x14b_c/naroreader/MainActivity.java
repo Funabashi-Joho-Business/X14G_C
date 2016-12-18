@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.IntentSender;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -15,6 +16,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.MenuItem;
+
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -52,17 +56,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+//        toolbar.measure(-1,-1);
+//        findViewById(R.id.fragment_area).setPadding(0,toolbar.getMeasuredHeight(),0,0);
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
-//        AdView adView = (AdView)findViewById(R.id.ad_view);
-//        AdRequest adRequest = new AdRequest.Builder()
-//                                  .addTestDevice("6DB381F1EC310CCE075C40F06962EDFA")
-//                                  .build();
-//        adView.loadAd(adRequest);
+        AdView adView = (AdView)findViewById(R.id.ad_view);
+        AdRequest adRequest = new AdRequest.Builder()
+                                  .addTestDevice("6DB381F1EC310CCE075C40F06962EDFA-")
+                                  .build();
+        adView.loadAd(adRequest);
 
         mBundle = new Bundle();
         changeFragment(BookmarkFragment.class);
@@ -150,13 +157,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             ft.setCustomAnimations(
                 R.anim.fragment_in,
-                R.anim.fragment_out);
+               R.anim.fragment_out,
+               R.anim.fragment_in,
+               R.anim.fragment_out);
             ft.replace(R.id.fragment_area,f);
             if(firstFlag)
                 firstFlag = false;
             else
                 ft.addToBackStack(null);
             ft.commit();
+            showAppBar(true);
+
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -169,9 +181,29 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if(drawer.isDrawerOpen(Gravity.LEFT))
             drawer.closeDrawer(Gravity.LEFT);
-        else
+        else {
+            showAppBar(true);
             super.onBackPressed();
+        }
     }
 
+    public void showAppBar(boolean flag){
+        if(flag) {
+            Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+            ((AppBarLayout.LayoutParams) toolbar.getLayoutParams()).setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS);
+        }
+        AppBarLayout appbar = (AppBarLayout)findViewById(R.id.appbar);
+        appbar.setExpanded(flag);
 
+    }
+    public void setAppBarScroll(boolean flag) {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        int a = ((AppBarLayout.LayoutParams) toolbar.getLayoutParams()).getScrollFlags();
+        if (flag)
+            ((AppBarLayout.LayoutParams) toolbar.getLayoutParams()).setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL|AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS);
+        else {
+            ((AppBarLayout.LayoutParams) toolbar.getLayoutParams()).setScrollFlags(0);
+        }
+        showAppBar(!flag);
+    }
 }

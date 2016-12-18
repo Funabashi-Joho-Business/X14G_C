@@ -8,7 +8,9 @@ import android.database.sqlite.SQLiteDatabase;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelBookmark;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelContent;
@@ -18,7 +20,7 @@ import to.pns.lib.AppDB;
 
 public class NovelDB extends AppDB {
     public NovelDB(Context context) {
-        super(context, "novel5.db", 3);
+        super(context, "novel5.db", 4);
     }
 
     @Override
@@ -41,11 +43,18 @@ public class NovelDB extends AppDB {
         sql = "create table t_novel_content(n_code text,sub_no int,content_update date,content_body text,content_tag text,primary key(n_code,sub_no))";
         db.execSQL(sql);
 
+        sql = "create table t_novel_read(n_code text,sub_no int,read_date date,primary key(n_code,sub_no))";
+        db.execSQL(sql);
+
     }
 
     @Override
-    public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
-
+    public void onUpgrade(SQLiteDatabase db, int i, int i1) {
+        String sql;
+        if(i < 4){
+            sql = "create table t_novel_read(n_code text,sub_no int,read_date date,primary key(n_code,sub_no))";
+            db.execSQL(sql);
+        }
     }
 
 
@@ -126,6 +135,15 @@ public class NovelDB extends AppDB {
         String sql = String.format("select * from t_novel_info where ncode in (%s)",sb.toString());
         return queryClass(sql,NovelInfo.class);
     }
+    public Map<String,NovelInfo> getNovelInfoMap(List<String> listNcode){
+        List<NovelInfo> novelInfo = getNovelInfo(listNcode);
+
+        HashMap<String, NovelInfo> map = new HashMap<String, NovelInfo>();
+        for(NovelInfo n : novelInfo){
+            map.put(n.ncode,n);
+        }
+        return map;
+    }
     public void clearBookmark(){
         exec("delete from t_bookmark");
     }
@@ -173,7 +191,7 @@ public class NovelDB extends AppDB {
 
     public List<NovelSubTitle> getSubTitles(String ncode) {
         //メインに登録されているデータを抽出
-        String sql = String.format("select * from t_novel_sub where n_code='%s' order by sub_no",STR(ncode));
+        String sql = String.format("select n_code,sub_no,sub_title,sub_regdate,sub_update,read_date,content_update from t_novel_sub natural left join t_novel_read natural left join t_novel_content where n_code='%s' order by sub_no",STR(ncode));
         Cursor c = query(sql);
         List<NovelSubTitle> list = new ArrayList<NovelSubTitle>();
         for(int i=1;c.moveToNext();i++){
@@ -183,12 +201,20 @@ public class NovelDB extends AppDB {
             n.date = java.sql.Timestamp.valueOf(c.getString(3));
             if(c.getString(4) != null)
                 n.update = java.sql.Timestamp.valueOf(c.getString(4));
+            if(c.getString(5) != null)
+                n.readDate = java.sql.Timestamp.valueOf(c.getString(5));
+            if(c.getString(6) != null)
+                n.contentDate = java.sql.Timestamp.valueOf(c.getString(6));
             list.add(n);
         }
         return list;
     }
 
-
+    public void setNovelReaded(String ncode, int index){
+        String sql = String.format("replace into t_novel_read values('%s',%d,'%s')",
+                STR(ncode),index,new java.sql.Timestamp(new Date().getTime()));
+        exec(sql);
+    }
     public NovelContent getNovelContent(String ncode, int index) {
         String sql = String.format("select sub_title,sub_regdate,sub_update,content_body,content_tag from t_novel_content natural join t_novel_sub where n_code='%s' and sub_no=%d",STR(ncode),index);
         Cursor c = query(sql);

@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
@@ -52,7 +53,7 @@ public class SubtitleAdapter extends RecyclerView.Adapter implements View.OnClic
         ViewGroup viewInfo = (ViewGroup) holder.itemView.findViewById(R.id.layoutInfo);
         ViewGroup viewSub =  (ViewGroup) holder.itemView.findViewById(R.id.layoutSubtitle);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd(E)");
-
+        NumberFormat nf = NumberFormat.getNumberInstance();
         if(position == 0) {
             viewInfo.setVisibility(View.VISIBLE);
             viewSub.setVisibility(View.GONE);
@@ -65,10 +66,10 @@ public class SubtitleAdapter extends RecyclerView.Adapter implements View.OnClic
 
             ((TextView)mInfoView.findViewById(R.id.textTitle)).setText(mNovelInfo.title);
             ((TextView)mInfoView.findViewById(R.id.textInfo)).setText(mNovelInfo.story);
-            ((TextView)mInfoView.findViewById(R.id.textDate)).setText(sdf.format(mNovelInfo.updated_at));
+            ((TextView)mInfoView.findViewById(R.id.textDate)).setText(sdf.format(mNovelInfo.general_lastup));
             ((TextView)mInfoView.findViewById(R.id.textWritter)).setText(mNovelInfo.writer);
-            ((TextView)mInfoView.findViewById(R.id.textPoint)).setText(mNovelInfo.global_point+"pt");
-            holder.itemView.setTag(R.layout.item_bookmark,-1);
+            ((TextView)mInfoView.findViewById(R.id.textPoint)).setText(nf.format(mNovelInfo.global_point)+"pt");
+            holder.itemView.setTag(R.layout.item_title,-1);
         }
         else{
             if(viewInfo.getChildCount() > 0)
@@ -87,15 +88,17 @@ public class SubtitleAdapter extends RecyclerView.Adapter implements View.OnClic
             holder.itemView.findViewById(R.id.layoutSubtitle).setVisibility(View.VISIBLE);
             holder.itemView.findViewById(R.id.layoutInfo).setVisibility(View.GONE);
 
-            holder.itemView.setTag(R.layout.item_bookmark,pos-1);
+            holder.itemView.setTag(R.layout.item_title,pos-1);
             ((TextView)holder.itemView.findViewById(R.id.textNo)).setText(""+pos);
             ((TextView)holder.itemView.findViewById(R.id.textTitle)).setText(v.title);
 
 
             String dateString = sdf.format(v.date);
-            if (v.update != null)
-                dateString += "  改稿"+sdf.format(v.update);
-            ((TextView)holder.itemView.findViewById(R.id.textDate)).setText(dateString);
+            ((TextView)holder.itemView.findViewById(R.id.textRegDate)).setText(dateString);
+            ((TextView)holder.itemView.findViewById(R.id.textUpdate)).setText(v.update!=null?sdf.format(v.update):"");
+            ((TextView)holder.itemView.findViewById(R.id.textAlreadyDate)).setText(v.readDate!=null?sdf.format(v.readDate):"");
+            ((TextView)holder.itemView.findViewById(R.id.textRecvDate)).setText(v.contentDate!=null?sdf.format(v.contentDate):"");
+
         }
 
 
@@ -118,7 +121,7 @@ public class SubtitleAdapter extends RecyclerView.Adapter implements View.OnClic
     @Override
     public void onClick(View view) {
         if(mListener != null) {
-            int pos = (int) view.getTag(R.layout.item_bookmark);
+            int pos = (int) view.getTag(R.layout.item_title);
             if(pos >= 0)
                 mListener.onItemClick(mValues.get(pos).index);
         }

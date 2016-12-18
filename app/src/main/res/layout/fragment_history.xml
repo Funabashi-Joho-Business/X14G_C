@@ -13,7 +13,9 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:clipToPadding="false"
-            tools:listitem="@layout/item_history" />
+            tools:listitem="@layout/item_title"
+            android:scrollbars="vertical"
+            android:paddingTop="@dimen/bar_margin" />
     </android.support.v4.widget.SwipeRefreshLayout>
 
 </FrameLayout>

@@ -123,7 +123,24 @@ public class ContentsFragment extends Fragment {
         getContext().registerReceiver(mReceiver,new IntentFilter(NaroReceiver.NOTIFI_NOVELCONTENT));
 
     }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()){
+            case R.id.menu_zoom_down:
+                setFontSize(mFontSize-1);
+                return true;
+            case R.id.menu_zoom_up:
+                setFontSize(mFontSize+1);
+                return true;
+            case R.id.menu_bbs:
+                Uri uri = Uri.parse("http://novelcom.syosetu.com/impression/list/ncode/"+ TbnReader.convertNcode(mNCode)+"/");
+                Intent i = new Intent(Intent.ACTION_VIEW,uri);
+                startActivity(i);
+                break;
+        }
 
+        return super.onOptionsItemSelected(item);
+    }
     @Override
     public void onDestroy() {
         //イベント通知受け取りを解除
@@ -192,24 +209,7 @@ public class ContentsFragment extends Fragment {
         getContext().sendBroadcast(intent.setAction(NaroReceiver.ACTION_NOVELCONTENT));
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch(item.getItemId()){
-            case R.id.menu_zoom_down:
-                setFontSize(mFontSize-1);
-                break;
-            case R.id.menu_zoom_up:
-                setFontSize(mFontSize+1);
-                break;
-            case R.id.menu_bbs:
-                Uri uri = Uri.parse("http://novelcom.syosetu.com/impression/list/ncode/"+ TbnReader.convertNcode(mNCode)+"/");
-                Intent i = new Intent(Intent.ACTION_VIEW,uri);
-                startActivity(i);
-                break;
-        }
 
-        return super.onOptionsItemSelected(item);
-    }
     void setFontSize(int size){
         if(mFontSize != size){
             mFontSize = size;
@@ -217,6 +217,7 @@ public class ContentsFragment extends Fragment {
             db.setSetting("fontSize",size);
             db.close();
         }
+        setStyle(".title","font-size",mFontSize+"pt");
         setStyle(".body","font-size",mFontSize+"pt");
     }
 }
