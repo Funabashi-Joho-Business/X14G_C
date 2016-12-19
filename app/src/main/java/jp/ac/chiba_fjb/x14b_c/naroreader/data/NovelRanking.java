@@ -10,7 +10,7 @@ public class NovelRanking {
     public String title;
     public String writerName;
     public int writerId;
-    public Date update;
+    public Date novelUpdate;
     public String info;
     public int novelCount;
     public int point;

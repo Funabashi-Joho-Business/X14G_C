@@ -46,7 +46,7 @@ public class RankingAdapter extends RecyclerView.Adapter implements View.OnClick
         //positionから必要なデータをビューに設定する
 
         NovelRanking b = mValues.get(position);
-        String dateString = new SimpleDateFormat("yyyy年MM月dd日").format(b.update);
+        String dateString = new SimpleDateFormat("yyyy年MM月dd日").format(b.novelUpdate);
 
         holder.itemView.setTag(R.layout.item_ranking,position);
         ((TextView)holder.itemView.findViewById(R.id.textRank)).setText((position+1)+"位");

@@ -6,4 +6,8 @@
     <item android:title="ブック\nマーク解除"
           android:icon="@android:drawable/ic_menu_add"
           android:id="@+id/menu_bookmark_del"/>
+
+    <item android:title="全文\nキャッシュ"
+        android:icon="@android:drawable/stat_sys_download"
+        android:id="@+id/menu_download"/>
 </menu>

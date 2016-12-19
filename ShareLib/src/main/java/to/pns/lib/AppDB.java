@@ -25,7 +25,7 @@ public abstract class AppDB extends SQLite {
     }
 
 
-    public static String createSqlCreateClass(Class c,String className,String primary){
+    public static String createSqlCreateClass(Class c,String className,String... primary){
         Map<Class,String> map = new HashMap<Class,String>();
         map.put(String.class,"text");
         map.put(int.class,"int");
@@ -34,16 +34,26 @@ public abstract class AppDB extends SQLite {
         StringBuilder sb = new StringBuilder();
         for(int i=0;i<c.getFields().length;i++) {
             Field f = c.getFields()[i];
-            if(f.getName().charAt(0) == '$')
+            if(f.getName().charAt(0) == '$' || f.getName().equals("serialVersionUID"))
                 continue;
             if(sb.length()>0)
                 sb.append(",");
 
             sb.append(String.format("%s %s",f.getName(),map.get(f.getType())));
-            if(f.getName().equals(primary))
-                sb.append(" primary key");
         }
-        return String.format("create table %s (%s)",className,sb.toString());
+
+        StringBuilder sbPrimary = new StringBuilder();
+        if(primary.length > 0){
+            sbPrimary.append(",primary key(");
+            for(int i=0;i<primary.length;i++){
+                if(i > 0)
+                    sbPrimary.append(",");
+                sbPrimary.append(primary[i]);
+            }
+            sbPrimary.append(")");
+
+        }
+        return String.format("create table %s (%s%s)",className,sb.toString(),sbPrimary.toString());
     }
     public <T>  List<T> queryClass(String sql,Class<T> cs){
         try {
@@ -84,7 +94,7 @@ public abstract class AppDB extends SQLite {
             StringBuilder sbName = new StringBuilder();
             for(int i=0;i<c.getFields().length;i++) {
                 Field f = c.getFields()[i];
-                if(f.getName().charAt(0) == '$')
+                if(f.getName().charAt(0) == '$' || f.getName().equals("serialVersionUID"))
                     continue;
 
                 if(sbName.length()>0) {

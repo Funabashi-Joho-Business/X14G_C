@@ -1,6 +1,10 @@
 package jp.ac.chiba_fjb.x14b_c.naroreader.Ranking;
 
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -19,6 +23,7 @@ import java.util.List;
 
 import jp.ac.chiba_fjb.x14b_c.naroreader.AddBookmarkFragment;
 import jp.ac.chiba_fjb.x14b_c.naroreader.MainActivity;
+import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NaroReceiver;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NovelDB;
 import jp.ac.chiba_fjb.x14b_c.naroreader.R;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Subtitle.SubtitleFragment;
@@ -109,6 +114,24 @@ public class RankingFragment extends Fragment implements AdapterView.OnItemSelec
     private Spinner mSpiner3;
     private RankingAdapter mAdapter;
 
+    //通知処理
+    private BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            switch(intent.getAction()){
+                case NaroReceiver.NOTIFI_RANKING:
+                    if(getView() != null) {
+                        ((SwipeRefreshLayout) getView().findViewById(R.id.swipe_refresh)).setRefreshing(false);
+                        if (!intent.getBooleanExtra("result", false))
+                            Snackbar.make(getView(), "ランキングの受信失敗", Snackbar.LENGTH_SHORT).show();
+                        else
+                            update();
+                    }
+                    break;
+            }
+        }
+    };
+
     public RankingFragment() {
         // Required empty public constructor
     }
@@ -167,9 +190,16 @@ public class RankingFragment extends Fragment implements AdapterView.OnItemSelec
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        load();
+
     }
 
+
+    @Override
+    public void onDestroy() {
+        //イベント通知受け取りを解除
+
+        super.onDestroy();
+    }
 
 
     @Override
@@ -182,11 +212,26 @@ public class RankingFragment extends Fragment implements AdapterView.OnItemSelec
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        //イベント通知受け取りの宣言
+        getContext().registerReceiver(mReceiver,new IntentFilter(NaroReceiver.NOTIFI_RANKING));
+        update();
+        load(false);
+    }
+
+    @Override
+    public void onStop() {
+        getContext().unregisterReceiver(mReceiver);
+        super.onStop();
+    }
+
+    @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
         if(adapterView ==  mSpiner1)
             updateSpiner();
         else
-            load();
+            load(false);
 
         int f1 = mSpiner1.getSelectedItemPosition();
         int f2 = mSpiner2.getSelectedItemPosition();
@@ -221,28 +266,44 @@ public class RankingFragment extends Fragment implements AdapterView.OnItemSelec
     public void onNothingSelected(AdapterView<?> adapterView) {
 
     }
-
+    void load(boolean flag){
+        if(flag)
+            load();
+        else{
+            //一時間経過していたら更新
+            NovelDB db = new NovelDB(getContext());
+            boolean re = db.isRankingReload(
+                    mSpiner1.getSelectedItemPosition(),
+                    mSpiner2.getSelectedItemPosition(),
+                    mSpiner3.getSelectedItemPosition(),
+                    60*60);
+            db.close();
+            if(re)
+                load();
+            else
+                update();
+        }
+    }
     void load(){
         ((SwipeRefreshLayout)getView().findViewById(R.id.swipe_refresh)).setRefreshing(true);
-        new Thread(){
-            @Override
-            public void run() {
-                final List<NovelRanking> rankList = TbnReader.getRanking(mSpiner1.getSelectedItemPosition(), mSpiner2.getSelectedItemPosition(), mSpiner3.getSelectedItemPosition());
-                if(getActivity() != null) {
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            mAdapter.setRanking(rankList);
-                            mAdapter.notifyDataSetChanged();
-                            if(getView()!=null)
-                                ((SwipeRefreshLayout) getView().findViewById(R.id.swipe_refresh)).setRefreshing(false);
-                        }
-                    });
-                }
-            }
-        }.start();
-    }
 
+        Intent intent = new Intent(getContext(),NaroReceiver.class).setAction(NaroReceiver.ACTION_RANKING);
+        intent.putExtra("kind1",mSpiner1.getSelectedItemPosition());
+        intent.putExtra("kind2",mSpiner2.getSelectedItemPosition());
+        intent.putExtra("kind3",mSpiner3.getSelectedItemPosition());
+        getContext().sendBroadcast(intent);
+
+    }
+    void update() {
+        NovelDB db = new NovelDB(getContext());
+        List<NovelRanking> novelRanking = db.getRanking(
+                mSpiner1.getSelectedItemPosition(),
+                mSpiner2.getSelectedItemPosition(),
+                mSpiner3.getSelectedItemPosition());
+        db.close();
+        mAdapter.setRanking(novelRanking);
+        mAdapter.notifyDataSetChanged();
+    }
 
     @Override
     public void onItemClick(NovelRanking item) {

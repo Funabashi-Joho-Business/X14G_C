@@ -144,6 +144,9 @@ public class BookmarkFragment extends Fragment implements BookmarkAdapter.OnItem
             case R.id.menu_bookmark_del:
                 delBookmark();
                 break;
+            case R.id.menu_download:
+                download();
+                break;
 
         }
 
@@ -186,7 +189,7 @@ public class BookmarkFragment extends Fragment implements BookmarkAdapter.OnItem
 
     @Override
     public void onItemCheck() {
-        setDelayMenu();
+     //   setDelayMenu();
     }
     void setDelayMenu(){
 //        mHandler.removeCallbacks(null);
@@ -201,6 +204,11 @@ public class BookmarkFragment extends Fragment implements BookmarkAdapter.OnItem
         ((MainActivity)getActivity()).setAppBarScroll(mAdapter.getChecks().size() == 0);
     }
 
+    void download(){
+        Set<String> checks = mAdapter.getChecks();
+        ArrayList<String> list = new ArrayList<String>(checks);
+        NaroReceiver.download(getContext(),list);
+    }
 
 
     void delBookmark(){

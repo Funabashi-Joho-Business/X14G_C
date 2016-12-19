@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -12,15 +13,48 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelBody;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelBookmark;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelContent;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelInfo;
+import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelRanking;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelSubTitle;
 import to.pns.lib.AppDB;
 
+class NovelIndex{
+    public String ncode;
+    public int index;
+}
+
+class NovelRankingValue extends NovelRanking{
+    public int ranking_kind1;
+    public int ranking_kind2;
+    public int ranking_kind3;
+    public int ranking_index;
+    public NovelRankingValue(int kind1,int kind2,int kind3,int index,NovelRanking v){
+        ranking_kind1 = kind1;
+        ranking_kind2 = kind2;
+        ranking_kind3 = kind3;
+        ranking_index = index;
+
+        //全プロパティーのコピー
+        Class c = v.getClass();
+        Field[] fields = c.getFields();
+        for(Field f : fields){
+            try {
+                String name = f.getName();
+                if(name.charAt(0) != '$' && !name.equals("serialVersionUID"))
+                   f.set(this,f.get(v));
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}
+
 public class NovelDB extends AppDB {
     public NovelDB(Context context) {
-        super(context, "novel5.db", 4);
+        super(context, "novel00.db", 1);
     }
 
     @Override
@@ -40,20 +74,26 @@ public class NovelDB extends AppDB {
         sql = "create table t_novel_sub(n_code text,sub_no int,sub_title text,sub_regdate date,sub_update date,primary key(n_code,sub_no))";
         db.execSQL(sql);
 
-        sql = "create table t_novel_content(n_code text,sub_no int,content_update date,content_body text,content_tag text,primary key(n_code,sub_no))";
+        sql = "create table t_novel_content(n_code text,sub_no int,content_update date,content_body text,content_preface text,content_trailer text,content_tag text,primary key(n_code,sub_no))";
         db.execSQL(sql);
 
         sql = "create table t_novel_read(n_code text,sub_no int,read_date date,primary key(n_code,sub_no))";
         db.execSQL(sql);
 
+        sql = "create table t_novel_ranking(ranking_kind1 int,ranking_kind2,ranking_kind3,ranking_date date,primary key(ranking_kind1,ranking_kind2,ranking_kind3))";
+        db.execSQL(sql);
+        sql = createSqlCreateClass(NovelRankingValue.class,"t_novel_ranking_info","ranking_kind1","ranking_kind2","ranking_kind3","ranking_index");
+        db.execSQL(sql);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int i, int i1) {
         String sql;
-        if(i < 4){
-            sql = "create table t_novel_read(n_code text,sub_no int,read_date date,primary key(n_code,sub_no))";
-            db.execSQL(sql);
+        if(i < 1) {
+
+        }
+        if(i<2){
+
         }
     }
 
@@ -78,13 +118,15 @@ public class NovelDB extends AppDB {
         }
         commit();
     }
-    public void addNovelContents(String ncode,int index,String content,String tag){
+    public void addNovelContents(String ncode, int index, NovelBody novelBody){
         ContentValues values = new ContentValues();
         values.put("n_code", ncode);
         values.put("sub_no", index);
         values.put("content_update", new java.sql.Timestamp(new Date().getTime()).toString());
-        values.put("content_body",content);
-        values.put("content_tag",tag);
+        values.put("content_body",novelBody.body);
+        values.put("content_tag",novelBody.tag);
+        values.put("content_preface",novelBody.preface);
+        values.put("content_trailer",novelBody.trailer);
         replace("t_novel_content",values);
     }
     public void addNovelHistory(String ncode){
@@ -216,7 +258,7 @@ public class NovelDB extends AppDB {
         exec(sql);
     }
     public NovelContent getNovelContent(String ncode, int index) {
-        String sql = String.format("select sub_title,sub_regdate,sub_update,content_body,content_tag from t_novel_content natural join t_novel_sub where n_code='%s' and sub_no=%d",STR(ncode),index);
+        String sql = String.format("select sub_title,sub_regdate,sub_update,content_body,content_preface,content_trailer,content_tag from t_novel_content natural join t_novel_sub where n_code='%s' and sub_no=%d",STR(ncode),index);
         Cursor c = query(sql);
         NovelContent content = null;
         if(c.moveToNext()){
@@ -228,7 +270,9 @@ public class NovelDB extends AppDB {
             if(c.getString(2) != null)
                 content.update = java.sql.Timestamp.valueOf(c.getString(2));
             content.body = c.getString(3);
-            content.tag = c.getString(4);
+            content.preface = c.getString(4);
+            content.trailer = c.getString(5);
+            content.tag = c.getString(6);
 
         }
         c.close();
@@ -237,4 +281,52 @@ public class NovelDB extends AppDB {
 
     }
 
+    public void addRanking(int kind1, int kind2, int kind3, List<NovelRanking> rankList) {
+        int index = 1;
+        begin();
+        String sql = String.format("replace into t_novel_ranking values(%d,%d,%d,datetime('now'));",kind1,kind2,kind3);
+        exec(sql);
+        for(NovelRanking rank : rankList){
+            NovelRankingValue v = new NovelRankingValue(kind1,kind2,kind3,index++,rank);
+            sql = createSqlReplaceClass(v,"t_novel_ranking_info");
+            exec(sql);
+        }
+        commit();
+    }
+    public List<NovelRanking> getRanking(int kind1, int kind2, int kind3){
+        String sql = String.format("select * from t_novel_ranking_info where ranking_kind1=%d and ranking_kind2=%d and ranking_kind3=%d order by ranking_index",
+                kind1,kind2,kind3);
+        return queryClass(sql,NovelRanking.class);
+    }
+    public boolean isRankingReload(int kind1, int kind2, int kind3,int time){
+        String sql = String.format(
+                "select 1 from t_novel_ranking where ranking_kind1=%d and ranking_kind2=%d and "+
+                "ranking_kind3=%d and strftime('%%s', 'now') - strftime('%%s', ranking_date) < %d",
+                kind1,kind2,kind3,time);
+        Cursor c = query(sql);
+        boolean ret = !c.moveToNext();
+        c.close();
+        return ret;
+    }
+
+    public List<NovelIndex> getContentNull(List<String> listNcode) {
+        StringBuilder sb = new StringBuilder();
+        for(String s : listNcode){
+            if(sb.length() > 0)
+                sb.append(",");
+            sb.append(String.format("'%s'",s.toUpperCase()));
+        }
+        String sql = String.format("select n_code,sub_no from t_novel_sub natural left join t_novel_content where n_code in (%s) and content_body isnull",sb.toString());
+
+        List<NovelIndex> list = new ArrayList<>();
+        Cursor c = query(sql);
+        while(c.moveToNext()){
+            NovelIndex novelIndex = new NovelIndex();
+            novelIndex.ncode = c.getString(0);
+            novelIndex.index = c.getInt(1);
+            list.add(novelIndex);
+        }
+        c.close();
+        return list;
+    }
 }

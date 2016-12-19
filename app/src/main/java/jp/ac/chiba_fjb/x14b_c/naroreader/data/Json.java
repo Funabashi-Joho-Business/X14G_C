@@ -7,8 +7,12 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.List;
+import java.util.Map;
+import java.util.zip.GZIPInputStream;
 
 public class Json{
+
     public static <T> T send(String adress,Object obj, Class<T> valueType){
         HttpURLConnection connection = null;
         StringBuilder sb = new StringBuilder();
@@ -23,6 +27,7 @@ public class Json{
             connection.setRequestMethod("POST");
             connection.setInstanceFollowRedirects(true);
             connection.setRequestProperty("Content-Type", String.format("text/plain"));
+            connection.setRequestProperty("Accept-Encoding", "gzip,deflate,sdch");
             connection.setDoOutput(true);
             //オブジェクトをJSONデータに変換して出力
             OutputStream os = connection.getOutputStream();
@@ -31,9 +36,16 @@ public class Json{
                 os.write(data);
             }
             os.close();
+            final Map<String,List<String>> headers = connection.getHeaderFields();
 
-            InputStreamReader is = new InputStreamReader(connection.getInputStream(),"UTF-8");
+            InputStreamReader is;
+            if(headers.get("Content-Type")!=null && headers.get("Content-Type").get(0).equals("application/x-gzip"))
+                is = new InputStreamReader(new GZIPInputStream(connection.getInputStream()),"UTF-8");
+            else
+                is = new InputStreamReader(connection.getInputStream(),"UTF-8");
             BufferedReader br    = new BufferedReader(is);
+
+
 
             //    １行ずつ書き出す
             String line;

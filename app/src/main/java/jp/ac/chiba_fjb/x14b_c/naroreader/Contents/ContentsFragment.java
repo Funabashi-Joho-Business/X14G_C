@@ -19,6 +19,9 @@ import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NaroReceiver;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NovelDB;
 import jp.ac.chiba_fjb.x14b_c.naroreader.R;
@@ -49,9 +52,9 @@ public class ContentsFragment extends Fragment {
 
     private String mNCode;
     private int mIndex;
-    private String mTitle;
-    private String mBody;
-    private String mTag;
+    private String mMsg;
+    private int mWebMsgIndex = 0;
+    private Map<Integer,String> mMapMsg = new HashMap<Integer,String>();
 
     public ContentsFragment() {
         // Required empty public constructor
@@ -65,7 +68,7 @@ public class ContentsFragment extends Fragment {
             super.onPageFinished(view, url);
             update(true);
 
-            setStyle(".body","font-size",mFontSize+"pt");
+            setStyle(".all","font-size",mFontSize+"pt");
         }
 
 
@@ -164,12 +167,16 @@ public class ContentsFragment extends Fragment {
             else
                 msg = "データ無し";
 
-            setBody(msg);
+            setText(".body",msg);
         }
         else {
             setText(".title",nc.title);
             setText(".tag",nc.tag);
-            setBody(nc.body);
+            setText(".body",nc.body);
+            if(nc.preface != null)
+                setText(".preface",nc.preface);
+            if(nc.trailer != null)
+                setText(".trailer",nc.trailer);
         }
 
     }
@@ -177,18 +184,21 @@ public class ContentsFragment extends Fragment {
         String script = String.format("javascript:setStyle('%s','%s','%s');",tag,name,value);
         mWebView.loadUrl(script);
     }
-    public void setBody(String body){
-        mBody = body;
-        mWebView.loadUrl("javascript:update();");
-    }
-    public void setText(String name,String body){
-        String v = body.replaceAll("'","\\'");
-        String script = String.format("javascript:setText('%s','%s');",name,v);
+    public void setText(String name,String msg){
+        int index = addMsg(msg);
+        //データの書き換え
+        String script = String.format("javascript:setText('%s',Java.getMsg(%d));",name,index);
         mWebView.loadUrl(script);
     }
+    public int addMsg(String msg){
+        mMapMsg.put(mWebMsgIndex++,msg);
+        return mWebMsgIndex-1;
+    }
     @JavascriptInterface
-    public String getBody(){
-        return mBody;
+    public String getMsg(int i){
+        String msg = mMapMsg.get(i);
+        mMapMsg.remove(i);
+        return msg;
     }
 
 
@@ -217,7 +227,7 @@ public class ContentsFragment extends Fragment {
             db.setSetting("fontSize",size);
             db.close();
         }
-        setStyle(".title","font-size",mFontSize+"pt");
-        setStyle(".body","font-size",mFontSize+"pt");
+        //setStyle(".title","font-size",mFontSize+"pt");
+        setStyle(".all","font-size",mFontSize+"pt");
     }
 }

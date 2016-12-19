@@ -6,12 +6,20 @@ div.title{
     text-align: center;
     font-weight: bold;
     margin-top: 1em;
-    margin-bottom: 3em;
+    margin-bottom: 1em;
     font-size: 120%;
 }
 div.body{
     font-size: 100%;
 }
+div.preface{
+    font-style:oblique;
+    margin-bottom: 1em;
+}
+div.trailer{
+    font-style:oblique;
+    margin-top: 2em;
+}
 div.space{
-    height: 10ex;
+    height: 5ex;
 }

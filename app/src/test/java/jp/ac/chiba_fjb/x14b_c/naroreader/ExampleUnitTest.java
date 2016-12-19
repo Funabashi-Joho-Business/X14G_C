@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import org.junit.Test;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Scanner;
@@ -147,7 +148,7 @@ public class ExampleUnitTest {
 	}
 
 
-    //@Test
+    @Test
 	public void getRankList(){
 
 
@@ -230,7 +231,7 @@ public class ExampleUnitTest {
         System.out.println("大分類");
         for(int i=0;i<RANKING_FILTER1_NAME.length;i++)
             System.out.format("%d:%s\n",i,RANKING_FILTER1_NAME[i]);
-        int filter1 = 1;//sc.nextInt();
+        int filter1 = 0;//sc.nextInt();
 
         System.out.println("中分類");
         for(int i=0;i<RANKING_FILTER2_NAME[filter1].length;i++)
@@ -240,16 +241,22 @@ public class ExampleUnitTest {
         System.out.println("小分類");
         for(int i=0;i<RANKING_FILTER3_NAME[filter1].length;i++)
             System.out.format("%d:%s\n",i,RANKING_FILTER3_NAME[filter1][i]);
-        int filter3 = 2;//sc.nextInt();
+        int filter3 = 0;//sc.nextInt();
 
 
         List<NovelRanking> list = TbnReader.getRanking(filter1,filter2,filter3);
 		if(list == null)
 			System.out.println("データ取得失敗");
 		else {
+			int i=1;
 			for(NovelRanking r : list){
-				System.out.format("%s %s\n",r.ncode,r.title);
+				System.out.format("%03d %s %s\n",i++,r.ncode,r.title);
 			}
 		}
+	}
+	//@Test
+	public void testBody(){
+		NovelBody data = TbnReader.getNovelBody("n7133dp", 1);
+		System.out.println(data.preface);
 	}
 }

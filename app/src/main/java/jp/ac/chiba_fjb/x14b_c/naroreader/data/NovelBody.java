@@ -5,6 +5,8 @@ package jp.ac.chiba_fjb.x14b_c.naroreader.data;
  */
 public class NovelBody {
     public String title;
+    public String preface;
+    public String trailer;
     public String body;
     public String tag;
 }
