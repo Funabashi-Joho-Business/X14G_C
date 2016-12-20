@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import jp.ac.chiba_fjb.x14b_c.naroreader.MainActivity;
 import jp.ac.chiba_fjb.x14b_c.naroreader.R;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelBody;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelBookmark;
@@ -17,6 +18,7 @@ import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelRanking;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelSubTitle;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.TbnReader;
 import to.pns.lib.LogService;
+import to.pns.lib.Notify;
 
 /*
 色々な通信系の処理をこのクラスで実装すること
@@ -35,12 +37,17 @@ public class NaroReceiver extends BroadcastReceiver {
 
     public static final String ACTION_NOVELCONTENT = "ACTION_NOVELCONTENT"; //本文の取得
     public static final String NOTIFI_NOVELCONTENT = "NOTIFI_NOVELCONTENT"; //本文取得終了後の通知
+    public static final String ACTION_NOVELCONTENT_STOP = "ACTION_NOVELCONTENT_STOP"; //本文の取得停止
 
     public static final String ACTION_RANKING = "ACTION_RANKING"; //ランキングの取得
     public static final String NOTIFI_RANKING = "NOTIFI_RANKING"; //ランキング取得終了後の通知
 
+    private static boolean mDownload;
+
     public NaroReceiver() {
     }
+
+
     public static void updateBookmark(Context con){
         con.sendBroadcast(new Intent(con,NaroReceiver.class).setAction(NaroReceiver.ACTION_BOOKMARK));
     }
@@ -157,44 +164,71 @@ public class NaroReceiver extends BroadcastReceiver {
                         String ncode = intent.getStringExtra("ncode");
                         if(ncode == null)
                             return;
-
+                        recvSubtitle(context,ncode);
                         LogService.output(context,"ノベルサブタイトルの取得");
 
 
-                        //取得した検索情報をDBに保存
-                        List<NovelSubTitle> titles = TbnReader.getSubTitle(ncode);
-                        if(titles != null) {
-                            //DBを利用
-                            NovelDB db = new NovelDB(context);
-                            db.addSubTitle(ncode,titles);
-                            db.close();
-                            LogService.output(context, "ノベルサブタイトルの取得完了");
-                        }
+
                         //更新完了通知
                         context.sendBroadcast(new Intent().setAction(NOTIFI_NOVELSUB).putExtra("result",true));
                     }
                 }.start();
                 break;
+            case ACTION_NOVELCONTENT_STOP:
+                mDownload = false;
+                break;
             case ACTION_NOVELCONTENT:
+                Intent intent1 =  new Intent(context,NaroReceiver.class).setAction(ACTION_NOVELCONTENT_STOP);
+                //ステータスバー表示用
+                final Notify notify = new Notify(context,intent1,R.layout.status_layout,R.mipmap.ic_launcher);
+                notify.setRemoteText(R.id.textTitle,context.getString(R.string.app_name));
+                notify.setRemoteImage(R.id.imageNotify, R.mipmap.ic_launcher, 0);
+                notify.setIcon(R.mipmap.ic_launcher,0);
+
+                notify.output("受信開始",false);
+
+                mDownload = true;
                 new Thread(){
                     @Override
                     public void run() {
                         List<String> ncodes = (List<String>) intent.getSerializableExtra("ncodes");
                         if(ncodes != null){
+                            //複数のデータを取得
+
+                            notify.setRemoteText(R.id.textMsg,"サブタイトル確認中");
+                            //サブタイトルの受信
+                            for(String ncode : ncodes){
+                                recvSubtitle(context,ncode);
+                            }
+
                             NovelDB db = new NovelDB(context);
                             List<NovelIndex> list = db.getContentNull(ncodes);
                             db.close();
 
+                            int count=0;
                             for(NovelIndex novelIndex : list){
+                                notify.setRemoteText(R.id.textMsg,String.format("受信 %d/%d",count++,list.size()));
+                                notify.update();
+                                if(!mDownload)
+                                    break;
                                 recvContent(context,novelIndex.ncode,novelIndex.index);
                                 try {
-                                    Thread.sleep(80);
+                                    Thread.sleep(50);
                                 } catch (InterruptedException e) {
                                     e.printStackTrace();
                                 }
                             }
+                            if(mDownload) {
+                                notify.setRemoteText(R.id.textMsg, String.format("受信完了"));
+                                notify.output("受信完了", true);
+                            }else{
+                                notify.setRemoteText(R.id.textMsg, String.format("受信中断"));
+                                notify.output("受信中断", true);
+                            }
+
                         }
                         else{
+                            //単発処理
                             String ncode = intent.getStringExtra("ncode");
                             int index = intent.getIntExtra("index",0);
                             if(ncode == null)
@@ -240,7 +274,19 @@ public class NaroReceiver extends BroadcastReceiver {
 
 
     }
+    boolean recvSubtitle(Context context,String ncode){
+        //取得した検索情報をDBに保存
+        List<NovelSubTitle> titles = TbnReader.getSubTitle(ncode);
+        if(titles == null)
+            return false;
 
+        //DBを利用
+        NovelDB db = new NovelDB(context);
+        db.addSubTitle(ncode,titles);
+        db.close();
+        LogService.output(context, ncode+"のサブタイトルの取得完了");
+        return true;
+    }
     void recvContent(Context context,String ncode,int index){
         LogService.format(context,"%s(%d)の本文の取得",ncode,index);
         NovelBody body = TbnReader.getNovelBody(ncode,index);

@@ -82,7 +82,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
     private void addBookmark(Intent intent) {
         if(intent != null){
-            if(intent.getAction().equals(Intent.ACTION_SEND)){
+            if(intent.getAction() != null && intent.getAction().equals(Intent.ACTION_SEND)){
                 String url = intent.getStringExtra(Intent.EXTRA_TEXT);
                 if(url != null){
                     Pattern p = Pattern.compile("ncode.syosetu.com/(.*?)/");
