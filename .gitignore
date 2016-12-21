@@ -1,9 +1,28 @@
-*.iml
 .gradle
-/local.properties
-/.idea/workspace.xml
-/.idea/libraries
+local.properties
 .DS_Store
 /build
 /captures
 .externalNativeBuild
+
+
+# Intellij
+*.iml
+*.ipr
+*.iws
+.idea/
+!/vcs.xml
+
+ 
+.DS_Store
+ 
+# Android Studio
+.gradle/
+.idea/
+gradle/
+build/
+build.gradle
+gradlew
+gradlew.bat
+settings.gradle
+*.iml

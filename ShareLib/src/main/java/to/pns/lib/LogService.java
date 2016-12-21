@@ -5,7 +5,7 @@ import android.content.Intent;
 
 public class LogService 
 {
-	public static String UPDATE_NAME = "LOG_UPDATE";
+	public final static String UPDATE_NAME = "LOG_UPDATE";
 	
 	public static void output(Context con,String msg)
 	{

@@ -25,7 +25,7 @@ import java.util.regex.Pattern;
 
 import jp.ac.chiba_fjb.x14b_c.naroreader.Bookmark.BookmarkFragment;
 import jp.ac.chiba_fjb.x14b_c.naroreader.History.HistoryFragment;
-import jp.ac.chiba_fjb.x14b_c.naroreader.Other.FragmentLog;
+import jp.ac.chiba_fjb.x14b_c.naroreader.Other.LogFragment;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NaroReceiver;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NovelDB;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Ranking.RankingFragment;
@@ -126,7 +126,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 changeFragment(BookmarkFragment.class);
                 break;
             case R.id.nav_log:
-                changeFragment(FragmentLog.class);
+                changeFragment(LogFragment.class);
                 break;
             case R.id.nav_ranking:
                 changeFragment(RankingFragment.class);
