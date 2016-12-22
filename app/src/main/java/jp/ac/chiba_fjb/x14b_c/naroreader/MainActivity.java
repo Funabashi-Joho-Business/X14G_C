@@ -76,6 +76,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         LogService.output(getApplicationContext(),"アプリ起動");
         addBookmark(getIntent());
 
+
+        //レシーバーに起動通知
+        sendBroadcast(new Intent(this,NaroReceiver.class).setAction(NaroReceiver.ACTION_UPDATE_SETTING));
+
     }
     void bookmarkIntent(Intent intent){
 

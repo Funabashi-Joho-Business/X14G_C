@@ -17,15 +17,13 @@
 
         <TableRow
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent">
 
             <TextView
                 android:text="ID"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/textId"
-                android:padding="10dp"
-                android:layout_weight="1"/>
+                android:padding="10dp"/>
             <EditText
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -38,15 +36,13 @@
 
         <TableRow
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent">
 
             <TextView
                 android:text="Password"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/textPass"
-                android:padding="10dp"
-                android:layout_weight="1"/>
+                android:padding="10dp" />
 
             <EditText
                 android:layout_width="wrap_content"
@@ -63,57 +59,42 @@
             android:layout_height="wrap_content">
 
             <TextView
-                android:text="文字の色"
+                android:text="更新チェック"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/config2"
-                android:padding="10dp"
-                android:layout_weight="1" />
-
-            <Spinner
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/spinner3"
-                android:layout_weight="1"
-                android:elevation="0dp"
-                android:entries="@array/fontColor"
-                android:spinnerMode="dialog" />
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:text="背景の色"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/config3"
-                android:padding="10dp"
-                android:layout_weight="1" />
-
-            <Spinner
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/spinner4"
-                android:layout_weight="1"
-                android:entries="@array/fontColor"
-                android:spinnerMode="dialog" />
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+                android:padding="10dp"/>
 
             <LinearLayout
-                android:orientation="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:padding="0dp">
+                android:orientation="horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
 
+                <Switch
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/switchUpdateCheck"
+                    android:textOn="有効"
+                    android:textOff="無効" />
+
+                <EditText
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:inputType="number"
+                    android:ems="10"
+                    android:id="@+id/editUpdateTime"
+                    android:layout_weight="1"
+                    android:text="0"
+                    android:textAlignment="viewEnd" />
+
+                <TextView
+                    android:text="分"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
             </LinearLayout>
+
         </TableRow>
+
     </TableLayout>
 
 

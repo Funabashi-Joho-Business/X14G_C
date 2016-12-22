@@ -1,15 +1,18 @@
 package jp.ac.chiba_fjb.x14b_c.naroreader.Other;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.support.v4.widget.SwipeRefreshLayout;
+import android.os.Build;
+import android.os.Handler;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.StringTokenizer;
+import java.util.Map;
 
-import jp.ac.chiba_fjb.x14b_c.naroreader.MainActivity;
 import jp.ac.chiba_fjb.x14b_c.naroreader.R;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelBody;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelBookmark;
@@ -41,6 +44,11 @@ public class NaroReceiver extends BroadcastReceiver {
 
     public static final String ACTION_RANKING = "ACTION_RANKING"; //ランキングの取得
     public static final String NOTIFI_RANKING = "NOTIFI_RANKING"; //ランキング取得終了後の通知
+
+    public static final String ACTION_UPDATE_CHECK = "ACTION_UPDATE_CHECK"; //ランキングの取得
+    public static final String NOTIFI_UPDATE_CHECK = "NOTIFI_UPDATE_CHECK"; //ランキング取得終了後の通知
+
+    public static final String ACTION_UPDATE_SETTING = "ACTION_UPDATE_SETTING"; //ランキングの取得
 
     private static boolean mDownload;
 
@@ -97,6 +105,79 @@ public class NaroReceiver extends BroadcastReceiver {
     public void onReceive(final Context context, final Intent intent) {
         //処理要求の確認
         switch(intent.getAction()){
+            case ACTION_UPDATE_SETTING:
+            case Intent.ACTION_BOOT_COMPLETED:
+                //アップデートチェックを起動
+                startUpdateCheck(context);
+                break;
+            case ACTION_UPDATE_CHECK:
+                final Handler hanlder = new Handler();
+                new Thread(){
+                    @Override
+                    public void run() {
+                        LogService.output(context,"アップデートチェックを開始");
+
+                        NovelDB settingDB = new NovelDB(context);
+                        String id = settingDB.getSetting("loginId","");
+                        String pass = settingDB.getSetting("loginPass","");
+                        settingDB.close();
+
+                        //ログイン処理
+                        String hash = TbnReader.getLoginHash(id,pass);
+                        if(hash == null) {
+                            context.sendBroadcast(new Intent().setAction(NOTIFI_BOOKMARK).putExtra("result",false));
+                            LogService.output(context,"ログイン失敗");
+                            return;
+                        }
+                        LogService.output(context,"ブックマーク情報の読み込み開始");
+                        final List<NovelBookmark> bookmarks = TbnReader.getBookmark(hash);
+
+
+
+                        //DBに保存
+                        NovelDB db = new NovelDB(context);
+                        Map<String, NovelBookmark> map = db.getBookmarkMap();
+                        db.addBookmark(bookmarks);
+                        db.close();
+
+                        for(final NovelBookmark b : bookmarks){
+                            NovelBookmark old = map.get(b.getCode());
+                            if(old == null || b.getUpdate().getTimeInMillis() >  old.getUpdate().getTimeInMillis() ){
+                                //更新通知
+                                hanlder.post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        NovelDB db = new NovelDB(context);
+                                        NovelInfo info = db.getNovelInfo(b.getCode());
+                                        db.close();
+
+                                        PendingIntent pending = PendingIntent.getActivity(context,0,
+                                                new Intent(context,NaroReceiver.class),0);
+                                        final Notify notify = new Notify(context,234,pending,R.layout.status_layout,R.mipmap.ic_launcher);
+                                        notify.setRemoteImage(R.id.imageNotify, R.mipmap.ic_launcher, 0);
+                                        notify.setRemoteText(R.id.textTitle,context.getString(R.string.app_name));
+                                        notify.setIcon(R.mipmap.ic_launcher,0);
+
+                                        String dateString = new SimpleDateFormat("yyyy年MM月dd日(E)").format(b.getUpdate().getTime());
+                                        String msg;
+                                        if(info != null)
+                                            msg = String.format("「%s」が%sに更新",info.title,dateString);
+                                        else
+                                            msg = String.format("「%s」が%sに更新",b.getCode(),dateString);
+                                        notify.setRemoteText(R.id.textMsg,msg);
+                                        notify.update(true);
+                                    }
+                                });
+                            }
+                        }
+
+
+                        LogService.output(context,"アップデートチェックを完了");
+                        //更新完了通知
+                        context.sendBroadcast(new Intent().setAction(NOTIFI_BOOKMARK).putExtra("result",true));
+                    }
+                }.start();
+                break;
             case ACTION_BOOKMARK:
                 new Thread(){
                     @Override
@@ -119,10 +200,7 @@ public class NaroReceiver extends BroadcastReceiver {
                         List<NovelBookmark> bookmarks = TbnReader.getBookmark(hash);
                         //DBを利用
                         NovelDB db = new NovelDB(context);
-                        db.clearBookmark();
-                        for(NovelBookmark b : bookmarks){
-                            db.addBookmark(b.getCode(),b.getUpdate().getTime(),b.getCategory());
-                        }
+                        db.addBookmark(bookmarks);
                         db.close();
                         LogService.output(context,"ブックマーク情報の読み込み完了");
                         //更新完了通知
@@ -164,10 +242,8 @@ public class NaroReceiver extends BroadcastReceiver {
                         String ncode = intent.getStringExtra("ncode");
                         if(ncode == null)
                             return;
+                        LogService.output(context,"ノベルサブタイトルの取得開始");
                         recvSubtitle(context,ncode);
-                        LogService.output(context,"ノベルサブタイトルの取得");
-
-
 
                         //更新完了通知
                         context.sendBroadcast(new Intent().setAction(NOTIFI_NOVELSUB).putExtra("result",true));
@@ -178,9 +254,11 @@ public class NaroReceiver extends BroadcastReceiver {
                 mDownload = false;
                 break;
             case ACTION_NOVELCONTENT:
-                Intent intent1 =  new Intent(context,NaroReceiver.class).setAction(ACTION_NOVELCONTENT_STOP);
+                PendingIntent pending = PendingIntent.getBroadcast(context,0,
+                    new Intent(context,NaroReceiver.class).setAction(ACTION_NOVELCONTENT_STOP),0);
+
                 //ステータスバー表示用
-                final Notify notify = new Notify(context,intent1,R.layout.status_layout,R.mipmap.ic_launcher);
+                final Notify notify = new Notify(context,123,pending,R.layout.status_layout,R.mipmap.ic_launcher);
                 notify.setRemoteText(R.id.textTitle,context.getString(R.string.app_name));
                 notify.setRemoteImage(R.id.imageNotify, R.mipmap.ic_launcher, 0);
                 notify.setIcon(R.mipmap.ic_launcher,0);
@@ -208,7 +286,7 @@ public class NaroReceiver extends BroadcastReceiver {
                             int count=0;
                             for(NovelIndex novelIndex : list){
                                 notify.setRemoteText(R.id.textMsg,String.format("受信 %d/%d",count++,list.size()));
-                                notify.update();
+                                notify.update(false);
                                 if(!mDownload)
                                     break;
                                 recvContent(context,novelIndex.ncode,novelIndex.index);
@@ -303,5 +381,28 @@ public class NaroReceiver extends BroadcastReceiver {
         else
             context.sendBroadcast(intent.putExtra("result",false));
     }
+    void startUpdateCheck(Context context){
+        AlarmManager alerm = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        long currentTimeMillis = System.currentTimeMillis();
+        NovelDB db = new NovelDB(context);
+        boolean updateCheck = db.getSetting("updateCheck",false);
+        int updateTime = db.getSetting("updateTime",0)*60*1000;
+        db.close();
 
+        PendingIntent pending = PendingIntent.getBroadcast(context, 0,
+                new Intent(context,NaroReceiver.class).setAction(ACTION_UPDATE_CHECK), 0);
+
+        if(updateCheck && updateTime > 0){
+            if (Build.VERSION.SDK_INT >= 21) {
+                alerm.setAlarmClock(new AlarmManager.AlarmClockInfo(currentTimeMillis+updateTime, pending), pending);
+            } else if (Build.VERSION.SDK_INT >= 19) {
+                alerm.setExact(AlarmManager.RTC_WAKEUP, currentTimeMillis+updateTime, pending);
+            } else {
+                alerm.set(AlarmManager.RTC_WAKEUP, currentTimeMillis+updateTime, pending);
+            }
+        }
+        else{
+            alerm.cancel(pending);
+        }
+    }
 }

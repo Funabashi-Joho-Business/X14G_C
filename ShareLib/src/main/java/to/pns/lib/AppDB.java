@@ -124,6 +124,10 @@ public abstract class AppDB extends SQLite {
     {
         setSetting(name,String.valueOf(value));
     }
+    public void setSetting(String name,boolean value)
+    {
+        setSetting(name,value?1:0);
+    }
     public void setSetting(String name,long value)
     {
         setSetting(name,String.valueOf(value));
@@ -149,6 +153,13 @@ public abstract class AppDB extends SQLite {
         c.close();
         return s;
 
+    }
+    public boolean getSetting(String name,boolean flag)
+    {
+        String v = getSetting(name);
+        if(v == null)
+            return flag;
+        return v.equals("1");
     }
     public String getSetting(String name,String defValue)
     {

@@ -186,17 +186,22 @@ public class NovelDB extends AppDB {
         }
         return map;
     }
+
+    public void addBookmark(List<NovelBookmark> bookmarks){
+        begin();
+        exec("delete from t_bookmark");
+        for(NovelBookmark b : bookmarks){
+            String d = new java.sql.Timestamp(b.getUpdate().getTime().getTime()).toString();
+            String sql;
+            //ブックマークデータの追加
+            sql = String.format("replace into t_bookmark values('%s','%s','%d')",STR(b.getCode()),d,b.getCategory());
+            exec(sql);
+        }
+        commit();
+    }
     public void clearBookmark(){
         exec("delete from t_bookmark");
     }
-    public void addBookmark(String ncode,  Date update, int category){
-        String d = new java.sql.Timestamp(update.getTime()).toString();
-        String sql;
-        //ブックマークデータの追加
-        sql = String.format("replace into t_bookmark values('%s','%s','%d')",STR(ncode),d,category);
-        exec(sql);
-    }
-
     public List<NovelBookmark> getBookmark(){
         String sql;
         sql = "select * from t_bookmark order by b_update desc";
@@ -212,6 +217,22 @@ public class NovelDB extends AppDB {
         }
         r.close();
         return list;
+    }
+    public Map<String,NovelBookmark> getBookmarkMap(){
+        String sql;
+        sql = "select * from t_bookmark";
+        Cursor r = query(sql);
+
+        Map<String,NovelBookmark> map = new HashMap<String,NovelBookmark>();
+        while(r.moveToNext()){
+            String d = r.getString(1);
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(java.sql.Timestamp.valueOf(r.getString(1)));
+            NovelBookmark b = new NovelBookmark(r.getString(0),r.getInt(2),cal);
+            map.put(b.getCode(),b);
+        }
+        r.close();
+        return map;
     }
 
     public void addSearch(String ncode, String name, Date update, int category){

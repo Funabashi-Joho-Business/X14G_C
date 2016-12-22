@@ -36,7 +36,7 @@ public class Notify
 		}
 	}
 	
-	private final static int NOTIFY_ID = 123;
+	private int mNotifyId;
 	private NotificationManager mManager;
 	private PendingIntent mIntent;
 	private Builder mNotification;
@@ -48,14 +48,15 @@ public class Notify
 	private String mMessage;
 	private int mCode;
 	private ArrayList<ActionData> mAction = new ArrayList<ActionData>();
-	public Notify(Context context,Intent intent,int layoutId,int icon)
+	public Notify(Context context,int notifyId,PendingIntent intent,int layoutId,int icon)
 	{
+		mNotifyId = notifyId;
 		mCode = 0;
 		mIcon = -1;
 		mIconLevel = -1;
 		mContext = context;
 		//通知領域の作成
-		mIntent = PendingIntent.getBroadcast(context,0,intent,0);
+		mIntent = intent;
 		mManager = (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
 		mRemoteViews = new RemoteViews(context.getPackageName(), layoutId);
 
@@ -71,7 +72,7 @@ public class Notify
 	}
 	public void release()
 	{
-		mManager.cancel(NOTIFY_ID);
+		mManager.cancel(mNotifyId);
 		mIcon = -1;
 
 		for(ActionData data : mAction)
@@ -121,18 +122,22 @@ public class Notify
 		else
 			mNotify.flags |= Notification.FLAG_NO_CLEAR;
 		mNotify.tickerText = msg;
-		mManager.notify(NOTIFY_ID,mNotify);
+		mManager.notify(mNotifyId,mNotify);
 	}
-	public void update()
+	public void update(boolean clear)
 	{
-		//mNotify.flags |= Notification.;
-		mNotify.tickerText = "";
-		mManager.notify(NOTIFY_ID,mNotify);
+		mNotification.setAutoCancel(clear);
+		mNotify = mNotification.build();
+		if(clear)
+			mNotify.flags &= ~Notification.FLAG_NO_CLEAR;
+		else
+			mNotify.flags |= Notification.FLAG_NO_CLEAR;
+		mManager.notify(mNotifyId,mNotify);
 	}
 	public void setIcon(int iconID, int iconLevel) {
 		mNotification.setSmallIcon(iconID,iconLevel);
 		mNotify = mNotification.build();
 		mNotify.flags |= Notification.FLAG_NO_CLEAR;
-		mManager.notify(NOTIFY_ID,mNotify);		
+		mManager.notify(mNotifyId,mNotify);
 	}
 }

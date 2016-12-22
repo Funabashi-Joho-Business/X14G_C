@@ -17,8 +17,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NaroReceiver;
@@ -37,62 +39,33 @@ public class ConfigFragment extends Fragment  {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
-        Toolbar toolbar = (Toolbar)getActivity().findViewById(R.id.toolbar);
         // タイトルを設定
-        toolbar.setTitle("設定");
-
-
-        CoordinatorLayout l = (CoordinatorLayout)getActivity().findViewById(R.id.coordinator);
-
+        getActivity().setTitle("設定");
 
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_config, container, false);
 
-        Spinner s2 = (Spinner) view.findViewById(R.id.spinner3);
-        Spinner s3 = (Spinner) view.findViewById(R.id.spinner4);
 
         NovelDB settingDB = new NovelDB(getContext());
         String id = settingDB.getSetting("loginId","");
         String pass = settingDB.getSetting("loginPass","");
-        String ss2 = settingDB.getSetting("fontColor");
-        String ss3 = settingDB.getSetting("BackColor");
+        boolean updateCheck = settingDB.getSetting("updateCheck",false);
+        int updateTime = settingDB.getSetting("updateTime",60);
         settingDB.close();
 
         mUserId = id;
 
-        TextView textId = (TextView) view.findViewById(R.id.LoginID);
-        TextView textPass = (TextView) view.findViewById(R.id.loginPass);
-        textId.setText(id);
-        textPass.setText(pass);
-
-        setSelection(s2,ss2);
-        setSelection(s3,ss3);
+        ((TextView) view.findViewById(R.id.LoginID)).setText(id);
+        ((TextView) view.findViewById(R.id.loginPass)).setText(pass);
+        ((Switch)view.findViewById(R.id.switchUpdateCheck)).setChecked(updateCheck);
+        ((EditText)view.findViewById(R.id.editUpdateTime)).setText(""+updateTime);
 
         return view;
     }
 
 
-    public void settingSave(String id,String pass,String fontColor,String backColor){
-        NovelDB settingDB = new NovelDB(getContext());
 
-        settingDB.setSetting("fontColor",fontColor);
-        settingDB.setSetting("backColor",backColor);
-        settingDB.setSetting("loginId",id);
-        settingDB.setSetting("loginPass",pass);
-        settingDB.close();
-    }
 
-    public static void setSelection(Spinner spinner, String item) {
-        SpinnerAdapter adapter = spinner.getAdapter();
-        int index = 0;
-        for (int i = 0; i < adapter.getCount(); i++) {
-            if (adapter.getItem(i).equals(item)) {
-                index = i; break;
-            }
-        }
-        spinner.setSelection(index);
-    }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -116,23 +89,27 @@ public class ConfigFragment extends Fragment  {
 
             TextView id = (TextView) getView().findViewById(R.id.LoginID);
             TextView pass = (TextView) getView().findViewById(R.id.loginPass);
-            Spinner s2 = (Spinner) getView().findViewById(R.id.spinner3);
-            Spinner s3 = (Spinner) getView().findViewById(R.id.spinner4);
+            boolean updateCheck = ((Switch)getView().findViewById(R.id.switchUpdateCheck)).isChecked();
+            int updateTime = Integer.parseInt(((EditText)getView().findViewById(R.id.editUpdateTime)).getText().toString());
+            NovelDB db = new NovelDB(getContext());
+            db.setSetting("loginId",id.getText().toString());
+            db.setSetting("loginPass",pass.getText().toString());
+            db.setSetting("updateCheck",updateCheck);
+            db.setSetting("updateTime",updateTime);
 
-            String t2 = (String) s2.getSelectedItem();
-            String t3 = (String) s3.getSelectedItem();
-
-            settingSave(id.getText().toString(), pass.getText().toString(), t2, t3);
-            Snackbar.make(getView(), "保存完了", Snackbar.LENGTH_SHORT).show();
-
-            if(!mUserId.equals(id)){
+            if(!mUserId.equals(id.getText().toString())){
                 //違うIDが設定されたら、ブックマークをクリア
-                NovelDB db = new NovelDB(getContext());
+                db = new NovelDB(getContext());
                 db.clearBookmark();
                 db.close();
+                mUserId = id.getText().toString();
                 //ブックマークをネットから取得
                 getContext().sendBroadcast(new Intent(getContext(),NaroReceiver.class).setAction(NaroReceiver.ACTION_BOOKMARK));
             }
+            db.close();
+            Snackbar.make(getView(), "保存完了", Snackbar.LENGTH_SHORT).show();
+            //設定更新を通知
+            getContext().sendBroadcast(new Intent(getContext(),NaroReceiver.class).setAction(NaroReceiver.ACTION_UPDATE_SETTING));
         }
         return true;
     }
