@@ -177,6 +177,8 @@ public class NaroReceiver extends BroadcastReceiver {
                         context.sendBroadcast(new Intent().setAction(NOTIFI_BOOKMARK).putExtra("result",true));
                     }
                 }.start();
+                //次回タイマー起動
+                startUpdateCheck(context);
                 break;
             case ACTION_BOOKMARK:
                 new Thread(){

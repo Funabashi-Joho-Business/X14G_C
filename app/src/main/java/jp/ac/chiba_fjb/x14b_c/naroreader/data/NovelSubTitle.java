@@ -13,4 +13,6 @@ public class NovelSubTitle {
     public Date update;
     public Date readDate;
     public Date contentDate;
+    public int originalSize;
+    public int compressionSize;
 }

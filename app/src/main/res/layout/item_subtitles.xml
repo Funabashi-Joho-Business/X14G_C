@@ -160,6 +160,44 @@
 
                     </TableRow>
 
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <TextView
+                            android:text="サイズ"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="4dp"
+                            android:layout_marginLeft="4dp" />
+
+                        <TextView
+                            android:text="10KB/30KB"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/textSize"
+                            android:layout_weight="1"
+                            android:textSize="12sp"
+                            android:padding="2dp" />
+
+                        <TextView
+                            android:text="圧縮率"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="4dp"
+                            android:layout_marginLeft="4dp" />
+
+                        <TextView
+                            android:text="50%"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:textSize="12sp"
+                            android:padding="2dp"
+                            android:id="@+id/textCompress" />
+
+                    </TableRow>
+
                 </TableLayout>
 
 

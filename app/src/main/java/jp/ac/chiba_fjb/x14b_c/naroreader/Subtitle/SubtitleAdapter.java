@@ -99,6 +99,17 @@ public class SubtitleAdapter extends RecyclerView.Adapter implements View.OnClic
             ((TextView)holder.itemView.findViewById(R.id.textAlreadyDate)).setText(v.readDate!=null?sdf.format(v.readDate):"");
             ((TextView)holder.itemView.findViewById(R.id.textRecvDate)).setText(v.contentDate!=null?sdf.format(v.contentDate):"");
 
+            if(v.originalSize != 0 && v.compressionSize!=0){
+                ((TextView)holder.itemView.findViewById(R.id.textSize)).setText(
+                        String.format("%.1fKB / %.1fKB",v.compressionSize/1024.0f,v.originalSize/1024.0f));
+                ((TextView)holder.itemView.findViewById(R.id.textCompress)).setText(
+                        String.format("%d%%",v.compressionSize*100/v.originalSize));
+            }else{
+                ((TextView)holder.itemView.findViewById(R.id.textSize)).setText("");
+                ((TextView)holder.itemView.findViewById(R.id.textCompress)).setText("");
+            }
+
+
         }
 
 

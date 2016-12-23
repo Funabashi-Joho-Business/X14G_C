@@ -5,6 +5,12 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -12,6 +18,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.zip.Deflater;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelBody;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelBookmark;
@@ -54,7 +63,7 @@ class NovelRankingValue extends NovelRanking{
 
 public class NovelDB extends AppDB {
     public NovelDB(Context context) {
-        super(context, "novel00.db", 1);
+        super(context, "novel00.db", 3);
     }
 
     @Override
@@ -74,7 +83,7 @@ public class NovelDB extends AppDB {
         sql = "create table t_novel_sub(n_code text,sub_no int,sub_title text,sub_regdate date,sub_update date,primary key(n_code,sub_no))";
         db.execSQL(sql);
 
-        sql = "create table t_novel_content(n_code text,sub_no int,content_update date,content_body text,content_preface text,content_trailer text,content_tag text,primary key(n_code,sub_no))";
+        sql = "create table t_novel_content(n_code text,sub_no int,content_update date,content_original_size int,content_body blob,content_preface blog,content_trailer blob,content_tag blob,primary key(n_code,sub_no))";
         db.execSQL(sql);
 
         sql = "create table t_novel_read(n_code text,sub_no int,read_date date,primary key(n_code,sub_no))";
@@ -89,12 +98,13 @@ public class NovelDB extends AppDB {
     @Override
     public void onUpgrade(SQLiteDatabase db, int i, int i1) {
         String sql;
-        if(i < 1) {
-
+        if(i < 3) {
+            sql = "drop table t_novel_content";
+            db.execSQL(sql);
+            sql = "create table t_novel_content(n_code text,sub_no int,content_update date,content_original_size int,content_body blob,content_preface blog,content_trailer blob,content_tag blob,primary key(n_code,sub_no))";
+            db.execSQL(sql);
         }
-        if(i<2){
 
-        }
     }
 
 
@@ -118,15 +128,59 @@ public class NovelDB extends AppDB {
         }
         commit();
     }
+    public static byte[] encodeValue(String value){
+        if(value == null)
+            return null;
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        try {
+            GZIPOutputStream stream = new GZIPOutputStream(bytes){
+                public GZIPOutputStream setLevel( int level ) {
+                    def.setLevel(level);
+                    return this;
+                }
+            }.setLevel(Deflater.BEST_COMPRESSION);
+            stream.write(value.getBytes());
+            stream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return bytes.toByteArray();
+    }
+    public static String decodeValue(byte[] value){
+        if(value == null)
+            return null;
+        try {
+            ByteArrayInputStream bytes = new ByteArrayInputStream(value);
+            GZIPInputStream gis = new GZIPInputStream(bytes);
+            InputStreamReader reader = new InputStreamReader(gis);
+            BufferedReader in = new BufferedReader(reader);
+
+            StringBuilder sb = new StringBuilder();
+            String s;
+            while ((s = in.readLine()) != null) {
+                sb.append(s);
+            }
+            in.close();
+            reader.close();
+            gis.close();
+            bytes.close();
+            return sb.toString();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
     public void addNovelContents(String ncode, int index, NovelBody novelBody){
         ContentValues values = new ContentValues();
+
         values.put("n_code", ncode);
         values.put("sub_no", index);
         values.put("content_update", new java.sql.Timestamp(new Date().getTime()).toString());
-        values.put("content_body",novelBody.body);
-        values.put("content_tag",novelBody.tag);
-        values.put("content_preface",novelBody.preface);
-        values.put("content_trailer",novelBody.trailer);
+        values.put("content_original_size",novelBody.body.getBytes().length);
+        values.put("content_body",encodeValue(novelBody.body));
+        values.put("content_tag",encodeValue(novelBody.tag));
+        values.put("content_preface",encodeValue(novelBody.preface));
+        values.put("content_trailer",encodeValue(novelBody.trailer));
         replace("t_novel_content",values);
     }
     public void addNovelHistory(String ncode){
@@ -254,7 +308,7 @@ public class NovelDB extends AppDB {
 
     public List<NovelSubTitle> getSubTitles(String ncode) {
         //メインに登録されているデータを抽出
-        String sql = String.format("select n_code,sub_no,sub_title,sub_regdate,sub_update,read_date,content_update from t_novel_sub natural left join t_novel_read natural left join t_novel_content where n_code='%s' order by sub_no",STR(ncode));
+        String sql = String.format("select n_code,sub_no,sub_title,sub_regdate,sub_update,read_date,content_update,content_original_size,length(content_body) from t_novel_sub natural left join t_novel_read natural left join t_novel_content where n_code='%s' order by sub_no",STR(ncode));
         Cursor c = query(sql);
         List<NovelSubTitle> list = new ArrayList<NovelSubTitle>();
         for(int i=1;c.moveToNext();i++){
@@ -268,6 +322,10 @@ public class NovelDB extends AppDB {
                 n.readDate = java.sql.Timestamp.valueOf(c.getString(5));
             if(c.getString(6) != null)
                 n.contentDate = java.sql.Timestamp.valueOf(c.getString(6));
+            if(c.getString(7) != null)
+                n.originalSize = c.getInt(7);
+            if(c.getString(8) != null)
+                n.compressionSize = c.getInt(8);
             list.add(n);
         }
         return list;
@@ -290,10 +348,10 @@ public class NovelDB extends AppDB {
             content.regdate = java.sql.Timestamp.valueOf(c.getString(1));
             if(c.getString(2) != null)
                 content.update = java.sql.Timestamp.valueOf(c.getString(2));
-            content.body = c.getString(3);
-            content.preface = c.getString(4);
-            content.trailer = c.getString(5);
-            content.tag = c.getString(6);
+            content.body = decodeValue(c.getBlob(3));
+            content.preface = decodeValue(c.getBlob(4));
+            content.trailer = decodeValue(c.getBlob(5));
+            content.tag = decodeValue(c.getBlob(6));
 
         }
         c.close();
