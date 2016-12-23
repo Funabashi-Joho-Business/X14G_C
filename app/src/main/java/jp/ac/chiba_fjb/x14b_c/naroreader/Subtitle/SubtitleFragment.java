@@ -224,7 +224,7 @@ public class SubtitleFragment extends Fragment implements SubtitleAdapter.OnItem
         NovelDB db = new NovelDB(getContext());
         NovelInfo novelInfo = db.getNovelInfo(mNCode);
         if(novelInfo != null) {
-            mSubtitleAdapter.setValues(mNCode, novelInfo, db.getSubTitles(mNCode));
+            mSubtitleAdapter.setValues(mNCode, novelInfo, db.getSubTitles(mNCode),db.getSeriesInfo(mNCode));
             db.close();
             mRecycleView.scrollToPosition(1);
             mSubtitleAdapter.notifyDataSetChanged();   //データ再表示要求

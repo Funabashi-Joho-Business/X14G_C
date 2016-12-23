@@ -18,6 +18,7 @@ import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelBody;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelBookmark;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelInfo;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelRanking;
+import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelSeries;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelSubTitle;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.TbnReader;
 import to.pns.lib.LogService;
@@ -49,6 +50,9 @@ public class NaroReceiver extends BroadcastReceiver {
     public static final String NOTIFI_UPDATE_CHECK = "NOTIFI_UPDATE_CHECK"; //ランキング取得終了後の通知
 
     public static final String ACTION_UPDATE_SETTING = "ACTION_UPDATE_SETTING"; //ランキングの取得
+
+    public static final String ACTION_SERIES = "ACTION_SERIES"; //シリーズ情報の取得
+    public static final String NOTIFI_SERIES = "NOTIFI_SERIES"; //シリーズ取得終了後の通知
 
     private static boolean mDownload;
 
@@ -180,6 +184,37 @@ public class NaroReceiver extends BroadcastReceiver {
                 //次回タイマー起動
                 startUpdateCheck(context);
                 break;
+            case ACTION_SERIES:
+                new Thread(){
+                    @Override
+                    public void run() {
+                        String ncode = intent.getStringExtra("ncode");
+                        if(ncode == null)
+                            return;
+                        LogService.output(context,"シリーズ情報の読み込み開始");
+                        //取得したブックマーク情報をDBに保存
+                        String scode = TbnReader.getSeries(ncode);
+                        if(scode == null){
+                            LogService.output(context,"シリーズ情報無し");
+                            context.sendBroadcast(new Intent().setAction(NOTIFI_SERIES).putExtra("result",false));
+                            return;
+                        }
+                        NovelSeries seriesInfo = TbnReader.getSeriesInfo(scode);
+                        if(scode == null){
+                            context.sendBroadcast(new Intent().setAction(NOTIFI_SERIES).putExtra("result",false));
+                            return;
+                        }
+
+                        //DBを利用
+                        NovelDB db = new NovelDB(context);
+                        db.addSeries(seriesInfo);
+                        db.close();
+                        LogService.output(context,"シリーズ情報の読み込み完了");
+                        //更新完了通知
+                        context.sendBroadcast(new Intent().setAction(NOTIFI_SERIES).putExtra("result",true));
+                    }
+                }.start();
+                break;
             case ACTION_BOOKMARK:
                 new Thread(){
                     @Override
@@ -256,16 +291,7 @@ public class NaroReceiver extends BroadcastReceiver {
                 mDownload = false;
                 break;
             case ACTION_NOVELCONTENT:
-                PendingIntent pending = PendingIntent.getBroadcast(context,0,
-                    new Intent(context,NaroReceiver.class).setAction(ACTION_NOVELCONTENT_STOP),0);
 
-                //ステータスバー表示用
-                final Notify notify = new Notify(context,123,pending,R.layout.status_layout,R.mipmap.ic_launcher);
-                notify.setRemoteText(R.id.textTitle,context.getString(R.string.app_name));
-                notify.setRemoteImage(R.id.imageNotify, R.mipmap.ic_launcher, 0);
-                notify.setIcon(R.mipmap.ic_launcher,0);
-
-                notify.output("受信開始",false);
 
                 mDownload = true;
                 new Thread(){
@@ -274,6 +300,15 @@ public class NaroReceiver extends BroadcastReceiver {
                         List<String> ncodes = (List<String>) intent.getSerializableExtra("ncodes");
                         if(ncodes != null){
                             //複数のデータを取得
+                            //ステータスバー表示用
+                            PendingIntent pending = PendingIntent.getBroadcast(context,0,
+                                    new Intent(context,NaroReceiver.class).setAction(ACTION_NOVELCONTENT_STOP),0);
+                            final Notify notify = new Notify(context,123,pending,R.layout.status_layout,R.mipmap.ic_launcher);
+                            notify.setRemoteText(R.id.textTitle,context.getString(R.string.app_name));
+                            notify.setRemoteImage(R.id.imageNotify, R.mipmap.ic_launcher, 0);
+                            notify.setIcon(R.mipmap.ic_launcher,0);
+
+                            notify.output("受信開始",false);
 
                             notify.setRemoteText(R.id.textMsg,"サブタイトル確認中");
                             //サブタイトルの受信
@@ -313,7 +348,9 @@ public class NaroReceiver extends BroadcastReceiver {
                             int index = intent.getIntExtra("index",0);
                             if(ncode == null)
                                 return;
-                            recvContent(context,ncode,index);
+                            boolean flag = recvContent(context,ncode,index);
+                            Intent intent = new Intent().setAction(NOTIFI_NOVELCONTENT).putExtra("index",index);
+                            context.sendBroadcast(intent.putExtra("result",flag));
 
                         }
 
@@ -355,33 +392,44 @@ public class NaroReceiver extends BroadcastReceiver {
 
     }
     boolean recvSubtitle(Context context,String ncode){
-        //取得した検索情報をDBに保存
-        List<NovelSubTitle> titles = TbnReader.getSubTitle(ncode);
+        //データの取得
+        String[] scode = new String[1];
+        List<NovelSubTitle> titles = TbnReader.getSubTitle(ncode,scode);
         if(titles == null)
             return false;
 
-        //DBを利用
+        //シリーズ情報の処理
+        NovelSeries seriesInfo = null;
+        if(scode[0] != null){
+            seriesInfo = TbnReader.getSeriesInfo(scode[0]);
+        }
+
+        //サブタイトル情報の保存
         NovelDB db = new NovelDB(context);
         db.addSubTitle(ncode,titles);
+        if(seriesInfo!=null)
+            db.addSeries(seriesInfo);
         db.close();
         LogService.output(context, ncode+"のサブタイトルの取得完了");
+
+
+
         return true;
     }
-    void recvContent(Context context,String ncode,int index){
+    boolean recvContent(Context context,String ncode,int index){
         LogService.format(context,"%s(%d)の本文の取得",ncode,index);
         NovelBody body = TbnReader.getNovelBody(ncode,index);
-        Intent intent = new Intent().setAction(NOTIFI_NOVELCONTENT).putExtra("index",index);
-        if(body != null){
-            if(index == 0)
-                index = 1;
-            NovelDB db = new NovelDB(context);
-            db.addNovelContents(ncode,index,body);
-            db.close();
 
-            context.sendBroadcast(intent.putExtra("result",true));
-        }
-        else
-            context.sendBroadcast(intent.putExtra("result",false));
+        if(body == null)
+            return false;
+
+        if(index == 0)
+            index = 1;
+        NovelDB db = new NovelDB(context);
+        db.addNovelContents(ncode,index,body);
+        db.close();
+
+        return true;
     }
     void startUpdateCheck(Context context){
         AlarmManager alerm = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);

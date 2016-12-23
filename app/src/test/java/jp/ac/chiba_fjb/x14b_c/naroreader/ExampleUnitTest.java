@@ -148,7 +148,7 @@ public class ExampleUnitTest {
 	}
 
 
-    @Test
+    //@Test
 	public void getRankList(){
 
 
@@ -254,9 +254,10 @@ public class ExampleUnitTest {
 			}
 		}
 	}
-	//@Test
+	@Test
 	public void testBody(){
-		NovelBody data = TbnReader.getNovelBody("n7133dp", 1);
+		//NovelBody data = TbnReader.getNovelBody("n7133dp", 1);
+		NovelBody data = TbnReader.getNovelBody("n0339ds", 0);
 		System.out.println(data.preface);
 	}
 }

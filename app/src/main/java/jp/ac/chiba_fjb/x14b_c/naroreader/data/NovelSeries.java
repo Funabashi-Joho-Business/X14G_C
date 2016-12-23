@@ -7,6 +7,7 @@ import java.util.List;
  */
 
 public class NovelSeries {
+    public String scode;
     public String title;
     public String info;
     public int writer;

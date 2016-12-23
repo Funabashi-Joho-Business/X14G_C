@@ -37,6 +37,7 @@ import jp.ac.chiba_fjb.x14b_c.naroreader.R;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Subtitle.SubtitleFragment;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelBookmark;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelInfo;
+import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelSeries;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.TbnReader;
 
 
@@ -73,6 +74,7 @@ public class BookmarkFragment extends Fragment implements BookmarkAdapter.OnItem
     private BookmarkAdapter mAdapter;
     private Map<String, NovelInfo> mNovelMap;
     private Handler mHandler = new Handler();
+    private Map<String, NovelSeries> mSeriesMap;
 
     public BookmarkFragment() {
 
@@ -166,6 +168,11 @@ public class BookmarkFragment extends Fragment implements BookmarkAdapter.OnItem
 
         mNovelMap = db.getNovelInfoMap(listNcode);
         mAdapter.setNovelInfos(mNovelMap);
+        mSeriesMap = db.getNovelSeriesMap(listNcode);
+        mAdapter.setNovelSeries(mSeriesMap);
+        db.close();
+
+
         db.close();
 
         mAdapter.notifyDataSetChanged();   //データ再表示要求

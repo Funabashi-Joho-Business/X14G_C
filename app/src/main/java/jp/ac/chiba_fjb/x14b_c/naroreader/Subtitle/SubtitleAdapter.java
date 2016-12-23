@@ -13,6 +13,7 @@ import java.util.List;
 
 import jp.ac.chiba_fjb.x14b_c.naroreader.R;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelInfo;
+import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelSeries;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelSubTitle;
 
 /**
@@ -26,6 +27,7 @@ public class SubtitleAdapter extends RecyclerView.Adapter implements View.OnClic
     private int mSort;
     private NovelInfo mNovelInfo;
     private View mInfoView;
+    private NovelSeries mSeries;
 
     public void setSort(int v) {
         mSort = v;
@@ -69,6 +71,11 @@ public class SubtitleAdapter extends RecyclerView.Adapter implements View.OnClic
             ((TextView)mInfoView.findViewById(R.id.textDate)).setText(sdf.format(mNovelInfo.general_lastup));
             ((TextView)mInfoView.findViewById(R.id.textWritter)).setText(mNovelInfo.writer);
             ((TextView)mInfoView.findViewById(R.id.textPoint)).setText(nf.format(mNovelInfo.global_point)+"pt");
+
+            if(mSeries != null){
+
+            }
+
             holder.itemView.setTag(R.layout.item_title,-1);
         }
         else{
@@ -122,10 +129,11 @@ public class SubtitleAdapter extends RecyclerView.Adapter implements View.OnClic
         return mValues.size()+1;
     }
 
-    public void setValues(String ncode, NovelInfo info, List<NovelSubTitle> values) {
+    public void setValues(String ncode, NovelInfo info, List<NovelSubTitle> values, NovelSeries series) {
         mNCode = ncode;
         mNovelInfo = info;
         mValues = values;
+        mSeries = series;
     }
 
 

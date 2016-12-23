@@ -19,12 +19,15 @@ import jp.ac.chiba_fjb.x14b_c.naroreader.History.HistoryFragment;
 import jp.ac.chiba_fjb.x14b_c.naroreader.R;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelBookmark;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelInfo;
+import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelSeries;
 
 /**
 リサイクルビューに使用するデータ関連づけ用アダプター
  */
 
 public class BookmarkAdapter extends RecyclerView.Adapter implements View.OnClickListener, View.OnLongClickListener, CompoundButton.OnCheckedChangeListener {
+
+
 
     public void setOnItemClickListener(BookmarkFragment listener) {
         mListener = listener;
@@ -49,6 +52,7 @@ public class BookmarkAdapter extends RecyclerView.Adapter implements View.OnClic
     private OnItemClickListener mListener;
     private List<NovelBookmark> mBookmarks;
     private Map<String,NovelInfo> mNovelInfos;
+    private Map<String, NovelSeries> mNovelSeries;
     HashSet<String> mCheckSet = new HashSet<String>();
 
     @Override
@@ -75,6 +79,7 @@ public class BookmarkAdapter extends RecyclerView.Adapter implements View.OnClic
         //ノベル情報の読み出し
         String ncode = b.getCode().toUpperCase();
         NovelInfo novelInfo = mNovelInfos.get(ncode);
+        NovelSeries novelSeries = mNovelSeries.get(ncode);
         if(novelInfo != null){
             ((TextView)holder.itemView.findViewById(R.id.textTitle)).setText(novelInfo.title);
             ((TextView)holder.itemView.findViewById(R.id.textWritter)).setText(novelInfo.writer);
@@ -87,6 +92,12 @@ public class BookmarkAdapter extends RecyclerView.Adapter implements View.OnClic
             ((TextView)holder.itemView.findViewById(R.id.textReview)).setText(nf.format(novelInfo.review_cnt));
             ((TextView)holder.itemView.findViewById(R.id.textLength)).setText(nf.format(novelInfo.length));
 
+            if(novelSeries!=null){
+                ((TextView)holder.itemView.findViewById(R.id.textSeries)).setText(novelSeries.title);
+            }
+            else
+                ((TextView)holder.itemView.findViewById(R.id.textSeries)).setText("");
+
         }else{
             ((TextView)holder.itemView.findViewById(R.id.textTitle)).setText("");
             ((TextView)holder.itemView.findViewById(R.id.textWritter)).setText("");
@@ -97,6 +108,7 @@ public class BookmarkAdapter extends RecyclerView.Adapter implements View.OnClic
             ((TextView)holder.itemView.findViewById(R.id.textEvaCount)).setText("");
             ((TextView)holder.itemView.findViewById(R.id.textReview)).setText("");
             ((TextView)holder.itemView.findViewById(R.id.textLength)).setText("");
+            ((TextView)holder.itemView.findViewById(R.id.textSeries)).setText("");
         }
 
         CheckBox checkBox = (CheckBox)holder.itemView.findViewById(R.id.checkBox);
@@ -118,6 +130,9 @@ public class BookmarkAdapter extends RecyclerView.Adapter implements View.OnClic
     }
     public void setNovelInfos(Map<String,NovelInfo> novelInfos){
         mNovelInfos = novelInfos;
+    }
+    public void setNovelSeries(Map<String,NovelSeries> novelSeries){
+        mNovelSeries = novelSeries;
     }
     @Override
     public void onClick(View view) {

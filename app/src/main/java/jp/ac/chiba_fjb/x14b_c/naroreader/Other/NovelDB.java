@@ -3,6 +3,7 @@ package jp.ac.chiba_fjb.x14b_c.naroreader.Other;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 
 import java.io.BufferedReader;
@@ -27,6 +28,7 @@ import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelBookmark;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelContent;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelInfo;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelRanking;
+import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelSeries;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelSubTitle;
 import to.pns.lib.AppDB;
 
@@ -63,7 +65,7 @@ class NovelRankingValue extends NovelRanking{
 
 public class NovelDB extends AppDB {
     public NovelDB(Context context) {
-        super(context, "novel00.db", 3);
+        super(context, "novel00.db", 4);
     }
 
     @Override
@@ -97,11 +99,18 @@ public class NovelDB extends AppDB {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int i, int i1) {
+
         String sql;
         if(i < 3) {
             sql = "drop table t_novel_content";
             db.execSQL(sql);
             sql = "create table t_novel_content(n_code text,sub_no int,content_update date,content_original_size int,content_body blob,content_preface blog,content_trailer blob,content_tag blob,primary key(n_code,sub_no))";
+            db.execSQL(sql);
+        }
+        if(i < 4) {
+            sql = "create table t_novel_series(s_code text primary key,series_title text,series_info text,series_writer int)";
+            db.execSQL(sql);
+            sql = "create table t_novel_series_bind(s_code text,n_code text,primary key(s_code,n_code))";
             db.execSQL(sql);
         }
 
@@ -199,6 +208,7 @@ public class NovelDB extends AppDB {
         while(c.moveToNext()){
             list.add(c.getString(0));
         }
+        c.close();
         return list;
     }
     public void addNovelInfo(List<NovelInfo> novelInfo){
@@ -215,10 +225,40 @@ public class NovelDB extends AppDB {
         return list.get(0);
 
     }
+
+    public Map<String,NovelSeries> getNovelSeriesMap(List<String> listNcode){
+        Map<String,NovelSeries> map = new HashMap<String,NovelSeries>();
+
+        StringBuilder sb = new StringBuilder();
+        for(String s : listNcode){
+            NovelSeries series = getSeriesInfo(s);
+            if(series != null)
+            map.put(s,series);
+        }
+        return map;
+    }
+
+    public NovelSeries getSeriesInfo(String ncode){
+        String sql = String.format("select * from t_novel_series where s_code in (select s_code from t_novel_series_bind where n_code='%s')",STR(ncode));
+        Cursor c = query(sql);
+        if(!c.moveToNext()) {
+            c.close();
+            return null;
+        }
+        NovelSeries series = new NovelSeries();
+        series.scode = c.getString(0);
+        series.title = c.getString(1);
+        series.info = c.getString(2);
+        series.writer = c.getInt(3);
+        c.close();
+        return series;
+
+    }
     public boolean isNovelInfo(String ndoce){
         String sql = String.format("select 1 from t_novel_info where ncode = %s",ndoce.toUpperCase());
         Cursor c = query(sql);
         boolean flag = c.moveToNext();
+        c.close();
         return flag;
     }
     public List<NovelInfo> getNovelInfo(List<String> listNcode){
@@ -328,6 +368,7 @@ public class NovelDB extends AppDB {
                 n.compressionSize = c.getInt(8);
             list.add(n);
         }
+        c.close();
         return list;
     }
 
@@ -407,5 +448,25 @@ public class NovelDB extends AppDB {
         }
         c.close();
         return list;
+    }
+
+    public void addSeries(NovelSeries seriesInfo) {
+        ContentValues values = new ContentValues();
+        values.put("s_code", seriesInfo.scode);
+        values.put("series_title", seriesInfo.title);
+        values.put("series_info", seriesInfo.info);
+        values.put("series_writer", seriesInfo.writer);
+        replace("t_novel_series",values);
+
+        //シリーズ対応関係の削除
+        exec(String.format("delete from t_novel_series_bind where s_code='%s'",STR(seriesInfo.scode)));
+        //シリーズ対応関係の再設定
+        for(String ncode : seriesInfo.novelList){
+            values = new ContentValues();
+            values.put("s_code", seriesInfo.scode);
+            values.put("n_code", ncode);
+            insert("t_novel_series_bind",values);
+        }
+
     }
 }

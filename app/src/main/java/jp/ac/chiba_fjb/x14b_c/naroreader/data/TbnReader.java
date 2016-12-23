@@ -479,7 +479,8 @@ public class TbnReader {
 
 
         Pattern p = Pattern.compile(
-                "(?:<p class=\"novel_title\">(.*?)</p>|<p class=\"novel_subtitle\">(.*?)</p>)\n\n\n"+
+                "(?:<p class=\"novel_title\">(.*?)</p>|<p class=\"novel_subtitle\">(.*?)</p>).*?"+
+                "(?:<!--novel_writername-->)*?\n\n\n"+
                 "(?:<div id=\"novel_p\" class=\"novel_view\">(.*?)</div>|\n).*?"+
                 "<div id=\"novel_honbun\" class=\"novel_view\">(.*?)</div>\n\n"+
                 "(?:<div id=\"novel_a\" class=\"novel_view\">(.*?)</div>|\n).*?"+
@@ -526,6 +527,9 @@ public class TbnReader {
     //サブタイトルの取得
     //ncode ノベルコード
     public static List<NovelSubTitle> getSubTitle(String ncode){
+        return getSubTitle(ncode,null);
+    }
+    public static List<NovelSubTitle> getSubTitle(String ncode,String[] scode){
         String address;
         address = String.format("http://ncode.syosetu.com/%s/", ncode);
 
@@ -533,10 +537,18 @@ public class TbnReader {
         if (content == null)
             return null;
 
+        //シリーズ情報を取得
+        if(scode != null){
+            Pattern p = Pattern.compile("<p class=\"series_title\"><a href=\"/(.*?)/\">");
+            Matcher m = p.matcher(content);
+            if (m.find()){
+                scode[0] = m.group(1);
+            }
+        }
+
+        //サブタイトル情報を取得
         ArrayList<NovelSubTitle> list = new ArrayList<NovelSubTitle>();
-
         SimpleDateFormat format = new SimpleDateFormat("yyyy年 MM月 dd日");
-
         Pattern p = Pattern.compile("<dd class=\"subtitle\"><a href=\".*?\">(.*?)</a></dd>.*?<dt class=\"long_update\">\n(.*?)\n.*?(?=<span title=\"(.*?) 改稿\">|).*?</dl>", Pattern.DOTALL);
         Matcher m = p.matcher(content);
         try {
@@ -567,7 +579,6 @@ public class TbnReader {
         }
         return list;
     }
-
     //シリーズコードの取得
     //ncode ノベルコード
     public static String getSeries(String ncode){
@@ -596,13 +607,15 @@ public class TbnReader {
             return null;
 
         NovelSeries series = new NovelSeries();
+        series.scode = scode;
 
         Pattern p = Pattern.compile("<div class=\"series_title\">(.*?)</div>.*?作成ユーザ：<a href=\"http://mypage.syosetu.com/(.*?)/\">.*?<div class=\"novel_ex\">(.*?)</div>", Pattern.DOTALL);
         Matcher m = p.matcher(content);
         if(!m.find())
             return null;
         series.title = m.group(1);
-        series.info = m.group(2);
+        series.writer = Integer.parseInt(m.group(2));
+        series.info = m.group(3);
         series.novelList = new ArrayList<String>();
 
         p = Pattern.compile("<div class=\"title\"><a href=\"/(.*?)/\">");
@@ -612,6 +625,7 @@ public class TbnReader {
         }
         return series;
     }
+
 
     public static List<NovelRanking> getRanking(int f1,int f2,int f3){
         String address;
