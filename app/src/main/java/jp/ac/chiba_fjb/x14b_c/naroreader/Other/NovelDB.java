@@ -65,7 +65,7 @@ class NovelRankingValue extends NovelRanking{
 
 public class NovelDB extends AppDB {
     public NovelDB(Context context) {
-        super(context, "novel00.db", 4);
+        super(context, "novel00.db", 6);
     }
 
     @Override
@@ -95,6 +95,14 @@ public class NovelDB extends AppDB {
         db.execSQL(sql);
         sql = createSqlCreateClass(NovelRankingValue.class,"t_novel_ranking_info","ranking_kind1","ranking_kind2","ranking_kind3","ranking_index");
         db.execSQL(sql);
+
+        sql = "create table t_novel_series(s_code text primary key,series_title text,series_info text,series_writer int)";
+        db.execSQL(sql);
+        sql = "create table t_novel_series_bind(s_code text,n_code text,primary key(s_code,n_code))";
+        db.execSQL(sql);
+
+        sql = "create table t_novel_search(ncode text primary key,search_order int)";
+        db.execSQL(sql);
     }
 
     @Override
@@ -111,6 +119,14 @@ public class NovelDB extends AppDB {
             sql = "create table t_novel_series(s_code text primary key,series_title text,series_info text,series_writer int)";
             db.execSQL(sql);
             sql = "create table t_novel_series_bind(s_code text,n_code text,primary key(s_code,n_code))";
+            db.execSQL(sql);
+        }
+        if(i==5){
+            sql = "drop table t_novel_search";
+            db.execSQL(sql);
+        }
+        if(i < 6) {
+            sql = "create table t_novel_search(ncode text primary key,search_order int)";
             db.execSQL(sql);
         }
 
@@ -212,10 +228,26 @@ public class NovelDB extends AppDB {
         return list;
     }
     public void addNovelInfo(List<NovelInfo> novelInfo){
+        begin();
         for(NovelInfo info : novelInfo){
             String sql = createSqlReplaceClass(info,"t_novel_info");
             exec(sql);
         }
+        commit();
+    }
+    public void setNovelSearch(List<NovelInfo> novelInfo){
+        addNovelInfo(novelInfo);
+        int i = 1;
+        exec("delete from t_novel_search");
+        for(NovelInfo info : novelInfo){
+            String sql = String.format("insert into t_novel_search values('%s',%d);",info.ncode,i++);
+            exec(sql);
+        }
+    }
+    public List<NovelInfo> getNovelSearch(){
+        String sql = String.format("select * from t_novel_info natural join t_novel_search order by search_order");
+        List<NovelInfo> list = queryClass(sql,NovelInfo.class);
+        return list;
     }
     public NovelInfo getNovelInfo(String ncode){
         String sql = String.format("select * from t_novel_info where ncode LIKE '%s'",STR(ncode));
@@ -223,6 +255,12 @@ public class NovelDB extends AppDB {
         if(list.size() == 0)
             return null;
         return list.get(0);
+
+    }
+    public List<NovelInfo> getNovelInfoFromBookmark(){
+        String sql = String.format("select * from t_novel_info where ncode in (select n_code from t_bookmark) order by novelupdated_at desc");
+        List<NovelInfo> list = queryClass(sql,NovelInfo.class);
+        return list;
 
     }
 
@@ -312,6 +350,7 @@ public class NovelDB extends AppDB {
         r.close();
         return list;
     }
+
     public Map<String,NovelBookmark> getBookmarkMap(){
         String sql;
         sql = "select * from t_bookmark";

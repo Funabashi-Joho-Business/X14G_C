@@ -1,6 +1,7 @@
 package jp.ac.chiba_fjb.x14b_c.naroreader;
 
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.os.Bundle;
@@ -12,6 +13,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
@@ -23,13 +25,14 @@ import com.google.android.gms.ads.AdView;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import jp.ac.chiba_fjb.x14b_c.naroreader.Bookmark.BookmarkFragment;
-import jp.ac.chiba_fjb.x14b_c.naroreader.History.HistoryFragment;
+import jp.ac.chiba_fjb.x14b_c.naroreader.Titles.BookmarkFragment;
+import jp.ac.chiba_fjb.x14b_c.naroreader.Titles.HistoryFragment;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Other.LogFragment;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NaroReceiver;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NovelDB;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Ranking.RankingFragment;
-import jp.ac.chiba_fjb.x14b_c.naroreader.SearchPack.SearchFragment;
+import jp.ac.chiba_fjb.x14b_c.naroreader.Titles.SearchFragment;
+import jp.ac.chiba_fjb.x14b_c.naroreader.Titles.SearchPanelFragment;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.TbnReader;
 import to.pns.lib.LogService;
 
@@ -136,10 +139,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 changeFragment(RankingFragment.class);
                 break;
             case R.id.nav_search:
+                changeFragment(SearchPanelFragment.class);
+                break;
+            case R.id.nav_search_result:
                 changeFragment(SearchFragment.class);
                 break;
             case R.id.nav_config:
                 changeFragment(ConfigFragment.class);
+                break;
+            case R.id.nav_exit:
+                finish();
                 break;
         }
 
@@ -155,8 +164,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         try {
             //フラグメントの作成
-            Fragment f = (Fragment) c.newInstance();
-            f.setArguments(budle);
+            Fragment f;
+            f = getSupportFragmentManager().findFragmentByTag(c.getSimpleName());
+            if(f==null) {
+                f = (Fragment) c.newInstance();
+                f.setArguments(budle);
+            }
+            else{
+                if( f.getArguments() != null)
+                    f.getArguments().putAll(budle);
+            }
+
             //フラグ面tのの切り替え処理
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             ft.setCustomAnimations(
@@ -164,12 +182,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                R.anim.fragment_out,
                R.anim.fragment_in,
                R.anim.fragment_out);
-            ft.replace(R.id.fragment_area,f);
+            ft.replace(R.id.fragment_area,f,c.getSimpleName());
             if(firstFlag)
                 firstFlag = false;
             else
-                ft.addToBackStack(null);
-            ft.commit();
+                ft.addToBackStack(c.getSimpleName());
+            ft.commitAllowingStateLoss();
             showAppBar(true);
 
 
@@ -209,5 +227,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             ((AppBarLayout.LayoutParams) toolbar.getLayoutParams()).setScrollFlags(0);
         }
         showAppBar(!flag);
+    }
+
+    @Override
+    public void finish() {
+
+        new AlertDialog.Builder(this)
+                .setTitle("アプリの終了")
+                .setMessage("終了しますか？")
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        MainActivity.super.finish();
+                    }
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
+        //super.finish();
     }
 }

@@ -1,4 +1,4 @@
-package jp.ac.chiba_fjb.x14b_c.naroreader.Bookmark;
+package jp.ac.chiba_fjb.x14b_c.naroreader.Titles;
 
 
 import android.content.BroadcastReceiver;
@@ -10,7 +10,6 @@ import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -30,12 +29,10 @@ import java.util.Set;
 import jp.ac.chiba_fjb.x14b_c.naroreader.AddBookmarkFragment;
 import jp.ac.chiba_fjb.x14b_c.naroreader.MainActivity;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Other.BottomDialog;
-import jp.ac.chiba_fjb.x14b_c.naroreader.Other.BottomFragment;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NaroReceiver;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NovelDB;
 import jp.ac.chiba_fjb.x14b_c.naroreader.R;
-import jp.ac.chiba_fjb.x14b_c.naroreader.Subtitle.SubtitleFragment;
-import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelBookmark;
+import jp.ac.chiba_fjb.x14b_c.naroreader.SubTitle.SubtitleFragment;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelInfo;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelSeries;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.TbnReader;
@@ -44,7 +41,7 @@ import jp.ac.chiba_fjb.x14b_c.naroreader.data.TbnReader;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class BookmarkFragment extends Fragment implements BookmarkAdapter.OnItemClickListener {
+public class BookmarkFragment extends Fragment implements TitleAdapter.OnItemClickListener {
 
     //通知処理
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
@@ -71,7 +68,7 @@ public class BookmarkFragment extends Fragment implements BookmarkAdapter.OnItem
             }
         }
     };
-    private BookmarkAdapter mAdapter;
+    private TitleAdapter mAdapter;
     private Map<String, NovelInfo> mNovelMap;
     private Handler mHandler = new Handler();
     private Map<String, NovelSeries> mSeriesMap;
@@ -90,7 +87,7 @@ public class BookmarkFragment extends Fragment implements BookmarkAdapter.OnItem
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_bookmark, container, false);
         //ブックマーク表示用アダプターの作成
-        mAdapter = new BookmarkAdapter();
+        mAdapter = new TitleAdapter();
         mAdapter.setOnItemClickListener(this);
 
         //データ表示用のビューを作成
@@ -157,17 +154,15 @@ public class BookmarkFragment extends Fragment implements BookmarkAdapter.OnItem
     void update(){
         //アダプターにデータを設定
         NovelDB db = new NovelDB(getContext());
-        List<NovelBookmark> list = db.getBookmark();
-        mAdapter.setBookmarks(list);
+        List<NovelInfo> list = db.getNovelInfoFromBookmark();
+        mAdapter.setValues(list);
 
 
         List<String > listNcode = new ArrayList<String>();
-        for(NovelBookmark n : list){
-            listNcode.add(n.getCode());
+        for(NovelInfo n : list){
+            listNcode.add(n.ncode);
         }
 
-        mNovelMap = db.getNovelInfoMap(listNcode);
-        mAdapter.setNovelInfos(mNovelMap);
         mSeriesMap = db.getNovelSeriesMap(listNcode);
         mAdapter.setNovelSeries(mSeriesMap);
         db.close();
@@ -179,19 +174,19 @@ public class BookmarkFragment extends Fragment implements BookmarkAdapter.OnItem
     }
 
     @Override
-    public void onItemClick(NovelBookmark bookmark) {
+    public void onItemClick(NovelInfo info) {
         Bundle bundle = new Bundle();
-        bundle.putString("ncode",bookmark.getCode());
+        bundle.putString("ncode",info.ncode);
         ((MainActivity)getActivity()).changeFragment(SubtitleFragment.class,bundle);
     }
 
     @Override
-    public void onItemLongClick(final NovelBookmark bookmark) {
-        NovelInfo novelInfo = mNovelMap.get(bookmark.getCode().toUpperCase());
+    public void onItemLongClick(final NovelInfo info) {
+        NovelInfo novelInfo = mNovelMap.get(info.ncode.toUpperCase());
         String title = "";
         if(novelInfo != null)
            title = novelInfo.title;
-        AddBookmarkFragment.show(this,bookmark.getCode(),title,false);
+        AddBookmarkFragment.show(this,info.ncode,title,false);
     }
 
     @Override

@@ -54,6 +54,9 @@ public class NaroReceiver extends BroadcastReceiver {
     public static final String ACTION_SERIES = "ACTION_SERIES"; //シリーズ情報の取得
     public static final String NOTIFI_SERIES = "NOTIFI_SERIES"; //シリーズ取得終了後の通知
 
+    public static final String ACTION_SEARCH = "ACTION_SEARCH"; //検索の開始
+    public static final String NOTIFI_SEARCH = "NOTIFI_SEARCH"; //検索終了の通知
+
     private static boolean mDownload;
 
     public NaroReceiver() {
@@ -102,15 +105,17 @@ public class NaroReceiver extends BroadcastReceiver {
     }
     public static void download(Context con, ArrayList<String> list) {
         con.sendBroadcast(new Intent(con,NaroReceiver.class).setAction(NaroReceiver.ACTION_NOVELCONTENT).putExtra("ncodes",list));
-
     }
-
+    public static void search(Context con,String params) {
+        con.sendBroadcast(new Intent(con,NaroReceiver.class).setAction(NaroReceiver.ACTION_SEARCH).putExtra("params",params));
+    }
     @Override
     public void onReceive(final Context context, final Intent intent) {
         //処理要求の確認
         switch(intent.getAction()){
-            case ACTION_UPDATE_SETTING:
             case Intent.ACTION_BOOT_COMPLETED:
+                LogService.output(context,"端末起動を確認");
+            case ACTION_UPDATE_SETTING:
                 //アップデートチェックを起動
                 startUpdateCheck(context);
                 break;
@@ -272,6 +277,30 @@ public class NaroReceiver extends BroadcastReceiver {
                     }
                 }.start();
                 break;
+            case ACTION_SEARCH:
+                new Thread(){
+                    @Override
+                    public void run() {
+                        LogService.output(context,"検索開始");
+                        String params = intent.getStringExtra("params");
+
+                        //取得した検索情報をDBに保存
+                        List<NovelInfo> info = TbnReader.getNovelInfoFromParam(params);
+                        if(info != null) {
+                            //DBを利用
+                            NovelDB db = new NovelDB(context);
+                            db.setNovelSearch(info);
+                            db.close();
+                            LogService.output(context, "検索完了");
+                            //更新完了通知
+                            context.sendBroadcast(new Intent().setAction(NOTIFI_SEARCH).putExtra("result",true));
+                        }else
+                            //更新完了通知
+                            context.sendBroadcast(new Intent().setAction(NOTIFI_SEARCH).putExtra("result",false));
+
+                    }
+                }.start();
+                break;
             case ACTION_NOVELSUB:
                 new Thread(){
                     @Override
@@ -349,7 +378,7 @@ public class NaroReceiver extends BroadcastReceiver {
                             if(ncode == null)
                                 return;
                             boolean flag = recvContent(context,ncode,index);
-                            Intent intent = new Intent().setAction(NOTIFI_NOVELCONTENT).putExtra("index",index);
+                            Intent intent = new Intent().setAction(NOTIFI_NOVELCONTENT).putExtra("index",index==0?1:index);
                             context.sendBroadcast(intent.putExtra("result",flag));
 
                         }

@@ -69,25 +69,6 @@
                 android:layout_height="match_parent">
 
                 <TextView
-                    android:text="シリーズ"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="4dp" />
-
-                <TextView
-                    android:text="シリーズ名"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/textSeries"
-                    android:layout_weight="1" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <TextView
                     android:text="作者名　"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -101,6 +82,25 @@
                     android:layout_margin="2dp"
                     android:layout_weight="1"/>
 
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:text="シリーズ"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="4dp" />
+
+                <TextView
+                    android:text="シリーズ名"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/textSeries"
+                    android:layout_weight="1" />
             </LinearLayout>
 
             <LinearLayout

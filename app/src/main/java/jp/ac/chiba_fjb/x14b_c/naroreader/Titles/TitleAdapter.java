@@ -1,4 +1,4 @@
-package jp.ac.chiba_fjb.x14b_c.naroreader.Bookmark;
+package jp.ac.chiba_fjb.x14b_c.naroreader.Titles;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -15,9 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import jp.ac.chiba_fjb.x14b_c.naroreader.History.HistoryFragment;
 import jp.ac.chiba_fjb.x14b_c.naroreader.R;
-import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelBookmark;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelInfo;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelSeries;
 
@@ -25,11 +23,11 @@ import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelSeries;
 リサイクルビューに使用するデータ関連づけ用アダプター
  */
 
-public class BookmarkAdapter extends RecyclerView.Adapter implements View.OnClickListener, View.OnLongClickListener, CompoundButton.OnCheckedChangeListener {
+public class TitleAdapter extends RecyclerView.Adapter implements View.OnClickListener, View.OnLongClickListener, CompoundButton.OnCheckedChangeListener {
 
 
 
-    public void setOnItemClickListener(BookmarkFragment listener) {
+    public void setOnItemClickListener(OnItemClickListener listener) {
         mListener = listener;
     }
 
@@ -44,14 +42,14 @@ public class BookmarkAdapter extends RecyclerView.Adapter implements View.OnClic
         mListener.onItemCheck();
     }
 
+
     public interface OnItemClickListener{
-        public void onItemClick(NovelBookmark bookmark);
-        public void onItemLongClick(NovelBookmark bookmark);
+        public void onItemClick(NovelInfo bookmark);
+        public void onItemLongClick(NovelInfo bookmark);
         public void onItemCheck();
     }
     private OnItemClickListener mListener;
-    private List<NovelBookmark> mBookmarks;
-    private Map<String,NovelInfo> mNovelInfos;
+    private List<NovelInfo> mNovelInfo;
     private Map<String, NovelSeries> mNovelSeries;
     HashSet<String> mCheckSet = new HashSet<String>();
 
@@ -68,18 +66,18 @@ public class BookmarkAdapter extends RecyclerView.Adapter implements View.OnClic
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         //positionから必要なデータをビューに設定する
-
-        NovelBookmark b = mBookmarks.get(position);
+        NovelInfo novelInfo = mNovelInfo.get(position);
+        String ncode = novelInfo.ncode;
 
 
         NumberFormat nf = NumberFormat.getNumberInstance();
-        String dateString = new SimpleDateFormat("yyyy年MM月dd日(E)").format(b.getUpdate().getTime());
+        String dateString = new SimpleDateFormat("yyyy年MM月dd日(E)").format(novelInfo.novelupdated_at.getTime());
         holder.itemView.setTag(R.layout.item_title,position);
         ((TextView)holder.itemView.findViewById(R.id.textDate)).setText(dateString);
         //ノベル情報の読み出し
-        String ncode = b.getCode().toUpperCase();
-        NovelInfo novelInfo = mNovelInfos.get(ncode);
-        NovelSeries novelSeries = mNovelSeries.get(ncode);
+        NovelSeries novelSeries = null;
+        if(mNovelSeries != null)
+            novelSeries = mNovelSeries.get(ncode);
         if(novelInfo != null){
             ((TextView)holder.itemView.findViewById(R.id.textTitle)).setText(novelInfo.title);
             ((TextView)holder.itemView.findViewById(R.id.textWritter)).setText(novelInfo.writer);
@@ -118,18 +116,15 @@ public class BookmarkAdapter extends RecyclerView.Adapter implements View.OnClic
 
     @Override
     public int getItemCount() {
-        if(mBookmarks == null)
+        if(mNovelInfo == null)
             return 0;
-        return mBookmarks.size();
+        return mNovelInfo.size();
     }
 
 
 
-    public void setBookmarks(List<NovelBookmark> bookmarks){
-        mBookmarks = bookmarks;
-    }
-    public void setNovelInfos(Map<String,NovelInfo> novelInfos){
-        mNovelInfos = novelInfos;
+    public void setValues(List<NovelInfo> values){
+        mNovelInfo = values;
     }
     public void setNovelSeries(Map<String,NovelSeries> novelSeries){
         mNovelSeries = novelSeries;
@@ -138,8 +133,8 @@ public class BookmarkAdapter extends RecyclerView.Adapter implements View.OnClic
     public void onClick(View view) {
         if(mListener != null) {
             int pos = (int) view.getTag(R.layout.item_title);
-            NovelBookmark bookmark = mBookmarks.get(pos);
-            mListener.onItemClick(bookmark);
+            NovelInfo info = mNovelInfo.get(pos);
+            mListener.onItemClick(info);
         }
     }
 
@@ -147,8 +142,8 @@ public class BookmarkAdapter extends RecyclerView.Adapter implements View.OnClic
     public boolean onLongClick(View view) {
         if(mListener != null) {
             int pos = (int) view.getTag(R.layout.item_title);
-            NovelBookmark bookmark = mBookmarks.get(pos);
-            mListener.onItemLongClick(bookmark);
+            NovelInfo info = mNovelInfo.get(pos);
+            mListener.onItemLongClick(info);
         }
         return false;
     }

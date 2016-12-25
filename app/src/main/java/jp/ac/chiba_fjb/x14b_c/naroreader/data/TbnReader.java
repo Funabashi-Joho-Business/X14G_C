@@ -434,34 +434,17 @@ public class TbnReader {
         }
         return null;
     }
-
-    //キーワード検索用
-    public static List<NovelSearch> getKeyword(String word){
-        String address = String.format("http://api.syosetu.com/novelapi/api/?out=json&lim=500&word=%s&gzip=5",word);
-        NovelInfo[] search = Json.send(address,null,NovelInfo[].class);
-        if(search != null && search.length > 1) {
-            List<NovelSearch> list = new ArrayList<NovelSearch>();
-            for(NovelInfo i : search){
-                NovelSearch s = new NovelSearch();
-                s.title = i.title;
-                s.ncode = i.ncode;
-                s.genre = i.genre;
-                s.novelupdated_at = i.novelupdated_at;
-                list.add(s);
-            }
+    public static List<NovelInfo> getNovelInfoFromParam(String params){
+        String address = String.format("http://api.syosetu.com/novelapi/api/?%s",params);
+        NovelInfo[] json = Json.send(address,null,NovelInfo[].class);
+        if(json != null && json.length > 1){
+            List<NovelInfo> list = new ArrayList(Arrays.asList(json));
+            list.remove(0);
             return list;
         }
         return null;
     }
 
-    //評価ソート用
-    public static NovelInfo getOrder(String order){
-        String address = String.format("http://api.syosetu.com/novelapi/api/?out=json&gzip=5&lim=500&order=%s",order);
-        NovelInfo[] evorder = Json.send(address,null,NovelInfo[].class);
-        if(evorder != null && evorder.length > 1)
-            return evorder[1];
-        return null;
-    }
 
     //本文の取得
     //ncode ノベルコード

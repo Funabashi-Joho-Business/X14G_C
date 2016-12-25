@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="jp.ac.chiba_fjb.x14b_c.naroreader">
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     <application
         android:name="android.support.multidex.MultiDexApplication"
         android:allowBackup="true"
@@ -27,7 +28,7 @@
         </activity>
 
         <receiver
-            android:name=".Other.NaroReceiver"
+            android:name="jp.ac.chiba_fjb.x14b_c.naroreader.Other.NaroReceiver"
             android:enabled="true"
             android:exported="true">
             <intent-filter>

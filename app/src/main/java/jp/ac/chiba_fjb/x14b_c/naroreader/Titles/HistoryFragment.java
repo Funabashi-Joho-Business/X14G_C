@@ -1,4 +1,4 @@
-package jp.ac.chiba_fjb.x14b_c.naroreader.History;
+package jp.ac.chiba_fjb.x14b_c.naroreader.Titles;
 
 
 import android.content.BroadcastReceiver;
@@ -27,14 +27,14 @@ import jp.ac.chiba_fjb.x14b_c.naroreader.Other.BottomDialog;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NaroReceiver;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NovelDB;
 import jp.ac.chiba_fjb.x14b_c.naroreader.R;
-import jp.ac.chiba_fjb.x14b_c.naroreader.Subtitle.SubtitleFragment;
+import jp.ac.chiba_fjb.x14b_c.naroreader.SubTitle.SubtitleFragment;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelInfo;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.TbnReader;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class HistoryFragment extends Fragment implements HistoryAdapter.OnItemClickListener {
+public class HistoryFragment extends Fragment implements TitleAdapter.OnItemClickListener {
 
 	//通知処理
 	private BroadcastReceiver mReceiver = new BroadcastReceiver() {
@@ -54,7 +54,7 @@ public class HistoryFragment extends Fragment implements HistoryAdapter.OnItemCl
 	};
 
 
-	private HistoryAdapter mAdapter;
+	private TitleAdapter mAdapter;
 
 	public HistoryFragment() {
 		// Required empty public constructor
@@ -67,7 +67,7 @@ public class HistoryFragment extends Fragment implements HistoryAdapter.OnItemCl
 		getActivity().setTitle("閲覧履歴");
 
 		//ブックマーク表示用アダプターの作成
-		mAdapter = new HistoryAdapter();
+		mAdapter = new TitleAdapter();
 		mAdapter.setOnItemClickListener(this);
 
 		//データ表示用のビューを作成
