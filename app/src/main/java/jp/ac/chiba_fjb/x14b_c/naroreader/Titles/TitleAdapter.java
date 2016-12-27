@@ -51,6 +51,7 @@ public class TitleAdapter extends RecyclerView.Adapter implements View.OnClickLi
     private OnItemClickListener mListener;
     private List<NovelInfo> mNovelInfo;
     private Map<String, NovelSeries> mNovelSeries;
+    private boolean mInfo = false;
     HashSet<String> mCheckSet = new HashSet<String>();
 
     @Override
@@ -71,7 +72,7 @@ public class TitleAdapter extends RecyclerView.Adapter implements View.OnClickLi
 
 
         NumberFormat nf = NumberFormat.getNumberInstance();
-        String dateString = new SimpleDateFormat("yyyy年MM月dd日(E)").format(novelInfo.novelupdated_at.getTime());
+        String dateString = new SimpleDateFormat("yyyy年MM月dd日(E)").format(novelInfo.general_lastup.getTime());
         holder.itemView.setTag(R.layout.item_title,position);
         ((TextView)holder.itemView.findViewById(R.id.textDate)).setText(dateString);
         //ノベル情報の読み出し
@@ -91,10 +92,20 @@ public class TitleAdapter extends RecyclerView.Adapter implements View.OnClickLi
             ((TextView)holder.itemView.findViewById(R.id.textLength)).setText(nf.format(novelInfo.length));
 
             if(novelSeries!=null){
+                holder.itemView.findViewById(R.id.layoutSeries).setVisibility(View.VISIBLE);
                 ((TextView)holder.itemView.findViewById(R.id.textSeries)).setText(novelSeries.title);
             }
-            else
-                ((TextView)holder.itemView.findViewById(R.id.textSeries)).setText("");
+            else {
+                holder.itemView.findViewById(R.id.layoutSeries).setVisibility(View.GONE);
+                ((TextView) holder.itemView.findViewById(R.id.textSeries)).setText("");
+            }
+            if(mInfo){
+                holder.itemView.findViewById(R.id.textInfo).setVisibility(View.VISIBLE);
+                ((TextView) holder.itemView.findViewById(R.id.textInfo)).setText(novelInfo.story);
+            }
+            else{
+                holder.itemView.findViewById(R.id.textInfo).setVisibility(View.GONE);
+            }
 
         }else{
             ((TextView)holder.itemView.findViewById(R.id.textTitle)).setText("");
@@ -107,6 +118,7 @@ public class TitleAdapter extends RecyclerView.Adapter implements View.OnClickLi
             ((TextView)holder.itemView.findViewById(R.id.textReview)).setText("");
             ((TextView)holder.itemView.findViewById(R.id.textLength)).setText("");
             ((TextView)holder.itemView.findViewById(R.id.textSeries)).setText("");
+            ((TextView)holder.itemView.findViewById(R.id.textInfo)).setText("");
         }
 
         CheckBox checkBox = (CheckBox)holder.itemView.findViewById(R.id.checkBox);
@@ -149,5 +161,8 @@ public class TitleAdapter extends RecyclerView.Adapter implements View.OnClickLi
     }
     public Set<String> getChecks(){
         return mCheckSet;
+    }
+    public void showInfo(boolean flag){
+        mInfo = flag;
     }
 }

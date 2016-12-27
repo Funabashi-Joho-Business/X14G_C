@@ -153,48 +153,7 @@ public class NovelDB extends AppDB {
         }
         commit();
     }
-    public static byte[] encodeValue(String value){
-        if(value == null)
-            return null;
-        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        try {
-            GZIPOutputStream stream = new GZIPOutputStream(bytes){
-                public GZIPOutputStream setLevel( int level ) {
-                    def.setLevel(level);
-                    return this;
-                }
-            }.setLevel(Deflater.BEST_COMPRESSION);
-            stream.write(value.getBytes());
-            stream.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return bytes.toByteArray();
-    }
-    public static String decodeValue(byte[] value){
-        if(value == null)
-            return null;
-        try {
-            ByteArrayInputStream bytes = new ByteArrayInputStream(value);
-            GZIPInputStream gis = new GZIPInputStream(bytes);
-            InputStreamReader reader = new InputStreamReader(gis);
-            BufferedReader in = new BufferedReader(reader);
 
-            StringBuilder sb = new StringBuilder();
-            String s;
-            while ((s = in.readLine()) != null) {
-                sb.append(s);
-            }
-            in.close();
-            reader.close();
-            gis.close();
-            bytes.close();
-            return sb.toString();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
     public void addNovelContents(String ncode, int index, NovelBody novelBody){
         ContentValues values = new ContentValues();
 
@@ -230,8 +189,7 @@ public class NovelDB extends AppDB {
     public void addNovelInfo(List<NovelInfo> novelInfo){
         begin();
         for(NovelInfo info : novelInfo){
-            String sql = createSqlReplaceClass(info,"t_novel_info");
-            exec(sql);
+            replaceClass(info,"t_novel_info");
         }
         commit();
     }
@@ -245,7 +203,7 @@ public class NovelDB extends AppDB {
         }
     }
     public List<NovelInfo> getNovelSearch(){
-        String sql = String.format("select * from t_novel_info natural join t_novel_search order by search_order");
+        String sql = String.format("select * from t_novel_search natural join t_novel_info order by search_order");
         List<NovelInfo> list = queryClass(sql,NovelInfo.class);
         return list;
     }
@@ -447,8 +405,7 @@ public class NovelDB extends AppDB {
         exec(sql);
         for(NovelRanking rank : rankList){
             NovelRankingValue v = new NovelRankingValue(kind1,kind2,kind3,index++,rank);
-            sql = createSqlReplaceClass(v,"t_novel_ranking_info");
-            exec(sql);
+            replaceClass(v,"t_novel_ranking_info");
         }
         commit();
     }

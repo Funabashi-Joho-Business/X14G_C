@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.util.Date;
 
+import to.pns.lib.AppDB;
+
 /**
  * なろうAPIによる小説データ保存用
  */

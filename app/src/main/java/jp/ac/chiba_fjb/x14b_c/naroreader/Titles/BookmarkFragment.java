@@ -106,6 +106,7 @@ public class BookmarkFragment extends Fragment implements TitleAdapter.OnItemCli
 
 
         });
+        ((SwipeRefreshLayout)view.findViewById(R.id.swipe_refresh)).setProgressViewOffset(false,0,getResources().getDimensionPixelSize(R.dimen.bar_margin));
 
         //イベント通知受け取りの宣言
         getContext().registerReceiver(mReceiver,new IntentFilter(NaroReceiver.NOTIFI_BOOKMARK));

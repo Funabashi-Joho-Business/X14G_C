@@ -85,6 +85,7 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/layoutSeries"
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
@@ -229,7 +230,12 @@
                     android:layout_weight="1" />
 
             </LinearLayout>
-
+            <TextView
+                android:text="あらすじ"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/textInfo"
+                android:padding="4dp"/>
 
         </LinearLayout>
     </LinearLayout>

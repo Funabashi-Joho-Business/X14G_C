@@ -15,6 +15,7 @@ import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelRanking;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelSeries;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelSubTitle;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.TbnReader;
+import to.pns.lib.AppDB;
 
 /**
  * Example local unit test, which will execute on the development machine (host).
@@ -257,7 +258,10 @@ public class ExampleUnitTest {
 	@Test
 	public void testBody(){
 		//NovelBody data = TbnReader.getNovelBody("n7133dp", 1);
-		NovelBody data = TbnReader.getNovelBody("n0339ds", 0);
-		System.out.println(data.preface);
+//		NovelBody data = TbnReader.getNovelBody("n0339ds", 0);
+//		System.out.println(data.preface);
+
+
+
 	}
 }

@@ -1,18 +1,78 @@
 package to.pns.lib;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.zip.Deflater;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
 
 public abstract class AppDB extends SQLite {
+    @Target({ElementType.FIELD})
+    @Retention(RetentionPolicy.RUNTIME)
+    public @interface Zippack {
+        String value() default "zip";
+    }
+    public static byte[] encodeValue(String value){
+        if(value == null)
+            return null;
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        try {
+            GZIPOutputStream stream = new GZIPOutputStream(bytes){
+                public GZIPOutputStream setLevel( int level ) {
+                    def.setLevel(level);
+                    return this;
+                }
+            }.setLevel(Deflater.BEST_COMPRESSION);
+            stream.write(value.getBytes());
+            stream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return bytes.toByteArray();
+    }
+    public static String decodeValue(byte[] value){
+        if(value == null)
+            return null;
+        try {
+            ByteArrayInputStream bytes = new ByteArrayInputStream(value);
+            GZIPInputStream gis = new GZIPInputStream(bytes);
+            InputStreamReader reader = new InputStreamReader(gis);
+            BufferedReader in = new BufferedReader(reader);
+
+            StringBuilder sb = new StringBuilder();
+            String s;
+            while ((s = in.readLine()) != null) {
+                sb.append(s);
+            }
+            in.close();
+            reader.close();
+            gis.close();
+            bytes.close();
+            return sb.toString();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
     public AppDB(Context context, String dbName, int version) {
         super(context, dbName, version);
@@ -68,7 +128,10 @@ public abstract class AppDB extends SQLite {
                     try {
                         String name = c.getColumnName(i);
                         Field f = cs.getField(name);
-                        if(f.getType() == int.class)
+                        if(f.getAnnotation(Zippack.class) != null){
+                            f.set(inst,decodeValue(c.getBlob(i)));
+                        }
+                        else if(f.getType() == int.class)
                             f.set(inst,c.getInt(i));
                         else if(f.getType() == String.class)
                             f.set(inst,c.getString(i));
@@ -87,37 +150,41 @@ public abstract class AppDB extends SQLite {
         return null;
     }
 
-    public static String createSqlReplaceClass(Object obj,String className) {
+    public long replaceClass(Object obj,String className) {
         try {
             Class c = obj.getClass();
             StringBuilder sbValue = new StringBuilder();
             StringBuilder sbName = new StringBuilder();
+
+            ContentValues values = new ContentValues();
+
+
             for(int i=0;i<c.getFields().length;i++) {
                 Field f = c.getFields()[i];
                 if(f.getName().charAt(0) == '$' || f.getName().equals("serialVersionUID"))
                     continue;
 
-                if(sbName.length()>0) {
-                    sbName.append(",");
-                    sbValue.append(",");
-                }
-                sbName.append(f.getName());
-
                 String value;
                 Object v = f.get(obj);
-                if(f.getType() == Date.class)
-                    value = new java.sql.Timestamp(((Date)v).getTime()).toString();
-                else
-                    value = v.toString();
+                if(f.getAnnotation(Zippack.class) != null){
+                    values.put(f.getName(), encodeValue(v.toString()));
+                }
+                else{
+                    if(f.getType() == Date.class)
+                        value = new java.sql.Timestamp(((Date)v).getTime()).toString();
+                    else
+                        value = v.toString();
+                    values.put(f.getName(), value);
+                }
 
-                sbValue.append(String.format("'%s'",STR(value)));
+
+
             }
-
-            return String.format("replace into %s(%s) values(%s)",className,sbName.toString(),sbValue.toString());
+            return replace(className,values);
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
-        return null;
+        return 0;
     }
 
     public void setSetting(String name,int value)

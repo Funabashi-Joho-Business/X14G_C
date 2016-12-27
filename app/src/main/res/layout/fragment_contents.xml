@@ -4,11 +4,8 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/swipe_refresh"
-    tools:context=".Contents.ContentsFragment">
-
-
-
-
+    tools:context=".Contents.ContentsFragment"
+    android:scrollbars="vertical">
 
         <android.support.v4.widget.NestedScrollView
             android:layout_width="match_parent"

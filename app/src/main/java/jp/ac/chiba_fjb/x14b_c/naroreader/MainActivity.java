@@ -168,12 +168,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             f = getSupportFragmentManager().findFragmentByTag(c.getSimpleName());
             if(f==null) {
                 f = (Fragment) c.newInstance();
-                f.setArguments(budle);
+                if(budle != null)
+                    f.setArguments(budle);
+                else
+                    f.setArguments(new Bundle());
             }
             else{
-                if( f.getArguments() != null)
+                if( f.getArguments() != null && budle!=null)
                     f.getArguments().putAll(budle);
             }
+
 
             //フラグ面tのの切り替え処理
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
@@ -187,9 +191,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 firstFlag = false;
             else
                 ft.addToBackStack(c.getSimpleName());
-            ft.commitAllowingStateLoss();
-            showAppBar(true);
+            ft.commit();
 
+            showAppBar(true);
 
         } catch (Exception e) {
             e.printStackTrace();

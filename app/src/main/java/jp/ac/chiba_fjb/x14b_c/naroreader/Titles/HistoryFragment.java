@@ -79,6 +79,7 @@ public class HistoryFragment extends Fragment implements TitleAdapter.OnItemClic
 		getContext().registerReceiver(mReceiver,new IntentFilter(NaroReceiver.NOTIFI_NOVELINFO));
 
 		//ボタンが押され場合の処理
+		((SwipeRefreshLayout)view.findViewById(R.id.swipe_refresh)).setProgressViewOffset(false,0,getResources().getDimensionPixelSize(R.dimen.bar_margin));
 		((SwipeRefreshLayout)getView().findViewById(R.id.swipe_refresh)).setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
 			@Override
 			public void onRefresh() {

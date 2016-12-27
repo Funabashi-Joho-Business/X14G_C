@@ -25,6 +25,8 @@ import jp.ac.chiba_fjb.x14b_c.naroreader.R;
 public class SearchPanelFragment extends Fragment implements View.OnClickListener {
 
 
+    private View mView;
+
     public SearchPanelFragment() {
         // Required empty public constructor
     }
@@ -33,15 +35,19 @@ public class SearchPanelFragment extends Fragment implements View.OnClickListene
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+        if(mView != null)
+            return mView;
         return inflater.inflate(R.layout.fragment_search_panel, container, false);
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
+        getActivity().setTitle("検索");
+        if(mView != null)
+            return;
         getView().findViewById(R.id.imageSearch).setOnClickListener(this);
+        mView = getView();
     }
 
     @Override
@@ -85,10 +91,9 @@ public class SearchPanelFragment extends Fragment implements View.OnClickListene
                 sb.append("&type="+typeCode);
             }
 
-            NaroReceiver.search(getContext(),sb.toString());
-            Snackbar.make(getView(), "検索開始", Snackbar.LENGTH_SHORT).show();
-
-            ((MainActivity)getActivity()).changeFragment(SearchFragment.class);
+            Bundle bundle = new Bundle();
+            bundle.putString("params",sb.toString());
+           ((MainActivity)getActivity()).changeFragment(SearchFragment.class,bundle);
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }

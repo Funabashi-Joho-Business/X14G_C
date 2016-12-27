@@ -22,17 +22,17 @@ public abstract class SQLite extends SQLiteOpenHelper
 			mDataBase.close();
 		super.close();
 	}
-	public void insert(String tableName, ContentValues v){
-		mDataBase.insert(tableName,null,v);
+	public long insert(String tableName, ContentValues v){
+		return mDataBase.insert(tableName,null,v);
 	}
-	public void replace(String tableName, ContentValues v){
+	public long replace(String tableName, ContentValues v){
 		if(mDataBase == null || mDataBase.isReadOnly())
 		{
 			if(mDataBase != null)
 				mDataBase.close();
 			mDataBase = getWritableDatabase();
 		}
-		mDataBase.replace(tableName,null,v);
+		return mDataBase.replace(tableName,null,v);
 	}
 	public boolean isTable(String name)
 	{
