@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -24,7 +25,36 @@ import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelSeries;
  */
 
 public class TitleAdapter extends RecyclerView.Adapter implements View.OnClickListener, View.OnLongClickListener, CompoundButton.OnCheckedChangeListener {
-
+    final static Map<Integer,String> BIGGENRE = new HashMap<Integer,String>(){
+        {put(1, "恋愛");}
+        {put(2, "ファンタジー");}
+        {put(3, "文芸");}
+        {put(4, "SF");}
+        {put(99, "その他");}
+        {put(98, "ノンジャンル");}
+    };
+    final static Map<Integer,String> GENRE = new HashMap<Integer,String>(){
+        {put(101, "異世界");}
+        {put(102, "現実世界");}
+        {put(201, "ハイファンタジー");}
+        {put(202, "ローファンタジー");}
+        {put(301, "純文学");}
+        {put(302, "ヒューマンドラマ");}
+        {put(304, "推理");}
+        {put(305, "ホラー");}
+        {put(306, "アクション");}
+        {put(307, "コメディー");}
+        {put(401, "VRゲーム");}
+        {put(402, "宇宙");}
+        {put(403, "空想科学");}
+        {put(404, "パニック");}
+        {put(9901, "童話");}
+        {put(9902, "詩");}
+        {put(9903, "エッセイ");}
+        {put(9904, "リプレイ");}
+        {put(9999, "その他");}
+        {put(9801, "ノンジャンル");}
+    };
 
 
     public void setOnItemClickListener(OnItemClickListener listener) {
@@ -72,7 +102,7 @@ public class TitleAdapter extends RecyclerView.Adapter implements View.OnClickLi
 
 
         NumberFormat nf = NumberFormat.getNumberInstance();
-        String dateString = new SimpleDateFormat("yyyy年MM月dd日(E)").format(novelInfo.general_lastup.getTime());
+        String dateString = new SimpleDateFormat("yyyy年MM月dd日(E) HH時mm分").format(novelInfo.general_lastup.getTime());
         holder.itemView.setTag(R.layout.item_title,position);
         ((TextView)holder.itemView.findViewById(R.id.textDate)).setText(dateString);
         //ノベル情報の読み出し
@@ -90,7 +120,8 @@ public class TitleAdapter extends RecyclerView.Adapter implements View.OnClickLi
             ((TextView)holder.itemView.findViewById(R.id.textEvaCount)).setText(nf.format(novelInfo.all_hyoka_cnt));
             ((TextView)holder.itemView.findViewById(R.id.textReview)).setText(nf.format(novelInfo.review_cnt));
             ((TextView)holder.itemView.findViewById(R.id.textLength)).setText(nf.format(novelInfo.length));
-
+            ((TextView)holder.itemView.findViewById(R.id.textBigGenre)).setText(BIGGENRE.get(novelInfo.biggenre));
+            ((TextView)holder.itemView.findViewById(R.id.textGenre)).setText(GENRE.get(novelInfo.genre));
             if(novelSeries!=null){
                 holder.itemView.findViewById(R.id.layoutSeries).setVisibility(View.VISIBLE);
                 ((TextView)holder.itemView.findViewById(R.id.textSeries)).setText(novelSeries.title);
@@ -119,11 +150,15 @@ public class TitleAdapter extends RecyclerView.Adapter implements View.OnClickLi
             ((TextView)holder.itemView.findViewById(R.id.textLength)).setText("");
             ((TextView)holder.itemView.findViewById(R.id.textSeries)).setText("");
             ((TextView)holder.itemView.findViewById(R.id.textInfo)).setText("");
+            ((TextView)holder.itemView.findViewById(R.id.textBigGenre)).setText("");
+            ((TextView)holder.itemView.findViewById(R.id.textGenre)).setText("");
         }
 
         CheckBox checkBox = (CheckBox)holder.itemView.findViewById(R.id.checkBox);
         checkBox.setChecked(mCheckSet.contains(ncode));
         checkBox.setTag(ncode);
+
+
     }
 
     @Override

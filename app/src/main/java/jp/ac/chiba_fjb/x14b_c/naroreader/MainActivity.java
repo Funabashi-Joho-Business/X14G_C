@@ -18,6 +18,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.MenuItem;
+import android.widget.FrameLayout;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
@@ -138,9 +139,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_ranking:
                 changeFragment(RankingFragment.class);
                 break;
-            case R.id.nav_search:
-                changeFragment(SearchPanelFragment.class);
-                break;
             case R.id.nav_search_result:
                 changeFragment(SearchFragment.class);
                 break;
@@ -177,7 +175,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 if( f.getArguments() != null && budle!=null)
                     f.getArguments().putAll(budle);
             }
-
+            FrameLayout toolFrame = (FrameLayout)findViewById(R.id.toolFrame);
+            toolFrame.removeAllViews();
 
             //フラグ面tのの切り替え処理
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
@@ -208,6 +207,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if(drawer.isDrawerOpen(Gravity.LEFT))
             drawer.closeDrawer(Gravity.LEFT);
         else {
+            FrameLayout toolFrame = (FrameLayout)findViewById(R.id.toolFrame);
+            toolFrame.removeAllViews();
             showAppBar(true);
             super.onBackPressed();
         }

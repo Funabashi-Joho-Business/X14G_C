@@ -14,14 +14,20 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.SeekBar;
+import android.widget.TextView;
 
 import java.util.List;
 
 import jp.ac.chiba_fjb.x14b_c.naroreader.AddBookmarkFragment;
 import jp.ac.chiba_fjb.x14b_c.naroreader.MainActivity;
+import jp.ac.chiba_fjb.x14b_c.naroreader.Other.BottomDialog;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NaroReceiver;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NovelDB;
 import jp.ac.chiba_fjb.x14b_c.naroreader.R;
@@ -38,9 +44,10 @@ public class SearchFragment extends Fragment implements TitleAdapter.OnItemClick
 
     @Override
     public void onRefresh() {
-        ((SwipeRefreshLayout) getView().findViewById(R.id.swipe_refresh)).setRefreshing(false);
-        ((MainActivity)getActivity()).changeFragment(SearchPanelFragment.class);
+        update();
     }
+
+
     //通知処理
 
     class Receiver extends BroadcastReceiver {
@@ -70,44 +77,43 @@ public class SearchFragment extends Fragment implements TitleAdapter.OnItemClick
                              Bundle savedInstanceState) {
         if(mView != null)
             return mView;
-        //Inflate the layout for this fragment;
-        return inflater.inflate(R.layout.fragment_search, container, false);
-    }
-
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        getActivity().setTitle("検索結果");
-        if(mView != null)
-            return;
-        mView = getView();
-
 
         //ブックマーク表示用アダプターの作成
         mSearch = new TitleAdapter();
         mSearch.setOnItemClickListener(this);
         mSearch.showInfo(true);
 
-
+        View view = inflater.inflate(R.layout.fragment_search, container, false);
         //データ表示用のビューを作成
         RecyclerView rv = (RecyclerView) view.findViewById(R.id.RecyclerView);
         rv.setLayoutManager(new LinearLayoutManager(getContext()));     //アイテムを縦に並べる
         rv.setAdapter(mSearch);                                        //アダプターを設定
 
+
         ((SwipeRefreshLayout)view.findViewById(R.id.swipe_refresh)).setProgressViewOffset(false,0,getResources().getDimensionPixelSize(R.dimen.bar_margin));
-        ((SwipeRefreshLayout) getView().findViewById(R.id.swipe_refresh)).setOnRefreshListener(this);
+        ((SwipeRefreshLayout)view.findViewById(R.id.swipe_refresh)).setOnRefreshListener(this);
+        //Inflate the layout for this fragment;
+        return view;
+    }
 
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
-
+        getActivity().setTitle("検索結果");
         String params = getArguments().getString("params");
         if(params != null){
             Snackbar.make(getView(), "検索開始", Snackbar.LENGTH_SHORT).show();
             getArguments().putString("params",null);
             ((SwipeRefreshLayout) getView().findViewById(R.id.swipe_refresh)).setRefreshing(true);
             NaroReceiver.search(getContext(),params);
+        }else{
+            update();
         }
 
-        update();
+        mView = getView();
+
+
     }
 
     @Override
@@ -125,17 +131,27 @@ public class SearchFragment extends Fragment implements TitleAdapter.OnItemClick
     }
 
     @Override
-    public void onStop() {
-
-        super.onStop();
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        setHasOptionsMenu(true);
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.search, menu);
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()){
+            case R.id.menu_search:
+                ((MainActivity)getActivity()).changeFragment(SearchPanelFragment.class);
+                break;
 
+        }
+
+        return false;
+    }
     public void update(){
         ((SwipeRefreshLayout) getView().findViewById(R.id.swipe_refresh)).setRefreshing(true);
         new Thread(){

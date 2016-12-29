@@ -1,100 +1,182 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:alpha="0.9">
+    android:alpha="0.9"
+    android:orientation="vertical">
 
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/colorPrimaryDark"
+        android:alpha="0.3"
+        android:layout_margin="10dp">
+
+    </FrameLayout>
 
     <LinearLayout
+        android:background="#aaffffaa"
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="2dp"
-        android:id="@+id/layoutSubtitle">>
+        android:id="@+id/layoutSubtitle">
 
-        <FrameLayout
+
+        <LinearLayout
+            android:background="#aaaaffaa"
+            android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:background="@color/colorPrimaryDark"
-            android:alpha="0.3"
-            android:layout_margin="10dp">
+            android:layout_height="match_parent">
 
-        </FrameLayout>
+            <CheckBox
+                android:id="@+id/checkBox"
+                android:background="@drawable/ic_book3"
+                android:alpha="0.5"
+                style="@android:style/Widget.Holo.CompoundButton.CheckBox"
+                android:checked="false"
+                android:textAllCaps="false"
+                android:textColorLink="@android:color/holo_blue_dark"
 
-        <LinearLayout android:orientation="vertical"
-                      android:layout_width="match_parent"
-                      android:layout_height="match_parent"
 
-                      android:background="#aaffffaa">
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
 
-            <LinearLayout
-                android:background="#aaaaffaa"
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
+            <TextView
+                android:text="タイトル"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="3dp"
-                android:gravity="center">
+                android:id="@+id/textTitle"
+                android:textSize="16sp"
+                android:textStyle="normal|bold"
+                android:padding="3dp"
+                android:layout_weight="1"/>
+        </LinearLayout>
 
-                <CheckBox
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/checkBox"
-                    android:background="@drawable/ic_book3"
-                    android:alpha="0.5"
-                    style="@android:style/Widget.Holo.CompoundButton.CheckBox"
-                    android:checked="false"
-                    android:textAllCaps="false"
-                    android:textColorLink="@android:color/holo_blue_dark"
-                    android:padding="4dp"/>
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" >
 
                 <TextView
-                    android:text="タイトル"
+                    android:text="更新日"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/textTitle"
-                    android:textSize="16sp"
-                    android:textStyle="normal|bold"
-                    android:padding="3dp"
-                    android:layout_weight="1"/>
+                    android:paddingRight="4dp"
+                    android:textStyle="normal|bold" />
 
-            </LinearLayout>
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1">
 
+                    <TextView
+                        android:text="1900/01/01 00:00"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/textDate"
+                        android:layout_weight="1" />
 
-            <LinearLayout
-                android:orientation="horizontal"
+                    <TextView
+                        android:text="話数"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textAlignment="textEnd"
+                        android:textStyle="normal|bold" />
+
+                    <TextView
+                        android:text="10"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/textCount"
+                        android:textAlignment="viewEnd"
+                        android:layout_weight="1" />
+                </LinearLayout>
+
+            </TableRow>
+
+            <TableRow
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent" >
+
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" >
+
+                <TextView
+                    android:text="ジャンル"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="10dp"
+                    android:textStyle="normal|bold" />
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:text="大ジャンル"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="10dp"
+                        android:id="@+id/textBigGenre"
+                        android:layout_weight="1" />
+
+                    <TextView
+                        android:text="中ジャンル"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/textGenre"
+
+
+                        android:layout_weight="1"
+                        android:textStyle="normal|italic" />
+                </LinearLayout>
+
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" >
 
                 <TextView
                     android:text="作者名　"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="4dp" />
+                    android:layout_marginRight="10dp"
+                    android:textStyle="normal|bold" />
 
                 <TextView
                     android:text="船橋太郎"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/textWritter"
-                    android:layout_margin="2dp"
+
+
                     android:layout_weight="1"/>
+            </TableRow>
 
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/layoutSeries"
-                android:orientation="horizontal"
+            <TableRow
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:id="@+id/layoutSeries" >
 
                 <TextView
                     android:text="シリーズ"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="4dp" />
+                    android:layout_marginRight="10dp"
+                    android:textStyle="normal|bold" />
 
                 <TextView
                     android:text="シリーズ名"
@@ -102,52 +184,25 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/textSeries"
                     android:layout_weight="1" />
-            </LinearLayout>
 
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="#ddffff">
+            </TableRow>
 
-                <TextView
-                    android:text="更新日"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingRight="4dp" />
+        </TableLayout>
 
-                <TextView
-                    android:text="1900/01/01"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/textDate"
-                    android:layout_weight="1" />
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-                <TextView
-                    android:text="話数"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-
-                <TextView
-                    android:text="10"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/textCount"
-                    android:textAlignment="viewEnd"
-                    android:layout_weight="0.5" />
-
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+            <TableRow
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent" >
 
                 <TextView
                     android:text="総合"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="10dp"
+                    android:textStyle="normal|bold" />
 
                 <TextView
                     android:text="1,000"
@@ -160,7 +215,9 @@
                 <TextView
                     android:text="平均評価"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="10dp"
+                    android:textStyle="normal|bold" />
 
                 <TextView
                     android:text="5.0"
@@ -170,42 +227,11 @@
                     android:layout_marginRight="20dp" />
 
                 <TextView
-                    android:text="評価者数"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingRight="4dp" />
-
-                <TextView
-                    android:text="5.0"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/textEvaCount"
-                    android:layout_weight="1" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <TextView
-                    android:text="BM"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="4dp" />
-
-                <TextView
-                    android:text="1,000"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/textBookmark"
-                    android:paddingRight="20dp" />
-
-                <TextView
                     android:text="レビュー"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="4dp" />
+                    android:layout_marginRight="4dp"
+                    android:textStyle="normal|bold" />
 
                 <TextView
                     android:text="1,000"
@@ -213,32 +239,69 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/textReview"
                     android:paddingRight="20dp" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" >
+
+                <TextView
+                    android:text="BM"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="10dp"
+                    android:textStyle="normal|bold" />
+
+                <TextView
+                    android:text="1,000"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/textBookmark"
+                    android:layout_marginRight="20dp" />
+
+                <TextView
+                    android:text="評価者数"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="10dp"
+                    android:textStyle="normal|bold" />
+
+                <TextView
+                    android:text="5.0"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/textEvaCount"
+                    android:layout_marginRight="20dp" />
 
                 <TextView
                     android:text="文字数"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="4dp"
-                    android:layout_weight="1" />
+                    android:textStyle="normal|bold" />
 
                 <TextView
                     android:text="1,000,000"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/textLength"
-                    android:layout_marginRight="20dp"
-                    android:layout_weight="1" />
+                    android:id="@+id/textLength" />
+            </TableRow>
 
-            </LinearLayout>
-            <TextView
-                android:text="あらすじ"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/textInfo"
-                android:padding="4dp"/>
+        </TableLayout>
 
-        </LinearLayout>
+        <TextView
+            android:text="あらすじ"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/textInfo"
+            android:padding="4dp"
+            android:background="#10001100"
+            android:layout_margin="1dp"
+            android:ellipsize="none"
+            android:textSize="12sp"
+            android:autoLink="web" />
+
     </LinearLayout>
 
 
-</FrameLayout>
+</LinearLayout>

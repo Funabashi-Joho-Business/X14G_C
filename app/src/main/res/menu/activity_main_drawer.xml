@@ -18,14 +18,9 @@
             android:title="ランキング"/>
 
         <item
-            android:id="@+id/nav_search"
+            android:id="@+id/nav_search_result"
             android:icon="@drawable/ic_search_black"
             android:title="検索" />
-
-        <item
-            android:id="@+id/nav_search_result"
-            android:icon="@drawable/ic_menu_gallery"
-            android:title="検索結果" />
 
         <item
             android:id="@+id/nav_log"

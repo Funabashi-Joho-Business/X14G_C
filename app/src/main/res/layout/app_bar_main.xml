@@ -34,6 +34,14 @@
             app:popupTheme="@style/AppTheme.PopupOverlay" >
         </android.support.v7.widget.Toolbar>
 
+        <FrameLayout
+            app:layout_scrollFlags="scroll|enterAlways"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/toolFrame">
+
+        </FrameLayout>
+
 
     </android.support.design.widget.AppBarLayout>
 

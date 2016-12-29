@@ -183,11 +183,7 @@ public class BookmarkFragment extends Fragment implements TitleAdapter.OnItemCli
 
     @Override
     public void onItemLongClick(final NovelInfo info) {
-        NovelInfo novelInfo = mNovelMap.get(info.ncode.toUpperCase());
-        String title = "";
-        if(novelInfo != null)
-           title = novelInfo.title;
-        AddBookmarkFragment.show(this,info.ncode,title,false);
+        AddBookmarkFragment.show(this,info.ncode,info.title,false);
     }
 
     @Override

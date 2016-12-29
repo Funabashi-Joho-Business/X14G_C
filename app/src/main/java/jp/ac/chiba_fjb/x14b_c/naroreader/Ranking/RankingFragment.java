@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.FrameLayout;
 import android.widget.Spinner;
 
 import java.util.List;
@@ -144,10 +145,15 @@ public class RankingFragment extends Fragment implements AdapterView.OnItemSelec
 
         ArrayAdapter<String> arrayAdapter
             = new ArrayAdapter<String>(getContext(), R.layout.item_adapter, RANKING_FILTER1_NAME);
+
+        FrameLayout toolFrame = (FrameLayout) getActivity().findViewById(R.id.toolFrame);
+        View toolView = inflater.inflate(R.layout.tool_ranking,toolFrame,false);
+        toolFrame.addView(toolView);
+
         View view =  inflater.inflate(R.layout.fragment_ranking, container, false);
-        mSpiner1 = (Spinner) view.findViewById(R.id.spinnerRFilter1);
-        mSpiner2 = (Spinner) view.findViewById(R.id.spinnerRFilter2);
-        mSpiner3 = (Spinner) view.findViewById(R.id.spinnerRFilter3);
+        mSpiner1 = (Spinner) toolView.findViewById(R.id.spinnerRFilter1);
+        mSpiner2 = (Spinner) toolView.findViewById(R.id.spinnerRFilter2);
+        mSpiner3 = (Spinner) toolView.findViewById(R.id.spinnerRFilter3);
 
 
         //スピナー初期設定

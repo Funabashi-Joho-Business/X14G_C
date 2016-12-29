@@ -1,5 +1,7 @@
 package jp.ac.chiba_fjb.x14b_c.naroreader.data;
 
+import android.text.Html;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -22,6 +24,13 @@ import java.util.regex.Pattern;
 
 
 public class TbnReader {
+    static String decodeHtml(String src){
+        return src.replaceAll("&#39;" , "'" )
+                .replaceAll("&quot;", "\"")
+                .replaceAll("&gt;"  , ">" )
+                .replaceAll("&lt;"  , "<" )
+                .replaceAll("&amp;" , "&" );
+    }
 
     //クッキーの分解
     public static Map getCookie(HttpURLConnection con){
@@ -537,7 +546,7 @@ public class TbnReader {
         try {
             while (m.find()){
                 NovelSubTitle subTitle = new NovelSubTitle();
-                subTitle.title = m.group(1);
+                subTitle.title = decodeHtml(m.group(1));
                 subTitle.date = format.parse(m.group(2));
                 if(m.group(3) != null)
                 subTitle.update = format.parse(m.group(3));
@@ -596,9 +605,9 @@ public class TbnReader {
         Matcher m = p.matcher(content);
         if(!m.find())
             return null;
-        series.title = m.group(1);
+        series.title = decodeHtml(m.group(1));
         series.writer = Integer.parseInt(m.group(2));
-        series.info = m.group(3);
+        series.info =decodeHtml(m.group(3));
         series.novelList = new ArrayList<String>();
 
         p = Pattern.compile("<div class=\"title\"><a href=\"/(.*?)/\">");
@@ -637,12 +646,12 @@ public class TbnReader {
             while (m.find()){
                 NovelRanking ranking = new NovelRanking();
                 ranking.ncode = m.group(1).toUpperCase();
-                ranking.title = m.group(2);
+                ranking.title = decodeHtml(m.group(2));
                 ranking.writerId = Integer.parseInt(m.group(3));
-                ranking.writerName = m.group(4);
+                ranking.writerName = decodeHtml(m.group(4));
                 ranking.point = NumberFormat.getInstance().parse(m.group(5)).intValue();
                 ranking.novelCount = m.group(6)==null?1:Integer.parseInt(m.group(6));
-                ranking.info = m.group(7);
+                ranking.info = decodeHtml(m.group(7));
                 ranking.genre = m.group(8);
                 ranking.novelUpdate = format.parse(m.group(9));
                 ranking.textCount = NumberFormat.getInstance().parse(m.group(10)).intValue();

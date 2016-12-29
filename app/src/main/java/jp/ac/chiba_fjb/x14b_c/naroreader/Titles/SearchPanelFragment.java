@@ -11,6 +11,8 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.RadioGroup;
+import android.widget.SeekBar;
+import android.widget.TextView;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -22,7 +24,7 @@ import jp.ac.chiba_fjb.x14b_c.naroreader.R;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class SearchPanelFragment extends Fragment implements View.OnClickListener {
+public class SearchPanelFragment extends Fragment implements View.OnClickListener, SeekBar.OnSeekBarChangeListener {
 
 
     private View mView;
@@ -47,6 +49,7 @@ public class SearchPanelFragment extends Fragment implements View.OnClickListene
         if(mView != null)
             return;
         getView().findViewById(R.id.imageSearch).setOnClickListener(this);
+        ((SeekBar)view.findViewById(R.id.seekLimit)).setOnSeekBarChangeListener(this);
         mView = getView();
     }
 
@@ -62,7 +65,10 @@ public class SearchPanelFragment extends Fragment implements View.OnClickListene
         int type = ((RadioGroup)getView().findViewById(R.id.groupType)).getCheckedRadioButtonId();
         try {
             StringBuilder sb = new StringBuilder();
-            sb.append("out=json&gzip=5&lim=500");
+            sb.append("out=json&gzip=5");
+
+            int limit = ((SeekBar)getView().findViewById(R.id.seekLimit)).getProgress()*10+10;
+            sb.append("&lim="+limit);
             if(word.length() > 0)
                 sb.append("&word="+ URLEncoder.encode(word,"UTF-8"));
             if(exclusion.length() > 0)
@@ -97,6 +103,21 @@ public class SearchPanelFragment extends Fragment implements View.OnClickListene
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
+
+    }
+
+    @Override
+    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+        ((TextView)getView().findViewById(R.id.textLimit)).setText(""+((progress+1)*10));
+    }
+
+    @Override
+    public void onStartTrackingTouch(SeekBar seekBar) {
+
+    }
+
+    @Override
+    public void onStopTrackingTouch(SeekBar seekBar) {
 
     }
 }
