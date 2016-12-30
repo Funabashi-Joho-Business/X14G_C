@@ -33,6 +33,12 @@ public class NaroReceiver extends BroadcastReceiver {
     public static final String ACTION_BOOKMARK = "ACTION_BOOKMARK"; //このクラスが処理すべき命令
     public static final String NOTIFI_BOOKMARK = "NOTIFI_BOOKMARK"; //処理終了後の通知
 
+    public static final String ACTION_SET_BOOKMARK2 = "ACTION_SET_BOOKMARK2"; //しおり設定
+    public static final String NOTIFI_SET_BOOKMARK2 = "NOTIFI_SET_BOOKMARK2"; //しおり処理終了後の通知
+
+    public static final String ACTION_CLEAR_BOOKMARK2 = "ACTION_CLEAR_BOOKMARK2"; //しおり設定
+    public static final String NOTIFI_CLEAR_BOOKMARK2 = "NOTIFI_CLEAR_BOOKMARK2"; //しおり処理終了後の通知
+
     public static final String ACTION_NOVELINFO = "ACTION_NOVELINFO"; //ノベル情報の取得
     public static final String NOTIFI_NOVELINFO = "NOTIFI_NOVELINFO"; //ノベル情報取得終了後の通知
 
@@ -69,7 +75,7 @@ public class NaroReceiver extends BroadcastReceiver {
     public static void updateNovelInfo(Context con){
         NovelDB db = new NovelDB(con);
         List<NovelBookmark> boolmarks = db.getBookmark();
-        List<NovelInfo> novelInfos = db.getHistorys();
+        List<NovelDB.NovelInfoBookmark> novelInfos = db.getHistorys();
         db.close();
         ArrayList<String> list = new ArrayList<String>();
         for(NovelBookmark b : boolmarks)
@@ -86,7 +92,7 @@ public class NaroReceiver extends BroadcastReceiver {
     }
     public static void updateNovelInfoHistory(Context con){
         NovelDB db = new NovelDB(con);
-        List<NovelInfo> novelInfos = db.getHistorys();
+        List<NovelDB.NovelInfoBookmark> novelInfos = db.getHistorys();
         db.close();
         ArrayList<String> list = new ArrayList<String>();
         for(NovelInfo t : novelInfos)
@@ -94,20 +100,18 @@ public class NaroReceiver extends BroadcastReceiver {
 
         con.sendBroadcast(new Intent(con,NaroReceiver.class).setAction(NaroReceiver.ACTION_NOVELINFO).putExtra("ncode",list));
     }
-    public static void updateNovelInfoBookmark(Context con){
-        NovelDB db = new NovelDB(con);
-        List<NovelBookmark> boolmarks = db.getBookmark();
-        db.close();
-        ArrayList<String> list = new ArrayList<String>();
-        for(NovelBookmark b : boolmarks)
-            list.add(b.getCode());
-        con.sendBroadcast(new Intent(con,NaroReceiver.class).setAction(NaroReceiver.ACTION_NOVELINFO).putExtra("ncode",list));
-    }
+
     public static void download(Context con, ArrayList<String> list) {
         con.sendBroadcast(new Intent(con,NaroReceiver.class).setAction(NaroReceiver.ACTION_NOVELCONTENT).putExtra("ncodes",list));
     }
-    public static void search(Context con,String params) {
-        con.sendBroadcast(new Intent(con,NaroReceiver.class).setAction(NaroReceiver.ACTION_SEARCH).putExtra("params",params));
+    public static void search(Context con,String params,int writer) {
+        con.sendBroadcast(new Intent(con,NaroReceiver.class).setAction(NaroReceiver.ACTION_SEARCH).putExtra("params",params).putExtra("writer",writer));
+    }
+    public static void setBookmark2(Context con,String ncode,int index){
+        con.sendBroadcast(new Intent(con,NaroReceiver.class).setAction(NaroReceiver.ACTION_SET_BOOKMARK2).putExtra("ncode",ncode).putExtra("index",index));
+    }
+    public static void clearBookmark2(Context con,String ncode){
+        con.sendBroadcast(new Intent(con,NaroReceiver.class).setAction(NaroReceiver.ACTION_CLEAR_BOOKMARK2).putExtra("ncode",ncode));
     }
     @Override
     public void onReceive(final Context context, final Intent intent) {
@@ -252,28 +256,79 @@ public class NaroReceiver extends BroadcastReceiver {
                     }
                 }.start();
                 break;
+            case ACTION_SET_BOOKMARK2:
+                new Thread(){
+                    @Override
+                    public void run() {
+                        String ncode = intent.getStringExtra("ncode");
+                        int index = intent.getIntExtra("index",0);
 
+                        NovelDB settingDB = new NovelDB(context);
+                        String id = settingDB.getSetting("loginId","");
+                        String pass = settingDB.getSetting("loginPass","");
+                        settingDB.close();
+
+                        //ログイン処理
+                        String hash = TbnReader.getLoginHash(id,pass);
+
+                        if(hash == null) {
+                            context.sendBroadcast(new Intent().setAction(NOTIFI_SET_BOOKMARK2).putExtra("result",false));
+                            LogService.output(context,"ログイン失敗");
+                            return;
+                        }
+                        LogService.output(context,"しおりの設定開始");
+                        boolean flag = TbnReader.setBookmark2(hash,ncode,index);
+                        if(flag)
+                            LogService.output(context,"しおり設定完了");
+                        else
+                            LogService.output(context,"しおり設定エラー");
+                        //更新完了通知
+                        context.sendBroadcast(new Intent().setAction(NOTIFI_SET_BOOKMARK2).putExtra("result",flag));
+                        //ブックマーク更新処理
+                        updateBookmark(context);
+                    }
+                }.start();
+                break;
+            case ACTION_CLEAR_BOOKMARK2:
+                new Thread(){
+                    @Override
+                    public void run() {
+                        String ncode = intent.getStringExtra("ncode");
+                        int index = intent.getIntExtra("index",0);
+
+                        NovelDB settingDB = new NovelDB(context);
+                        String id = settingDB.getSetting("loginId","");
+                        String pass = settingDB.getSetting("loginPass","");
+                        settingDB.close();
+
+                        //ログイン処理
+                        String hash = TbnReader.getLoginHash(id,pass);
+
+                        if(hash == null) {
+                            context.sendBroadcast(new Intent().setAction(NOTIFI_CLEAR_BOOKMARK2).putExtra("result",false));
+                            LogService.output(context,"ログイン失敗");
+                            return;
+                        }
+                        LogService.output(context,"しおりの解除開始");
+                        boolean flag = TbnReader.clearBookmark2(hash,ncode);
+                        if(flag)
+                            LogService.output(context,"しおり設定完了");
+                        else
+                            LogService.output(context,"しおり設定エラー");
+                        //更新完了通知
+                        context.sendBroadcast(new Intent().setAction(NOTIFI_CLEAR_BOOKMARK2).putExtra("result",flag));
+                        //ブックマーク更新処理
+                        updateBookmark(context);
+                    }
+                }.start();
+                break;
             case ACTION_NOVELINFO:
                 new Thread(){
                     @Override
                     public void run() {
-                        LogService.output(context,"ノベル情報の取得");
                         List<String> ncodes = (List<String>)intent.getSerializableExtra("ncode");
-
-                        //取得した検索情報をDBに保存
-                        List<NovelInfo> info = TbnReader.getNovelInfo(ncodes);
-                        if(info != null) {
-                            //DBを利用
-                            NovelDB db = new NovelDB(context);
-                            db.addNovelInfo(info);
-                            db.close();
-                            LogService.output(context, "ノベル情報の取得完了");
-                            //更新完了通知
-                            context.sendBroadcast(new Intent().setAction(NOTIFI_NOVELINFO).putExtra("result",true));
-                        }else
-                            //更新完了通知
-                            context.sendBroadcast(new Intent().setAction(NOTIFI_NOVELINFO).putExtra("result",false));
-
+                        boolean flag = getNovelInfo(context,ncodes);
+                        context.sendBroadcast(new Intent().setAction(NOTIFI_NOVELINFO).putExtra("result",flag));
                     }
                 }.start();
                 break;
@@ -283,9 +338,20 @@ public class NaroReceiver extends BroadcastReceiver {
                     public void run() {
                         LogService.output(context,"検索開始");
                         String params = intent.getStringExtra("params");
-
+                        int writer = intent.getIntExtra("writer",0);
                         //取得した検索情報をDBに保存
                         List<NovelInfo> info = TbnReader.getNovelInfoFromParam(params);
+
+                        //違う作者を除去
+                        if(writer > 0) {
+                            List<NovelInfo> info2 = new ArrayList<NovelInfo>();
+                            for (NovelInfo i : info) {
+                                if (i.userid == writer)
+                                    info2.add(i);
+                            }
+                            info = info2;
+                        }
+
                         if(info != null) {
                             //DBを利用
                             NovelDB db = new NovelDB(context);
@@ -320,8 +386,6 @@ public class NaroReceiver extends BroadcastReceiver {
                 mDownload = false;
                 break;
             case ACTION_NOVELCONTENT:
-
-
                 mDownload = true;
                 new Thread(){
                     @Override
@@ -346,11 +410,11 @@ public class NaroReceiver extends BroadcastReceiver {
                             }
 
                             NovelDB db = new NovelDB(context);
-                            List<NovelIndex> list = db.getContentNull(ncodes);
+                            List<NovelDB.NovelIndex> list = db.getContentNull(ncodes);
                             db.close();
 
                             int count=0;
-                            for(NovelIndex novelIndex : list){
+                            for(NovelDB.NovelIndex novelIndex : list){
                                 notify.setRemoteText(R.id.textMsg,String.format("受信 %d/%d",count++,list.size()));
                                 notify.update(false);
                                 if(!mDownload)
@@ -400,9 +464,18 @@ public class NaroReceiver extends BroadcastReceiver {
 
                         Intent intent = new Intent().setAction(NOTIFI_RANKING);
                         if(rankList != null){
+
+                            //ランキングデータの保存
                             NovelDB db = new NovelDB(context);
                             db.addRanking(kind1,kind2,kind3,rankList);
                             db.close();
+                            //ランキングncodeをリスト化
+                            ArrayList<String> list = new ArrayList<String>();
+                            for(NovelRanking b : rankList)
+                                list.add(b.ncode);
+                            //ノベル詳細データの取得
+                            getNovelInfo(context,list);
+
                             LogService.format(context,"ランキングの取得");
                             context.sendBroadcast(intent.putExtra("result",true));
                         }
@@ -420,6 +493,17 @@ public class NaroReceiver extends BroadcastReceiver {
 
 
     }
+
+    public static void updateNovelInfoBookmark(Context con){
+        NovelDB db = new NovelDB(con);
+        List<NovelBookmark> boolmarks = db.getBookmark();
+        db.close();
+        ArrayList<String> list = new ArrayList<String>();
+        for(NovelBookmark b : boolmarks)
+            list.add(b.getCode());
+        con.sendBroadcast(new Intent(con,NaroReceiver.class).setAction(NaroReceiver.ACTION_NOVELINFO).putExtra("ncode",list));
+    }
+
     boolean recvSubtitle(Context context,String ncode){
         //データの取得
         String[] scode = new String[1];
@@ -483,5 +567,20 @@ public class NaroReceiver extends BroadcastReceiver {
         else{
             alerm.cancel(pending);
         }
+    }
+    boolean getNovelInfo(Context context,List<String> ncodes) {
+        LogService.output(context, "ノベル情報の取得");
+
+        //取得した検索情報をDBに保存
+        List<NovelInfo> info = TbnReader.getNovelInfo(ncodes);
+        if (info == null)
+            return false;
+
+        //DBを利用
+        NovelDB db = new NovelDB(context);
+        db.addNovelInfo(info);
+        db.close();
+        LogService.output(context, "ノベル情報の取得完了");
+        return true;
     }
 }

@@ -4,6 +4,7 @@ package jp.ac.chiba_fjb.x14b_c.naroreader;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
@@ -23,6 +24,9 @@ import android.widget.FrameLayout;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -31,9 +35,10 @@ import jp.ac.chiba_fjb.x14b_c.naroreader.Titles.HistoryFragment;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Other.LogFragment;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NaroReceiver;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NovelDB;
-import jp.ac.chiba_fjb.x14b_c.naroreader.Ranking.RankingFragment;
+import jp.ac.chiba_fjb.x14b_c.naroreader.Titles.RankingFragment;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Titles.SearchFragment;
-import jp.ac.chiba_fjb.x14b_c.naroreader.Titles.SearchPanelFragment;
+import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelInfo;
+import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelSeries;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.TbnReader;
 import to.pns.lib.LogService;
 
@@ -248,6 +253,73 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 })
                 .setNegativeButton("Cancel", null)
                 .show();
-        //super.finish();
+    }
+
+    public void enterMenu(int id,String ncode){
+        Uri uri;
+        Intent i;
+
+        switch(id){
+            case R.id.menu_bbs:
+                uri = Uri.parse("http://novelcom.syosetu.com/impression/list/ncode/"+ TbnReader.convertNcode(ncode)+"/");
+                i = new Intent(Intent.ACTION_VIEW,uri);
+                startActivity(i);
+                break;
+            case R.id.menu_review:
+                uri = Uri.parse("http://novelcom.syosetu.com/novelreview/list/ncode/"+ TbnReader.convertNcode(ncode)+"/");
+                i = new Intent(Intent.ACTION_VIEW,uri);
+                startActivity(i);
+                break;
+            case R.id.menu_access:
+                uri = Uri.parse("http://kasasagi.hinaproject.com/access/top/ncode/"+ ncode+"/");
+                i = new Intent(Intent.ACTION_VIEW,uri);
+                startActivity(i);
+                break;
+            case R.id.menu_bookmark_add:
+                AddBookmarkFragment.show(this,ncode,true);
+                break;
+            case R.id.menu_bookmark_del:
+                AddBookmarkFragment.show(this,ncode,false);
+                break;
+            case R.id.menu_search_writer: {
+                NovelDB db = new NovelDB(this);
+                NovelInfo info = db.getNovelInfo(ncode);
+                if (info != null) {
+                    Bundle bundle = new Bundle();
+                    try {
+                        bundle.putInt("writer",info.userid);
+                        bundle.putString("params", "out=json&gzip=5&wname=1&word=" + URLEncoder.encode(info.writer, "UTF-8"));
+                        changeFragment(SearchFragment.class, bundle);
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+                db.close();
+                break;
+            }
+            case R.id.menu_search_series: {
+                NovelDB db = new NovelDB(this);
+                NovelSeries series = db.getSeriesInfo(ncode);
+                if (series != null) {
+                    List<String> ncodes = db.getSeriesNcode(series.scode);
+                    db.close();
+                    StringBuilder sb = new StringBuilder();
+                    for (String n : ncodes) {
+                        if (sb.length() > 0)
+                            sb.append("-");
+                        sb.append(n);
+                    }
+                    Bundle bundle = new Bundle();
+                    bundle.putString("params", "out=json&gzip=5&ncode=" + sb.toString());
+                    changeFragment(SearchFragment.class, bundle);
+                } else
+                    Snackbar.make(findViewById(R.id.coordinator), "シリーズ情報無し", Snackbar.LENGTH_SHORT).show();
+                db.close();
+                break;
+            }
+
+        }
+
     }
 }

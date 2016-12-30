@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NovelDB;
 import jp.ac.chiba_fjb.x14b_c.naroreader.R;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelInfo;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelSeries;
@@ -25,17 +26,9 @@ import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelSeries;
  */
 
 public class TitleAdapter extends RecyclerView.Adapter implements View.OnClickListener, View.OnLongClickListener, CompoundButton.OnCheckedChangeListener {
-    final static Map<Integer,String> BIGGENRE = new HashMap<Integer,String>(){
-        {put(1, "恋愛");}
-        {put(2, "ファンタジー");}
-        {put(3, "文芸");}
-        {put(4, "SF");}
-        {put(99, "その他");}
-        {put(98, "ノンジャンル");}
-    };
     final static Map<Integer,String> GENRE = new HashMap<Integer,String>(){
-        {put(101, "異世界");}
-        {put(102, "現実世界");}
+        {put(101, "恋愛 異世界");}
+        {put(102, "恋愛 現実世界");}
         {put(201, "ハイファンタジー");}
         {put(202, "ローファンタジー");}
         {put(301, "純文学");}
@@ -69,17 +62,15 @@ public class TitleAdapter extends RecyclerView.Adapter implements View.OnClickLi
         }
         else
             mCheckSet.remove(ncode);
-        mListener.onItemCheck();
     }
 
 
     public interface OnItemClickListener{
         public void onItemClick(NovelInfo bookmark);
         public void onItemLongClick(NovelInfo bookmark);
-        public void onItemCheck();
     }
     private OnItemClickListener mListener;
-    private List<NovelInfo> mNovelInfo;
+    private List<? extends NovelInfo> mNovelInfo;
     private Map<String, NovelSeries> mNovelSeries;
     private boolean mInfo = false;
     HashSet<String> mCheckSet = new HashSet<String>();
@@ -120,7 +111,6 @@ public class TitleAdapter extends RecyclerView.Adapter implements View.OnClickLi
             ((TextView)holder.itemView.findViewById(R.id.textEvaCount)).setText(nf.format(novelInfo.all_hyoka_cnt));
             ((TextView)holder.itemView.findViewById(R.id.textReview)).setText(nf.format(novelInfo.review_cnt));
             ((TextView)holder.itemView.findViewById(R.id.textLength)).setText(nf.format(novelInfo.length));
-            ((TextView)holder.itemView.findViewById(R.id.textBigGenre)).setText(BIGGENRE.get(novelInfo.biggenre));
             ((TextView)holder.itemView.findViewById(R.id.textGenre)).setText(GENRE.get(novelInfo.genre));
             if(novelSeries!=null){
                 holder.itemView.findViewById(R.id.layoutSeries).setVisibility(View.VISIBLE);
@@ -130,28 +120,30 @@ public class TitleAdapter extends RecyclerView.Adapter implements View.OnClickLi
                 holder.itemView.findViewById(R.id.layoutSeries).setVisibility(View.GONE);
                 ((TextView) holder.itemView.findViewById(R.id.textSeries)).setText("");
             }
-            if(mInfo){
+            if(mInfo || novelInfo instanceof NovelDB.NovelInfoRanking){
                 holder.itemView.findViewById(R.id.textInfo).setVisibility(View.VISIBLE);
                 ((TextView) holder.itemView.findViewById(R.id.textInfo)).setText(novelInfo.story);
             }
             else{
                 holder.itemView.findViewById(R.id.textInfo).setVisibility(View.GONE);
             }
+            String bookmark = "";
+            if(novelInfo instanceof NovelDB.NovelInfoBookmark){
+                NovelDB.NovelInfoBookmark infoBookmark = (NovelDB.NovelInfoBookmark)novelInfo;
+                if(infoBookmark.b_category != 0) {
+                    if (infoBookmark.b_mark != 0)
+                        bookmark = "しおり" + infoBookmark.b_mark + "話";
+                    else
+                        bookmark = "ブックマーク";
+                }
+            }
+            ((TextView) holder.itemView.findViewById(R.id.textStat)).setText(bookmark);
 
-        }else{
-            ((TextView)holder.itemView.findViewById(R.id.textTitle)).setText("");
-            ((TextView)holder.itemView.findViewById(R.id.textWritter)).setText("");
-            ((TextView)holder.itemView.findViewById(R.id.textPoint)).setText("");
-            ((TextView)holder.itemView.findViewById(R.id.textCount)).setText("");
-            ((TextView)holder.itemView.findViewById(R.id.textBookmark)).setText("");
-            ((TextView)holder.itemView.findViewById(R.id.textEva)).setText("");
-            ((TextView)holder.itemView.findViewById(R.id.textEvaCount)).setText("");
-            ((TextView)holder.itemView.findViewById(R.id.textReview)).setText("");
-            ((TextView)holder.itemView.findViewById(R.id.textLength)).setText("");
-            ((TextView)holder.itemView.findViewById(R.id.textSeries)).setText("");
-            ((TextView)holder.itemView.findViewById(R.id.textInfo)).setText("");
-            ((TextView)holder.itemView.findViewById(R.id.textBigGenre)).setText("");
-            ((TextView)holder.itemView.findViewById(R.id.textGenre)).setText("");
+            if(novelInfo instanceof NovelDB.NovelInfoRanking){
+                ((TextView)holder.itemView.findViewById(R.id.textRank)).setText(((NovelDB.NovelInfoRanking)novelInfo).ranking_index+"位");
+            }
+            else
+                ((TextView)holder.itemView.findViewById(R.id.textRank)).setText("");
         }
 
         CheckBox checkBox = (CheckBox)holder.itemView.findViewById(R.id.checkBox);
@@ -170,7 +162,7 @@ public class TitleAdapter extends RecyclerView.Adapter implements View.OnClickLi
 
 
 
-    public void setValues(List<NovelInfo> values){
+    public void setValues(List<? extends NovelInfo> values){
         mNovelInfo = values;
     }
     public void setNovelSeries(Map<String,NovelSeries> novelSeries){

@@ -72,6 +72,8 @@ public class BookmarkFragment extends Fragment implements TitleAdapter.OnItemCli
     private Map<String, NovelInfo> mNovelMap;
     private Handler mHandler = new Handler();
     private Map<String, NovelSeries> mSeriesMap;
+    private View mView;
+    private String mNCode;
 
     public BookmarkFragment() {
 
@@ -84,8 +86,14 @@ public class BookmarkFragment extends Fragment implements TitleAdapter.OnItemCli
         // タイトルを設定
         getActivity().setTitle("ブックマーク");
 
+        if(mView != null) {
+            update();
+            return mView;
+        }
+
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_bookmark, container, false);
+        mView = view;
         //ブックマーク表示用アダプターの作成
         mAdapter = new TitleAdapter();
         mAdapter.setOnItemClickListener(this);
@@ -141,13 +149,12 @@ public class BookmarkFragment extends Fragment implements TitleAdapter.OnItemCli
                 bottomDialog.setMenu(R.menu.panel_bookmark,this);
                 bottomDialog.show(getFragmentManager(), null);
                 break;
-            case R.id.menu_bookmark_del:
-                delBookmark();
-                break;
             case R.id.menu_download:
                 download();
                 break;
-
+            default:
+                ((MainActivity)getActivity()).enterMenu(item.getItemId(),mNCode);
+                break;
         }
 
         return false;
@@ -155,7 +162,7 @@ public class BookmarkFragment extends Fragment implements TitleAdapter.OnItemCli
     void update(){
         //アダプターにデータを設定
         NovelDB db = new NovelDB(getContext());
-        List<NovelInfo> list = db.getNovelInfoFromBookmark();
+        List<NovelDB.NovelInfoBookmark> list = db.getNovelInfoFromBookmark();
         mAdapter.setValues(list);
 
 
@@ -166,9 +173,6 @@ public class BookmarkFragment extends Fragment implements TitleAdapter.OnItemCli
 
         mSeriesMap = db.getNovelSeriesMap(listNcode);
         mAdapter.setNovelSeries(mSeriesMap);
-        db.close();
-
-
         db.close();
 
         mAdapter.notifyDataSetChanged();   //データ再表示要求
@@ -183,25 +187,13 @@ public class BookmarkFragment extends Fragment implements TitleAdapter.OnItemCli
 
     @Override
     public void onItemLongClick(final NovelInfo info) {
-        AddBookmarkFragment.show(this,info.ncode,info.title,false);
+        mNCode = info.ncode;
+        BottomDialog bottomDialog = new BottomDialog();
+        bottomDialog.setMenu(R.menu.panel_novel,this);
+        bottomDialog.show(getFragmentManager(), null);
     }
 
-    @Override
-    public void onItemCheck() {
-     //   setDelayMenu();
-    }
-    void setDelayMenu(){
-//        mHandler.removeCallbacks(null);
-//        if(mAdapter.getChecks().size() == 0)
-//            return;
-//        mHandler.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                ((MainActivity)getActivity()).showAppBar();
-//            }
-//        },1000);
-        ((MainActivity)getActivity()).setAppBarScroll(mAdapter.getChecks().size() == 0);
-    }
+
 
     void download(){
         Set<String> checks = mAdapter.getChecks();
@@ -210,33 +202,6 @@ public class BookmarkFragment extends Fragment implements TitleAdapter.OnItemCli
     }
 
 
-    void delBookmark(){
-        Snackbar.make(getView(),"ブックマーク削除中", Snackbar.LENGTH_SHORT).show();
-        new Thread(){
-            @Override
-            public void run() {
-                NovelDB settingDB = new NovelDB(getContext());
-                String id = settingDB.getSetting("loginId","");
-                String pass = settingDB.getSetting("loginPass","");
-                settingDB.close();
-
-                //ログイン処理
-                String hash = TbnReader.getLoginHash(id,pass);
-                if(hash != null) {
-                    Set<String> checks = mAdapter.getChecks();
-                    for (String ncode : checks) {
-                        if(!TbnReader.clearBookmark(hash,ncode)){
-                            output(String.format("%s:ブックマーク解除失敗",ncode));
-                        }
-                    }
-                }else{
-                    output("認証エラー");
-                }
-                output("ブックマーク解除完了");
-                NaroReceiver.updateBookmark(getContext());
-            }
-        }.start();
-    }
     void output(final String msg){
         getActivity().runOnUiThread(new Runnable() {
             @Override

@@ -1,11 +1,15 @@
 package jp.ac.chiba_fjb.x14b_c.naroreader;
 
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +17,7 @@ import android.widget.TextView;
 
 import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NaroReceiver;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NovelDB;
+import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelInfo;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.TbnReader;
 
 /**
@@ -22,16 +27,14 @@ public class AddBookmarkFragment extends DialogFragment implements View.OnClickL
     private String mNCode;
     private boolean mFlag;
 
-    public static void show(Fragment fragment,String ncode,String title,boolean flag){
+    public static void show(FragmentActivity activity, String ncode, boolean flag){
         Bundle bn = new Bundle();
         bn.putString("ncode",ncode);
-        bn.putString("title",title);
         bn.putBoolean("mode",flag);
         //フラグメントのインスタンスを作成
         AddBookmarkFragment f = new AddBookmarkFragment();
-        f.setTargetFragment(fragment,0);
         f.setArguments(bn);
-        f.show(fragment.getFragmentManager(),"");
+        f.show(activity.getSupportFragmentManager(),"");
     }
 
     public AddBookmarkFragment() {
@@ -52,11 +55,18 @@ public class AddBookmarkFragment extends DialogFragment implements View.OnClickL
         //バンドルの取得
         if(getArguments() != null){
             Bundle bn = getArguments();
-            String mTitle = bn.getString("title");
             mNCode = bn.getString("ncode");
             mFlag = bn.getBoolean("mode");
 
-            tv.setText(mTitle);
+            NovelDB db = new NovelDB(getContext());
+            NovelInfo novelInfo = db.getNovelInfo(mNCode);
+            db.close();
+
+            String title = "";
+            if(novelInfo != null)
+                title = novelInfo.title;
+
+            tv.setText(title);
             if(mFlag)
                 tv2.setText("ブックマークしますか？");
             else
@@ -84,7 +94,7 @@ public class AddBookmarkFragment extends DialogFragment implements View.OnClickL
                         String pass = settingDB.getSetting("loginPass","");
                         settingDB.close();
 
-                        Snackbar.make(getTargetFragment().getView(),"ブックマーク処理中", Snackbar.LENGTH_SHORT).show();
+                        Snackbar.make(getActivity().findViewById(R.id.coordinator),"ブックマーク処理中", Snackbar.LENGTH_SHORT).show();
 
                         //ログイン処理
                         String hash = TbnReader.getLoginHash(id,pass);
@@ -96,7 +106,7 @@ public class AddBookmarkFragment extends DialogFragment implements View.OnClickL
                                 getActivity().runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
-                                        Snackbar.make(getTargetFragment().getView(), flag?"ブックマーク完了":"ブックマークエラー", Snackbar.LENGTH_SHORT).show();
+                                        Snackbar.make(getActivity().findViewById(R.id.coordinator), flag?"ブックマーク完了":"ブックマークエラー", Snackbar.LENGTH_SHORT).show();
                                         getDialog().cancel();
                                     }
                                 });
@@ -107,7 +117,7 @@ public class AddBookmarkFragment extends DialogFragment implements View.OnClickL
                                 getActivity().runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
-                                        Snackbar.make(getTargetFragment().getView(), flag?"ブックマーク解除":"ブックマークエラー", Snackbar.LENGTH_SHORT).show();
+                                        Snackbar.make(getActivity().findViewById(R.id.coordinator), flag?"ブックマーク解除":"ブックマークエラー", Snackbar.LENGTH_SHORT).show();
                                         getDialog().cancel();
                                     }
                                 });

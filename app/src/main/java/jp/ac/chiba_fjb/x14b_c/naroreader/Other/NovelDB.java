@@ -32,40 +32,52 @@ import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelSeries;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelSubTitle;
 import to.pns.lib.AppDB;
 
-class NovelIndex{
-    public String ncode;
-    public int index;
-}
 
-class NovelRankingValue extends NovelRanking{
-    public int ranking_kind1;
-    public int ranking_kind2;
-    public int ranking_kind3;
-    public int ranking_index;
-    public NovelRankingValue(int kind1,int kind2,int kind3,int index,NovelRanking v){
-        ranking_kind1 = kind1;
-        ranking_kind2 = kind2;
-        ranking_kind3 = kind3;
-        ranking_index = index;
 
-        //全プロパティーのコピー
-        Class c = v.getClass();
-        Field[] fields = c.getFields();
-        for(Field f : fields){
-            try {
-                String name = f.getName();
-                if(name.charAt(0) != '$' && !name.equals("serialVersionUID"))
-                   f.set(this,f.get(v));
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
+
+public class NovelDB extends AppDB {
+    public static class NovelInfoBookmark extends NovelInfo{
+        public int b_category;
+        public int b_mark;
+    }
+
+    public static class NovelInfoRanking extends NovelInfoBookmark{
+        public int ranking_index;
+        public int point;
+    }
+    public static class NovelIndex{
+        public String ncode;
+        public int index;
+    }
+
+    static class NovelRankingValue extends NovelRanking{
+        public int ranking_kind1;
+        public int ranking_kind2;
+        public int ranking_kind3;
+        public int ranking_index;
+        public NovelRankingValue(int kind1,int kind2,int kind3,int index,NovelRanking v){
+            ranking_kind1 = kind1;
+            ranking_kind2 = kind2;
+            ranking_kind3 = kind3;
+            ranking_index = index;
+
+            //全プロパティーのコピー
+            Class c = v.getClass();
+            Field[] fields = c.getFields();
+            for(Field f : fields){
+                try {
+                    String name = f.getName();
+                    if(name.charAt(0) != '$' && !name.equals("serialVersionUID"))
+                        f.set(this,f.get(v));
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
-}
 
-public class NovelDB extends AppDB {
     public NovelDB(Context context) {
-        super(context, "novel00.db", 6);
+        super(context, "novel02.db", 1);
     }
 
     @Override
@@ -74,7 +86,7 @@ public class NovelDB extends AppDB {
 
         String sql;
         //ブックマーク用テーブルの作成
-        sql = "create table t_bookmark(n_code text primary key,b_update date,b_category int)";
+        sql = "create table t_bookmark(ncode text primary key,b_update date,b_category int,b_mark int)";
         db.execSQL(sql);
         //履歴用
         sql = "create table t_novel_history(ncode text primary key,his_date date)";
@@ -82,13 +94,13 @@ public class NovelDB extends AppDB {
         sql = createSqlCreateClass(NovelInfo.class,"t_novel_info","ncode");
         db.execSQL(sql);
 
-        sql = "create table t_novel_sub(n_code text,sub_no int,sub_title text,sub_regdate date,sub_update date,primary key(n_code,sub_no))";
+        sql = "create table t_novel_sub(ncode text,sub_no int,sub_title text,sub_regdate date,sub_update date,primary key(ncode,sub_no))";
         db.execSQL(sql);
 
-        sql = "create table t_novel_content(n_code text,sub_no int,content_update date,content_original_size int,content_body blob,content_preface blog,content_trailer blob,content_tag blob,primary key(n_code,sub_no))";
+        sql = "create table t_novel_content(ncode text,sub_no int,content_update date,content_original_size int,content_body blob,content_preface blog,content_trailer blob,content_tag blob,primary key(ncode,sub_no))";
         db.execSQL(sql);
 
-        sql = "create table t_novel_read(n_code text,sub_no int,read_date date,primary key(n_code,sub_no))";
+        sql = "create table t_novel_read(ncode text,sub_no int,read_date date,primary key(ncode,sub_no))";
         db.execSQL(sql);
 
         sql = "create table t_novel_ranking(ranking_kind1 int,ranking_kind2,ranking_kind3,ranking_date date,primary key(ranking_kind1,ranking_kind2,ranking_kind3))";
@@ -96,9 +108,9 @@ public class NovelDB extends AppDB {
         sql = createSqlCreateClass(NovelRankingValue.class,"t_novel_ranking_info","ranking_kind1","ranking_kind2","ranking_kind3","ranking_index");
         db.execSQL(sql);
 
-        sql = "create table t_novel_series(s_code text primary key,series_title text,series_info text,series_writer int)";
+        sql = "create table t_novel_series(scode text primary key,series_title text,series_info text,series_writer int)";
         db.execSQL(sql);
-        sql = "create table t_novel_series_bind(s_code text,n_code text,primary key(s_code,n_code))";
+        sql = "create table t_novel_series_bind(scode text,ncode text,primary key(scode,ncode))";
         db.execSQL(sql);
 
         sql = "create table t_novel_search(ncode text primary key,search_order int)";
@@ -110,25 +122,8 @@ public class NovelDB extends AppDB {
 
         String sql;
         if(i < 3) {
-            sql = "drop table t_novel_content";
-            db.execSQL(sql);
-            sql = "create table t_novel_content(n_code text,sub_no int,content_update date,content_original_size int,content_body blob,content_preface blog,content_trailer blob,content_tag blob,primary key(n_code,sub_no))";
-            db.execSQL(sql);
         }
-        if(i < 4) {
-            sql = "create table t_novel_series(s_code text primary key,series_title text,series_info text,series_writer int)";
-            db.execSQL(sql);
-            sql = "create table t_novel_series_bind(s_code text,n_code text,primary key(s_code,n_code))";
-            db.execSQL(sql);
-        }
-        if(i==5){
-            sql = "drop table t_novel_search";
-            db.execSQL(sql);
-        }
-        if(i < 6) {
-            sql = "create table t_novel_search(ncode text primary key,search_order int)";
-            db.execSQL(sql);
-        }
+
 
     }
 
@@ -137,13 +132,13 @@ public class NovelDB extends AppDB {
         begin();
 
         String sql;
-        sql = String.format("delete from t_novel_sub where n_code='%s'",STR(ncode));
+        sql = String.format("delete from t_novel_sub where ncode='%s'",STR(ncode));
         exec(sql);
 
         int index = 1;
         for(NovelSubTitle sub : list){
             ContentValues values = new ContentValues();
-            values.put("n_code", ncode);
+            values.put("ncode", ncode);
             values.put("sub_no", index++);
             values.put("sub_title", sub.title);
             values.put("sub_regdate", new java.sql.Timestamp(sub.date.getTime()).toString());
@@ -157,7 +152,7 @@ public class NovelDB extends AppDB {
     public void addNovelContents(String ncode, int index, NovelBody novelBody){
         ContentValues values = new ContentValues();
 
-        values.put("n_code", ncode);
+        values.put("ncode", ncode);
         values.put("sub_no", index);
         values.put("content_update", new java.sql.Timestamp(new Date().getTime()).toString());
         values.put("content_original_size",novelBody.body.getBytes().length);
@@ -169,7 +164,7 @@ public class NovelDB extends AppDB {
     }
     public void addNovelHistory(String ncode){
         String sql = String.format("replace into t_novel_history values('%s','%s')",
-            STR(ncode.toUpperCase()),new java.sql.Timestamp(new Date().getTime()).toString());
+                STR(ncode.toUpperCase()),new java.sql.Timestamp(new Date().getTime()).toString());
         exec(sql);
     }
     public void delNovelHistory(String ncode){
@@ -207,19 +202,24 @@ public class NovelDB extends AppDB {
         List<NovelInfo> list = queryClass(sql,NovelInfo.class);
         return list;
     }
-    public NovelInfo getNovelInfo(String ncode){
-        String sql = String.format("select * from t_novel_info where ncode LIKE '%s'",STR(ncode));
-        List<NovelInfo> list = queryClass(sql,NovelInfo.class);
+    public NovelInfoBookmark getNovelInfo(String ncode){
+        String sql = String.format("select * from t_novel_info natural left join t_bookmark where ncode LIKE '%s'",STR(ncode));
+        List<NovelInfoBookmark> list = queryClass(sql,NovelInfoBookmark.class);
         if(list.size() == 0)
             return null;
         return list.get(0);
 
     }
-    public List<NovelInfo> getNovelInfoFromBookmark(){
-        String sql = String.format("select * from t_novel_info where ncode in (select n_code from t_bookmark) order by novelupdated_at desc");
-        List<NovelInfo> list = queryClass(sql,NovelInfo.class);
+    public List<NovelInfoBookmark> getNovelInfoFromBookmark(){
+        String sql = String.format("select * from t_novel_info natural left join t_bookmark where ncode in (select ncode from t_bookmark) order by novelupdated_at desc");
+        List<NovelInfoBookmark> list = queryClass(sql,NovelInfoBookmark.class);
         return list;
+    }
 
+    public List<NovelInfoRanking> getNovelInfoFromRanking(int kind1, int kind2, int kind3){
+        String sql = String.format("select * from t_novel_info natural join (select ncode,ranking_index from t_novel_ranking_info where ranking_kind1=%d and ranking_kind2=%d and ranking_kind3=%d) a order by ranking_index",
+                kind1,kind2,kind3);
+        return queryClass(sql,NovelInfoRanking.class);
     }
 
     public Map<String,NovelSeries> getNovelSeriesMap(List<String> listNcode){
@@ -229,27 +229,12 @@ public class NovelDB extends AppDB {
         for(String s : listNcode){
             NovelSeries series = getSeriesInfo(s);
             if(series != null)
-            map.put(s,series);
+                map.put(s,series);
         }
         return map;
     }
 
-    public NovelSeries getSeriesInfo(String ncode){
-        String sql = String.format("select * from t_novel_series where s_code in (select s_code from t_novel_series_bind where n_code='%s')",STR(ncode));
-        Cursor c = query(sql);
-        if(!c.moveToNext()) {
-            c.close();
-            return null;
-        }
-        NovelSeries series = new NovelSeries();
-        series.scode = c.getString(0);
-        series.title = c.getString(1);
-        series.info = c.getString(2);
-        series.writer = c.getInt(3);
-        c.close();
-        return series;
 
-    }
     public boolean isNovelInfo(String ndoce){
         String sql = String.format("select 1 from t_novel_info where ncode = %s",ndoce.toUpperCase());
         Cursor c = query(sql);
@@ -264,7 +249,7 @@ public class NovelDB extends AppDB {
                 sb.append(",");
             sb.append(String.format("'%s'",s.toUpperCase()));
         }
-        String sql = String.format("select * from t_novel_info where ncode in (%s)",sb.toString());
+        String sql = String.format("select * from t_novel_info natural left join t_bookmark where ncode in (%s)",sb.toString());
         return queryClass(sql,NovelInfo.class);
     }
     public Map<String,NovelInfo> getNovelInfoMap(List<String> listNcode){
@@ -284,7 +269,7 @@ public class NovelDB extends AppDB {
             String d = new java.sql.Timestamp(b.getUpdate().getTime().getTime()).toString();
             String sql;
             //ブックマークデータの追加
-            sql = String.format("replace into t_bookmark values('%s','%s','%d')",STR(b.getCode()),d,b.getCategory());
+            sql = String.format("replace into t_bookmark values('%s','%s','%d','%d')",STR(b.getCode()),d,b.getCategory(),b.getMark());
             exec(sql);
         }
         commit();
@@ -302,7 +287,7 @@ public class NovelDB extends AppDB {
             String d = r.getString(1);
             Calendar cal = Calendar.getInstance();
             cal.setTime(java.sql.Timestamp.valueOf(r.getString(1)));
-            NovelBookmark b = new NovelBookmark(r.getString(0),r.getInt(2),cal);
+            NovelBookmark b = new NovelBookmark(r.getString(0),r.getInt(2),cal,r.getInt(3));
             list.add(b);
         }
         r.close();
@@ -319,7 +304,7 @@ public class NovelDB extends AppDB {
             String d = r.getString(1);
             Calendar cal = Calendar.getInstance();
             cal.setTime(java.sql.Timestamp.valueOf(r.getString(1)));
-            NovelBookmark b = new NovelBookmark(r.getString(0),r.getInt(2),cal);
+            NovelBookmark b = new NovelBookmark(r.getString(0),r.getInt(2),cal,r.getInt(3));
             map.put(b.getCode(),b);
         }
         r.close();
@@ -339,13 +324,13 @@ public class NovelDB extends AppDB {
         System.out.println(sql);
 
     }
-    public List<NovelInfo> getHistorys(){
-        return this.queryClass("select * from t_novel_info natural join t_novel_history order by his_date desc",NovelInfo.class);
+    public List<NovelInfoBookmark> getHistorys(){
+        return this.queryClass("select * from t_novel_info natural join t_novel_history natural left join t_bookmark order by his_date desc",NovelInfoBookmark.class);
     }
 
     public List<NovelSubTitle> getSubTitles(String ncode) {
         //メインに登録されているデータを抽出
-        String sql = String.format("select n_code,sub_no,sub_title,sub_regdate,sub_update,read_date,content_update,content_original_size,length(content_body) from t_novel_sub natural left join t_novel_read natural left join t_novel_content where n_code='%s' order by sub_no",STR(ncode));
+        String sql = String.format("select ncode,sub_no,sub_title,sub_regdate,sub_update,read_date,content_update,content_original_size,length(content_body) from t_novel_sub natural left join t_novel_read natural left join t_novel_content where ncode='%s' order by sub_no",STR(ncode));
         Cursor c = query(sql);
         List<NovelSubTitle> list = new ArrayList<NovelSubTitle>();
         for(int i=1;c.moveToNext();i++){
@@ -375,7 +360,7 @@ public class NovelDB extends AppDB {
         exec(sql);
     }
     public NovelContent getNovelContent(String ncode, int index) {
-        String sql = String.format("select sub_title,sub_regdate,sub_update,content_body,content_preface,content_trailer,content_tag from t_novel_content natural join t_novel_sub where n_code='%s' and sub_no=%d",STR(ncode),index);
+        String sql = String.format("select sub_title,sub_regdate,sub_update,content_body,content_preface,content_trailer,content_tag from t_novel_content natural join t_novel_sub where ncode='%s' and sub_no=%d",STR(ncode),index);
         Cursor c = query(sql);
         NovelContent content = null;
         if(c.moveToNext()){
@@ -417,7 +402,7 @@ public class NovelDB extends AppDB {
     public boolean isRankingReload(int kind1, int kind2, int kind3,int time){
         String sql = String.format(
                 "select 1 from t_novel_ranking where ranking_kind1=%d and ranking_kind2=%d and "+
-                "ranking_kind3=%d and strftime('%%s', 'now') - strftime('%%s', ranking_date) < %d",
+                        "ranking_kind3=%d and strftime('%%s', 'now') - strftime('%%s', ranking_date) < %d",
                 kind1,kind2,kind3,time);
         Cursor c = query(sql);
         boolean ret = !c.moveToNext();
@@ -432,7 +417,7 @@ public class NovelDB extends AppDB {
                 sb.append(",");
             sb.append(String.format("'%s'",s.toUpperCase()));
         }
-        String sql = String.format("select n_code,sub_no from t_novel_sub natural left join t_novel_content where n_code in (%s) and content_body isnull",sb.toString());
+        String sql = String.format("select ncode,sub_no from t_novel_sub natural left join t_novel_content where ncode in (%s) and content_body isnull",sb.toString());
 
         List<NovelIndex> list = new ArrayList<>();
         Cursor c = query(sql);
@@ -448,21 +433,46 @@ public class NovelDB extends AppDB {
 
     public void addSeries(NovelSeries seriesInfo) {
         ContentValues values = new ContentValues();
-        values.put("s_code", seriesInfo.scode);
+        values.put("scode", seriesInfo.scode);
         values.put("series_title", seriesInfo.title);
         values.put("series_info", seriesInfo.info);
         values.put("series_writer", seriesInfo.writer);
         replace("t_novel_series",values);
 
         //シリーズ対応関係の削除
-        exec(String.format("delete from t_novel_series_bind where s_code='%s'",STR(seriesInfo.scode)));
+        exec(String.format("delete from t_novel_series_bind where scode='%s'",STR(seriesInfo.scode)));
         //シリーズ対応関係の再設定
         for(String ncode : seriesInfo.novelList){
             values = new ContentValues();
-            values.put("s_code", seriesInfo.scode);
-            values.put("n_code", ncode);
+            values.put("scode", seriesInfo.scode);
+            values.put("ncode", ncode);
             insert("t_novel_series_bind",values);
         }
+    }
+    public NovelSeries getSeriesInfo(String ncode){
+        String sql = String.format("select * from t_novel_series where scode in (select scode from t_novel_series_bind where ncode='%s')",STR(ncode));
+        Cursor c = query(sql);
+        if(!c.moveToNext()) {
+            c.close();
+            return null;
+        }
+        NovelSeries series = new NovelSeries();
+        series.scode = c.getString(0);
+        series.title = c.getString(1);
+        series.info = c.getString(2);
+        series.writer = c.getInt(3);
+        c.close();
+        return series;
+    }
+    public List<String> getSeriesNcode(String scode){
+        String sql = String.format("select ncode from t_novel_series_bind where scode='%s'",STR(scode));
+        Cursor c = query(sql);
 
+        List<String> list = new ArrayList<String>();
+        while(c.moveToNext()){
+            list.add(c.getString(0));
+        }
+        c.close();
+        return list;
     }
 }

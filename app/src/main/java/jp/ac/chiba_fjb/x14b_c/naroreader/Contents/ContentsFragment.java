@@ -22,6 +22,7 @@ import android.webkit.WebViewClient;
 import java.util.HashMap;
 import java.util.Map;
 
+import jp.ac.chiba_fjb.x14b_c.naroreader.MainActivity;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NaroReceiver;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NovelDB;
 import jp.ac.chiba_fjb.x14b_c.naroreader.R;
@@ -128,6 +129,8 @@ public class ContentsFragment extends Fragment {
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Uri uri;
+        Intent i;
         switch(item.getItemId()){
             case R.id.menu_zoom_down:
                 setFontSize(mFontSize-1);
@@ -135,11 +138,16 @@ public class ContentsFragment extends Fragment {
             case R.id.menu_zoom_up:
                 setFontSize(mFontSize+1);
                 return true;
-            case R.id.menu_bbs:
-                Uri uri = Uri.parse("http://novelcom.syosetu.com/impression/list/ncode/"+ TbnReader.convertNcode(mNCode)+"/");
-                Intent i = new Intent(Intent.ACTION_VIEW,uri);
-                startActivity(i);
+            case R.id.menu_set_bookmark2:
+                NaroReceiver.setBookmark2(getContext(),mNCode,mIndex);
                 break;
+            case R.id.menu_clear_bookmark2:
+                NaroReceiver.clearBookmark2(getContext(),mNCode);
+                break;
+            default:
+                ((MainActivity)getActivity()).enterMenu(item.getItemId(),mNCode);
+                break;
+
         }
 
         return super.onOptionsItemSelected(item);

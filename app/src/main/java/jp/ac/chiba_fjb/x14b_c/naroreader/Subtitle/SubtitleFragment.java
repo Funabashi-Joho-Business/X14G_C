@@ -180,10 +180,10 @@ public class SubtitleFragment extends Fragment implements SubtitleAdapter.OnItem
                 bottomDialog.show(getFragmentManager(), null);
                 break;
             case R.id.menu_bookmark_add:
-                AddBookmarkFragment.show(this,mNCode,mTitle,true);
+                AddBookmarkFragment.show(getActivity(),mNCode,true);
                 break;
             case R.id.menu_bookmark_del:
-                AddBookmarkFragment.show(this,mNCode,mTitle,false);
+                AddBookmarkFragment.show(getActivity(),mNCode,false);
                 break;
             case R.id.rank_point:
                 //ソフトキーボードを非表示
@@ -222,11 +222,16 @@ public class SubtitleFragment extends Fragment implements SubtitleAdapter.OnItem
         mSubtitleAdapter.setSort(mSort);
         //アダプターにデータを設定
         NovelDB db = new NovelDB(getContext());
-        NovelInfo novelInfo = db.getNovelInfo(mNCode);
+        NovelDB.NovelInfoBookmark novelInfo = db.getNovelInfo(mNCode);
         if(novelInfo != null) {
             mSubtitleAdapter.setValues(mNCode, novelInfo, db.getSubTitles(mNCode),db.getSeriesInfo(mNCode));
             db.close();
-            mRecycleView.scrollToPosition(1);
+            if(novelInfo.b_mark > 0) {
+                if(mSort == 0)
+                    mRecycleView.scrollToPosition(novelInfo.b_mark);
+                else
+                    mRecycleView.scrollToPosition(novelInfo.general_all_no - novelInfo.b_mark+1);
+            }
             mSubtitleAdapter.notifyDataSetChanged();   //データ再表示要求
         }else{
             Snackbar.make(getView(), "ノベル情報の取得中", Snackbar.LENGTH_SHORT).show();

@@ -95,16 +95,17 @@ public class BottomDialog extends BottomSheetDialogFragment implements View.OnCl
         });
 
 
-
-
-
-
     }
 
 
     @Override
     public void onClick(View view) {
-        boolean flag = mFragment.onOptionsItemSelected((MenuItem)view.getTag());
+        onMenu((MenuItem)view.getTag());
+
+
+    }
+    public void onMenu(MenuItem menu){
+        boolean flag = mFragment.onOptionsItemSelected(menu);
         if(!flag)
             getDialog().cancel();
     }

@@ -249,10 +249,10 @@ public class ExampleUnitTest {
 		if(list == null)
 			System.out.println("データ取得失敗");
 		else {
-			int i=1;
-			for(NovelRanking r : list){
-				System.out.format("%03d %s %s\n",i++,r.ncode,r.title);
-			}
+//			int i=1;
+//			for(NovelRanking r : list){
+//				System.out.format("%03d %s %s\n",i++,r.ncode,r.title);
+//			}
 		}
 	}
 	@Test

@@ -327,7 +327,25 @@ public class TbnReader {
     public static boolean setBookmark(String hash,String ncode){
         String address = String.format("http://ncode.syosetu.com/novelview/infotop/ncode/%s/",ncode);
         String content = getContent(address,hash);
+        if(content == null)
+            return false;
         Pattern p = Pattern.compile("<li class=\"booklist\"><a href=\"(.*?)\">ブックマーク");
+        Matcher m = p.matcher(content);
+        if(m.find()) {
+            content = getContent(m.group(1),hash);
+            return true;
+        }
+        return false;
+    }
+    //しおりの設定
+    //hash ログイントークン
+    //ncode ノベルコード
+    public static boolean setBookmark2(String hash,String ncode,int index){
+        String address = String.format("http://ncode.syosetu.com/%s/%d/",ncode,index);
+        String content = getContent(address,hash);
+        if(content == null)
+            return false;
+        Pattern p = Pattern.compile("<a href=\"(.*?)\">しおりを挿む");
         Matcher m = p.matcher(content);
         if(m.find()) {
             content = getContent(m.group(1),hash);
@@ -351,6 +369,23 @@ public class TbnReader {
             HashMap<String,String> param = new HashMap<String,String>();
             param.put("token",m.group(2));
             webData = getContent2("http://syosetu.com/favnovelmain/delete/",hash,param,webData.cookie);
+            return true;
+        }
+        return false;
+    }
+    public static boolean clearBookmark2(String hash,String ncode){
+        int uid = getUserID(hash);
+        int code = convertNcode(ncode);
+        String address = String.format("http://syosetu.com/favnovelmain/updateinput/useridfavncode/%d_%s/",uid,code);
+        WebData webData = getContent2(address,hash,null,null);
+        if(webData == null)
+            return false;
+        Pattern p = Pattern.compile("<form action=\"(.*?)\" method=\"post\">");
+        Matcher m = p.matcher(webData.content);
+        if(m.find()) {
+            HashMap<String,String> param = new HashMap<String,String>();
+            param.put("shiori_del","しおりを解除する");
+            webData = getContent2("http://syosetu.com/"+m.group(1),hash,param,webData.cookie);
             return true;
         }
         return false;
@@ -396,14 +431,17 @@ public class TbnReader {
                 if(i > 0)
                     content = getContent("http://syosetu.com/favnovelmain/list/?nowcategory="+(i+1),hash);
 
-                p = Pattern.compile("<a class=\"title\" href=\"http://ncode.syosetu.com/(.+?)/\">(.+?)</a>.+?更新日：(.+?)\n",Pattern.DOTALL);
+                p = Pattern.compile(
+                        "<a class=\"title\" href=\"http://ncode.syosetu.com/(.+?)/\">(.+?)</a>.+?更新日：(.+?)\n.*?"+
+                        "<span class=\"no\">\n(?:<a href=\"http://ncode.syosetu.com/.+?/(.+?)/\">|\n)",Pattern.DOTALL);
                 m = p.matcher(content);
 
                 while(m.find()){
 
                         Calendar cal = Calendar.getInstance();
                         cal.setTime(sdf.parse(m.group(3)));
-                        NovelBookmark bookmark = new NovelBookmark(m.group(1).toUpperCase(),i+1,cal);
+                        int bm = m.group(4) != null?Integer.parseInt(m.group(4)):0;
+                        NovelBookmark bookmark = new NovelBookmark(m.group(1).toUpperCase(),i+1,cal,bm);
                         list.add(bookmark);
                 }
 
@@ -633,31 +671,15 @@ public class TbnReader {
 
 
         Pattern p = Pattern.compile(
-                "<a class=\"tl\" id=\"best\\d*?\" target=\"_blank\" href=\"http://ncode.syosetu.com/(.*?)/\">(.*?)</a>.*?"+
-                "小説情報</a>／作者：<a href=\"http://mypage.syosetu.com/(\\d*?)/\">(.*?)</a>.*?" +
-                "<span class=\"attention\">(.*?)</span>.*?"+
-                "(?:(?:連載中|完結済)\n<br />\\(全(\\d*?)部分\\).*?|短編\n).*?" +
-                "<td class=\"ex\">\n(.*?)\n</td>.*?" +
-                "<td>\n(.*?)\n</td>.*?" +
-                "\n最終更新日：(.*?)\n.*?" +
-                "<span class=\"marginleft\">(.*?)文字</span>", Pattern.DOTALL);
+                "<a class=\"tl\" id=\"best\\d*?\" target=\"_blank\" href=\"http://ncode.syosetu.com/(.*?)/\">.*?"+
+                "<span class=\"attention\">(.*?)</span>.*?", Pattern.DOTALL);
         Matcher m = p.matcher(content);
         try {
             while (m.find()){
                 NovelRanking ranking = new NovelRanking();
                 ranking.ncode = m.group(1).toUpperCase();
-                ranking.title = decodeHtml(m.group(2));
-                ranking.writerId = Integer.parseInt(m.group(3));
-                ranking.writerName = decodeHtml(m.group(4));
-                ranking.point = NumberFormat.getInstance().parse(m.group(5)).intValue();
-                ranking.novelCount = m.group(6)==null?1:Integer.parseInt(m.group(6));
-                ranking.info = decodeHtml(m.group(7));
-                ranking.genre = m.group(8);
-                ranking.novelUpdate = format.parse(m.group(9));
-                ranking.textCount = NumberFormat.getInstance().parse(m.group(10)).intValue();
+                ranking.point = NumberFormat.getInstance().parse(m.group(2)).intValue();
                 list.add(ranking);
-
-
             }
         } catch (Exception e) {
             return null;

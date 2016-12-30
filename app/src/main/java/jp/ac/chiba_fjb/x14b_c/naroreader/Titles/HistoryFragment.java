@@ -55,6 +55,7 @@ public class HistoryFragment extends Fragment implements TitleAdapter.OnItemClic
 
 
 	private TitleAdapter mAdapter;
+	private String mNCode;
 
 	public HistoryFragment() {
 		// Required empty public constructor
@@ -131,6 +132,9 @@ public class HistoryFragment extends Fragment implements TitleAdapter.OnItemClic
 			case R.id.menu_history_del:
 				delHistory();
 				break;
+			default:
+				((MainActivity)getActivity()).enterMenu(item.getItemId(),mNCode);
+				break;
 		}
 
 		return false;
@@ -201,14 +205,13 @@ public class HistoryFragment extends Fragment implements TitleAdapter.OnItemClic
 	}
 
 	@Override
-	public void onItemLongClick(final NovelInfo value) {
-		AddBookmarkFragment.show(this,value.ncode,value.title,true);
+	public void onItemLongClick(final NovelInfo info) {
+		mNCode = info.ncode;
+		BottomDialog bottomDialog = new BottomDialog();
+		bottomDialog.setMenu(R.menu.panel_novel,this);
+		bottomDialog.show(getFragmentManager(), null);
 	}
 
-	@Override
-	public void onItemCheck() {
-
-	}
 
 
 }

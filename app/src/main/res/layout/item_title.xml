@@ -29,7 +29,8 @@
             android:background="#aaaaffaa"
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:gravity="center_vertical">
 
             <CheckBox
                 android:id="@+id/checkBox"
@@ -45,14 +46,21 @@
                 android:layout_height="wrap_content" />
 
             <TextView
+                android:text="1位"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/textRank"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+
+            <TextView
                 android:text="タイトル"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/textTitle"
                 android:textSize="16sp"
                 android:textStyle="normal|bold"
-                android:padding="3dp"
-                android:layout_weight="1"/>
+                android:layout_weight="1"
+                android:layout_marginLeft="10dp" />
         </LinearLayout>
 
         <TableLayout
@@ -67,8 +75,8 @@
                     android:text="更新日"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingRight="4dp"
-                    android:textStyle="normal|bold" />
+                    android:textStyle="normal|bold"
+                    android:layout_marginRight="10dp" />
 
                 <LinearLayout
                     android:orientation="horizontal"
@@ -122,15 +130,8 @@
                 <LinearLayout
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-                    <TextView
-                        android:text="大ジャンル"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginRight="10dp"
-                        android:id="@+id/textBigGenre"
-                        android:layout_weight="1" />
+                    android:layout_height="match_parent"
+                    android:layout_weight="1">
 
                     <TextView
                         android:text="中ジャンル"
@@ -141,6 +142,14 @@
 
                         android:layout_weight="1"
                         android:textStyle="normal|italic" />
+
+                    <TextView
+                        android:text="ブックマーク"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/textStat"
+                        android:textSize="10sp"
+                        android:textColor="#FF316FD4" />
                 </LinearLayout>
 
             </TableRow>
@@ -297,7 +306,6 @@
             android:padding="4dp"
             android:background="#10001100"
             android:layout_margin="1dp"
-            android:ellipsize="none"
             android:textSize="12sp"
             android:autoLink="web" />
 

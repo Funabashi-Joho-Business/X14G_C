@@ -41,6 +41,7 @@ import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelInfo;
  */
 public class SearchFragment extends Fragment implements TitleAdapter.OnItemClickListener, SwipeRefreshLayout.OnRefreshListener {
     private View mView;
+    private String mNCode;
 
     @Override
     public void onRefresh() {
@@ -102,11 +103,12 @@ public class SearchFragment extends Fragment implements TitleAdapter.OnItemClick
 
         getActivity().setTitle("検索結果");
         String params = getArguments().getString("params");
+        int writer = getArguments().getInt("writer",0);
         if(params != null){
             Snackbar.make(getView(), "検索開始", Snackbar.LENGTH_SHORT).show();
             getArguments().putString("params",null);
             ((SwipeRefreshLayout) getView().findViewById(R.id.swipe_refresh)).setRefreshing(true);
-            NaroReceiver.search(getContext(),params);
+            NaroReceiver.search(getContext(),params,writer);
         }else{
             update();
         }
@@ -147,7 +149,9 @@ public class SearchFragment extends Fragment implements TitleAdapter.OnItemClick
             case R.id.menu_search:
                 ((MainActivity)getActivity()).changeFragment(SearchPanelFragment.class);
                 break;
-
+            default:
+                ((MainActivity)getActivity()).enterMenu(item.getItemId(),mNCode);
+                break;
         }
 
         return false;
@@ -190,14 +194,13 @@ public class SearchFragment extends Fragment implements TitleAdapter.OnItemClick
     }
 
     @Override
-    public void onItemLongClick(final NovelInfo item) {
-        AddBookmarkFragment.show(this,item.ncode,item.title,true);
+    public void onItemLongClick(NovelInfo info) {
+        mNCode = info.ncode;
+        BottomDialog bottomDialog = new BottomDialog();
+        bottomDialog.setMenu(R.menu.panel_novel,this);
+        bottomDialog.show(getFragmentManager(), null);
     }
 
-    @Override
-    public void onItemCheck() {
-
-    }
 
 }
 

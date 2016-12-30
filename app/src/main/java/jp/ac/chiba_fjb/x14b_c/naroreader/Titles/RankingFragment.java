@@ -1,4 +1,4 @@
-package jp.ac.chiba_fjb.x14b_c.naroreader.Ranking;
+package jp.ac.chiba_fjb.x14b_c.naroreader.Titles;
 
 
 import android.content.BroadcastReceiver;
@@ -13,6 +13,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -24,17 +25,19 @@ import java.util.List;
 
 import jp.ac.chiba_fjb.x14b_c.naroreader.AddBookmarkFragment;
 import jp.ac.chiba_fjb.x14b_c.naroreader.MainActivity;
+import jp.ac.chiba_fjb.x14b_c.naroreader.Other.BottomDialog;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NaroReceiver;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NovelDB;
 import jp.ac.chiba_fjb.x14b_c.naroreader.R;
 import jp.ac.chiba_fjb.x14b_c.naroreader.SubTitle.SubtitleFragment;
+import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelInfo;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelRanking;
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class RankingFragment extends Fragment implements AdapterView.OnItemSelectedListener, RankingAdapter.OnItemClickListener {
+public class RankingFragment extends Fragment implements AdapterView.OnItemSelectedListener, TitleAdapter.OnItemClickListener {
 
     final String[] RANKING_FILTER1_NAME=
     {
@@ -112,7 +115,7 @@ public class RankingFragment extends Fragment implements AdapterView.OnItemSelec
     private Spinner mSpiner1;
     private Spinner mSpiner2;
     private Spinner mSpiner3;
-    private RankingAdapter mAdapter;
+    private TitleAdapter mAdapter;
 
     //通知処理
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
@@ -128,9 +131,16 @@ public class RankingFragment extends Fragment implements AdapterView.OnItemSelec
                             update();
                     }
                     break;
+                case NaroReceiver.NOTIFI_NOVELINFO:
+                    if(getView()!=null) {
+                        update();
+                    }
+                    break;
             }
         }
     };
+    private String mNCode;
+    private View mView;
 
     public RankingFragment() {
         // Required empty public constructor
@@ -140,8 +150,10 @@ public class RankingFragment extends Fragment implements AdapterView.OnItemSelec
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
         getActivity().setTitle("ランキング");
+
+        if(mView != null)
+            return mView;
 
         ArrayAdapter<String> arrayAdapter
             = new ArrayAdapter<String>(getContext(), R.layout.item_adapter, RANKING_FILTER1_NAME);
@@ -151,6 +163,7 @@ public class RankingFragment extends Fragment implements AdapterView.OnItemSelec
         toolFrame.addView(toolView);
 
         View view =  inflater.inflate(R.layout.fragment_ranking, container, false);
+
         mSpiner1 = (Spinner) toolView.findViewById(R.id.spinnerRFilter1);
         mSpiner2 = (Spinner) toolView.findViewById(R.id.spinnerRFilter2);
         mSpiner3 = (Spinner) toolView.findViewById(R.id.spinnerRFilter3);
@@ -167,7 +180,7 @@ public class RankingFragment extends Fragment implements AdapterView.OnItemSelec
 
 
         //ブックマーク表示用アダプターの作成
-        mAdapter = new RankingAdapter();
+        mAdapter = new TitleAdapter();
         mAdapter.setOnItemClickListener(this);
 
 
@@ -188,48 +201,35 @@ public class RankingFragment extends Fragment implements AdapterView.OnItemSelec
 
         });
 
+        //スピナー変更を受け取る
+        mSpiner1.setOnItemSelectedListener(this);
+        mSpiner2.setOnItemSelectedListener(this);
+        mSpiner3.setOnItemSelectedListener(this);
+
+        //イベント通知受け取りの宣言
+        getContext().registerReceiver(mReceiver,new IntentFilter(NaroReceiver.NOTIFI_RANKING));
+
 
         return view;
     }
 
     @Override
+    public void onDestroy() {
+        getContext().unregisterReceiver(mReceiver);
+        super.onDestroy();
+    }
+
+    @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        if(mView == null) {
+            update();
+            load(false);
+            mView = view;
+        }
         super.onViewCreated(view, savedInstanceState);
 
     }
 
-
-    @Override
-    public void onDestroy() {
-        //イベント通知受け取りを解除
-
-        super.onDestroy();
-    }
-
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        //スピナー変更を受け取る
-        mSpiner1.setOnItemSelectedListener(this);
-        mSpiner2.setOnItemSelectedListener(this);
-        mSpiner3.setOnItemSelectedListener(this);
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        //イベント通知受け取りの宣言
-        getContext().registerReceiver(mReceiver,new IntentFilter(NaroReceiver.NOTIFI_RANKING));
-        update();
-        load(false);
-    }
-
-    @Override
-    public void onStop() {
-        getContext().unregisterReceiver(mReceiver);
-        super.onStop();
-    }
 
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -300,26 +300,61 @@ public class RankingFragment extends Fragment implements AdapterView.OnItemSelec
 
     }
     void update() {
-        NovelDB db = new NovelDB(getContext());
-        List<NovelRanking> novelRanking = db.getRanking(
-                mSpiner1.getSelectedItemPosition(),
-                mSpiner2.getSelectedItemPosition(),
-                mSpiner3.getSelectedItemPosition());
-        db.close();
-        mAdapter.setRanking(novelRanking);
-        mAdapter.notifyDataSetChanged();
+        final int sp1 = mSpiner1.getSelectedItemPosition();
+        final int sp2 = mSpiner2.getSelectedItemPosition();
+        final int sp3 = mSpiner3.getSelectedItemPosition();
+
+        ((SwipeRefreshLayout) getView().findViewById(R.id.swipe_refresh)).setRefreshing(true);
+        new Thread(){
+            @Override
+            public void run() {
+                NovelDB db = new NovelDB(getContext());
+                final List<NovelDB.NovelInfoRanking> novelRanking = db.getNovelInfoFromRanking(
+                        sp1,sp2,sp3);
+                db.close();
+
+                if(getActivity() != null){
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mAdapter.setValues(novelRanking);
+                            mAdapter.notifyDataSetChanged();
+                            if(getView()!=null)
+                                ((SwipeRefreshLayout) getView().findViewById(R.id.swipe_refresh)).setRefreshing(false);
+
+                        }
+                    });
+                }
+
+            }
+        }.start();
     }
 
+
     @Override
-    public void onItemClick(NovelRanking item) {
+    public void onItemClick(NovelInfo bookmark) {
         Bundle bundle = new Bundle();
-        bundle.putString("ncode",item.ncode);
-        bundle.putString("title",item.title);
+        bundle.putString("ncode",bookmark.ncode);
+        bundle.putString("title",bookmark.title);
         ((MainActivity)getActivity()).changeFragment(SubtitleFragment.class,bundle);
     }
 
     @Override
-    public void onItemLongClick(final NovelRanking item) {
-        AddBookmarkFragment.show(this,item.ncode,item.title,true);
+    public void onItemLongClick(NovelInfo info) {
+        mNCode = info.ncode;
+        BottomDialog bottomDialog = new BottomDialog();
+        bottomDialog.setMenu(R.menu.panel_novel,this);
+        bottomDialog.show(getFragmentManager(), null);
     }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()){
+            default:
+                ((MainActivity)getActivity()).enterMenu(item.getItemId(),mNCode);
+                break;
+        }
+
+        return false;
+    }
+
 }

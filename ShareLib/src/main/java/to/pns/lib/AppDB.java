@@ -61,6 +61,8 @@ public abstract class AppDB extends SQLite {
             StringBuilder sb = new StringBuilder();
             String s;
             while ((s = in.readLine()) != null) {
+                if(sb.length() > 0)
+                    sb.append("\n");
                 sb.append(s);
             }
             in.close();

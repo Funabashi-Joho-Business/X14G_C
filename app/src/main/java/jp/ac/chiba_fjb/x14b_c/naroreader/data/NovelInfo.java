@@ -16,6 +16,7 @@ public class NovelInfo {
     public String ncode;
     public int userid;
     public String writer;
+    @AppDB.Zippack
     public String story;
     public int biggenre;
     public int genre;

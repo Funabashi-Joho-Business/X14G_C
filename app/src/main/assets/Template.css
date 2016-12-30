@@ -13,6 +13,9 @@ div.title{
 div.body{
     font-size: 100%;
 }
+div.all{
+    min-height:100hv;
+}
 div.preface{
     font-style:oblique;
     margin-bottom: 1em;
