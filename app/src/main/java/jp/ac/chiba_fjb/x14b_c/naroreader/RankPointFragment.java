@@ -122,7 +122,7 @@ public class RankPointFragment extends DialogFragment implements View.OnClickLis
                             getActivity().runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    Snackbar.make(getTargetFragment().getView(), flag?"評価成功":"評価失敗", Snackbar.LENGTH_SHORT).show();
+                                    Snackbar.make(getActivity().findViewById(R.id.coordinator), flag?"評価成功":"評価失敗", Snackbar.LENGTH_SHORT).show();
                                     getDialog().cancel();
                                 }
                             });

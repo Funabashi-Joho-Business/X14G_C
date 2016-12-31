@@ -126,9 +126,6 @@ public class HistoryFragment extends Fragment implements TitleAdapter.OnItemClic
 				bottomDialog.setMenu(R.menu.panel_history,this);
 				bottomDialog.show(getFragmentManager(), null);
 				break;
-			case R.id.menu_bookmark_add:
-				addBookmark();
-				break;
 			case R.id.menu_history_del:
 				delHistory();
 				break;

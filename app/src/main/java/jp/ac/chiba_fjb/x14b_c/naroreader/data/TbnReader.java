@@ -311,7 +311,7 @@ public class TbnReader {
         Pattern p = Pattern.compile("<a href=\"http://ncode.syosetu.com/(.*?)/\">.*?ストーリー評価：(\\d?+)pt.*?文章評価：(\\d?+)pt",Pattern.DOTALL);
         Matcher m = p.matcher(content);
         while(m.find()){
-            if(m.group(1).equals(ncode)){
+            if(m.group(1).toUpperCase().equals(ncode)){
                 NovelEvaluation e = new NovelEvaluation();
                 e.ncode = m.group(1).toUpperCase();
                 e.storypoint = Integer.parseInt(m.group(2));

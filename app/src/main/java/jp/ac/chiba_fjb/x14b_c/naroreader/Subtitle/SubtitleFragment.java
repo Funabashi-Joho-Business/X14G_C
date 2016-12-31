@@ -179,31 +179,16 @@ public class SubtitleFragment extends Fragment implements SubtitleAdapter.OnItem
                 bottomDialog.setMenu(R.menu.panel_subtitle,this);
                 bottomDialog.show(getFragmentManager(), null);
                 break;
-            case R.id.menu_bookmark_add:
-                AddBookmarkFragment.show(getActivity(),mNCode,true);
-                break;
-            case R.id.menu_bookmark_del:
-                AddBookmarkFragment.show(getActivity(),mNCode,false);
-                break;
-            case R.id.rank_point:
-                //ソフトキーボードを非表示
-                InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-
-
-                Bundle bn = new Bundle();
-                bn.putString("ncode",mNCode);
-                RankPointFragment f = new RankPointFragment();
-                f.setTargetFragment(this,0);
-                f.setArguments(bn);
-                f.show(getFragmentManager(),"");
-                break;
             case R.id.action_sort:
                 mSort = (mSort+1)%2;
                 NovelDB db = new NovelDB(getContext());
                 db.setSetting("SUB_SORT",mSort);
                 db.close();
                 update();
+                break;
+            default:
+                ((MainActivity)getActivity()).enterMenu(item.getItemId(),mNCode);
+                break;
         }
 
         return true;
@@ -234,6 +219,7 @@ public class SubtitleFragment extends Fragment implements SubtitleAdapter.OnItem
             }
             mSubtitleAdapter.notifyDataSetChanged();   //データ再表示要求
         }else{
+            db.close();
             Snackbar.make(getView(), "ノベル情報の取得中", Snackbar.LENGTH_SHORT).show();
         }
 

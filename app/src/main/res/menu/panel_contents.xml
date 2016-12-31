@@ -18,13 +18,29 @@
         android:icon="@android:drawable/sym_action_chat"
         android:id="@+id/menu_clear_bookmark2"/>
 
+    <item android:title="評価\n"
+        android:icon="@android:drawable/ic_menu_edit"
+        android:id="@+id/rank_point"/>
+
     <item android:title="ブック\nマーク"
         android:icon="@android:drawable/ic_menu_add"
         android:id="@+id/menu_bookmark_add"/>
 
-    <item android:title="ブック\nマーク解除"
+    <item android:title="ブックマ\n解除"
         android:icon="@android:drawable/ic_menu_delete"
         android:id="@+id/menu_bookmark_del"/>
+
+    <item android:title="シリーズ\n検索"
+        android:icon="@android:drawable/ic_menu_search"
+        android:id="@+id/menu_search_series"/>
+
+    <item android:title="作者作品\n検索"
+        android:icon="@android:drawable/ic_menu_search"
+        android:id="@+id/menu_search_writer"/>
+
+    <item android:title="作者情報\n"
+        android:icon="@android:drawable/ic_menu_search"
+        android:id="@+id/menu_info_writer"/>
 
     <item android:title="感想\n"
         android:icon="@android:drawable/sym_action_chat"
@@ -37,7 +53,4 @@
     <item android:title="アクセス\n集計"
         android:icon="@android:drawable/sym_action_chat"
         android:id="@+id/menu_access"/>
-
-
-
 </menu>

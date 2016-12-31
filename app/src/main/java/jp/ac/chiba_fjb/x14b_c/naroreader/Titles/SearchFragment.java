@@ -168,6 +168,7 @@ public class SearchFragment extends Fragment implements TitleAdapter.OnItemClick
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
+                            getActivity().setTitle("検索結果 " + mNovelSearch.size()+"件");
                             mSearch.setValues(mNovelSearch);
                             mSearch.notifyDataSetChanged();   //データ再表示要求
                             if(getView()!=null)

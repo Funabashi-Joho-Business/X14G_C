@@ -141,9 +141,6 @@ public class ContentsFragment extends Fragment {
             case R.id.menu_set_bookmark2:
                 NaroReceiver.setBookmark2(getContext(),mNCode,mIndex);
                 break;
-            case R.id.menu_clear_bookmark2:
-                NaroReceiver.clearBookmark2(getContext(),mNCode);
-                break;
             default:
                 ((MainActivity)getActivity()).enterMenu(item.getItemId(),mNCode);
                 break;

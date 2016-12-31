@@ -12,6 +12,7 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 
 import jp.ac.chiba_fjb.x14b_c.naroreader.R;
+import jp.ac.chiba_fjb.x14b_c.naroreader.Titles.TitleAdapter;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelInfo;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelSeries;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelSubTitle;
@@ -61,27 +62,19 @@ public class SubtitleAdapter extends RecyclerView.Adapter implements View.OnClic
             viewSub.setVisibility(View.GONE);
 
             if(mInfoView == null)
-                mInfoView = LayoutInflater.from(holder.itemView.getContext()).inflate(R.layout.item_info, null, false);
+                mInfoView = LayoutInflater.from(holder.itemView.getContext()).inflate(R.layout.item_title, null, false);
             if(mInfoView.getParent() != null)
                 ((ViewGroup)mInfoView.getParent()).removeView(mInfoView);
             viewInfo.addView(mInfoView);
-
-            ((TextView)mInfoView.findViewById(R.id.textTitle)).setText(mNovelInfo.title);
-            ((TextView)mInfoView.findViewById(R.id.textInfo)).setText(mNovelInfo.story);
-            ((TextView)mInfoView.findViewById(R.id.textDate)).setText(sdf.format(mNovelInfo.general_lastup));
-            ((TextView)mInfoView.findViewById(R.id.textWritter)).setText(mNovelInfo.writer);
-            ((TextView)mInfoView.findViewById(R.id.textPoint)).setText(nf.format(mNovelInfo.global_point)+"pt");
-
-            if(mSeries != null){
-
-            }
-
             holder.itemView.setTag(R.layout.item_title,-1);
+            TitleAdapter.setInfoToItem(mInfoView,mNovelInfo,mSeries,true);
         }
         else{
-            if(viewInfo.getChildCount() > 0)
+            viewSub.setVisibility(View.VISIBLE);
+            viewInfo.setVisibility(View.GONE);
+            if(viewInfo.getChildCount() > 0) {
                 viewInfo.removeAllViews();
-
+            }
             //positionから必要なデータをビューに設定する
             int pos;
             if(mSort == 0)
@@ -92,13 +85,9 @@ public class SubtitleAdapter extends RecyclerView.Adapter implements View.OnClic
 
             NovelSubTitle v = mValues.get(pos-1);
 
-            holder.itemView.findViewById(R.id.layoutSubtitle).setVisibility(View.VISIBLE);
-            holder.itemView.findViewById(R.id.layoutInfo).setVisibility(View.GONE);
-
             holder.itemView.setTag(R.layout.item_title,pos-1);
             ((TextView)holder.itemView.findViewById(R.id.textNo)).setText(""+pos);
             ((TextView)holder.itemView.findViewById(R.id.textTitle)).setText(v.title);
-
 
             String dateString = sdf.format(v.date);
             ((TextView)holder.itemView.findViewById(R.id.textRegDate)).setText(dateString);

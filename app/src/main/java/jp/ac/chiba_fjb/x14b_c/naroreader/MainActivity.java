@@ -1,6 +1,7 @@
 package jp.ac.chiba_fjb.x14b_c.naroreader;
 
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
@@ -19,6 +20,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.MenuItem;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
 
 import com.google.android.gms.ads.AdRequest;
@@ -274,6 +276,27 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 uri = Uri.parse("http://kasasagi.hinaproject.com/access/top/ncode/"+ ncode+"/");
                 i = new Intent(Intent.ACTION_VIEW,uri);
                 startActivity(i);
+                break;
+            case R.id.menu_info_writer: {
+                NovelDB db = new NovelDB(this);
+                NovelInfo info = db.getNovelInfo(ncode);
+                db.close();
+                if(info != null) {
+                    uri = Uri.parse("http://mypage.syosetu.com/" + info.userid + "/");
+                    i = new Intent(Intent.ACTION_VIEW, uri);
+                    startActivity(i);
+                }
+                break;
+            }
+            case R.id.rank_point:
+                Bundle bn = new Bundle();
+                bn.putString("ncode",ncode);
+                RankPointFragment f = new RankPointFragment();
+                f.setArguments(bn);
+                f.show(getSupportFragmentManager(),"");
+                break;
+            case R.id.menu_clear_bookmark2:
+                NaroReceiver.clearBookmark2(this,ncode);
                 break;
             case R.id.menu_bookmark_add:
                 AddBookmarkFragment.show(this,ncode,true);
