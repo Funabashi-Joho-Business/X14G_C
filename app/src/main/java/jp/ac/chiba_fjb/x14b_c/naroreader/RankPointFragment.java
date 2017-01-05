@@ -76,7 +76,7 @@ public class RankPointFragment extends DialogFragment implements View.OnClickLis
     }
 
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        Dialog dialog = super.onCreateDialog(savedInstanceState);
+        Dialog dialog = new Dialog(getActivity(),  R.style.TransparentDialogTheme);
         dialog.setTitle("ポイント評価");
         return dialog;
     }

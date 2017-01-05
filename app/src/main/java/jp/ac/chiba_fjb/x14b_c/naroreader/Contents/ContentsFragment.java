@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -22,6 +23,7 @@ import android.webkit.WebViewClient;
 import java.util.HashMap;
 import java.util.Map;
 
+import jp.ac.chiba_fjb.x14b_c.naroreader.ColorPickerFragment;
 import jp.ac.chiba_fjb.x14b_c.naroreader.MainActivity;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NaroReceiver;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NovelDB;
@@ -56,6 +58,10 @@ public class ContentsFragment extends Fragment {
     private String mMsg;
     private int mWebMsgIndex = 0;
     private Map<Integer,String> mMapMsg = new HashMap<Integer,String>();
+    private int mTextColor;
+    private int mBackColor;
+    private int mTextColor2;
+    private int mBackColor2;
 
     public ContentsFragment() {
         // Required empty public constructor
@@ -68,8 +74,8 @@ public class ContentsFragment extends Fragment {
         public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
             update(true);
+            updateStyle();
 
-            setStyle(".all","font-size",mFontSize+"pt");
         }
 
 
@@ -81,6 +87,8 @@ public class ContentsFragment extends Fragment {
 
         NovelDB db = new NovelDB(getContext());
         mFontSize = db.getSetting("fontSize",10);
+        mTextColor = db.getSetting("fontColor",0x444444);
+        mBackColor = db.getSetting("backColor",0xedf7ff);
         db.close();
 
         // Inflate the layout for this fragment
@@ -141,6 +149,44 @@ public class ContentsFragment extends Fragment {
             case R.id.menu_set_bookmark2:
                 NaroReceiver.setBookmark2(getContext(),mNCode,mIndex);
                 break;
+            case R.id.menu_set_textcolor: {
+                ColorPickerFragment colorPickerFragment = new ColorPickerFragment();
+                mTextColor2 = mTextColor;
+                colorPickerFragment.setColor(mTextColor);
+                colorPickerFragment.setOnDialogButtonListener(new ColorPickerFragment.OnDialogButtonListener() {
+                    @Override
+                    public void onDialogButton() {
+                        setTextColor(mTextColor2);
+                    }
+
+                    @Override
+                    public void onColorChange(int color) {
+                        setTextColor(color);
+                    }
+                });
+                colorPickerFragment.show(getFragmentManager(), null);
+                break;
+            }
+            case R.id.menu_set_backcolor: {
+                ColorPickerFragment colorPickerFragment = new ColorPickerFragment();
+                mBackColor2 = mBackColor;
+                colorPickerFragment.setColor(mBackColor);
+                colorPickerFragment.setOnDialogButtonListener(new ColorPickerFragment.OnDialogButtonListener() {
+                    @Override
+                    public void onDialogButton() {
+                        setBackColor(mBackColor2);
+                    }
+
+                    @Override
+                    public void onColorChange(int color) {
+                        setBackColor(color);
+                    }
+
+
+                });
+                colorPickerFragment.show(getFragmentManager(), null);
+                break;
+            }
             default:
                 ((MainActivity)getActivity()).enterMenu(item.getItemId(),mNCode);
                 break;
@@ -195,6 +241,7 @@ public class ContentsFragment extends Fragment {
         String script = String.format("javascript:setText('%s',Java.getMsg(%d));",name,index);
         mWebView.loadUrl(script);
     }
+
     public int addMsg(String msg){
         mMapMsg.put(mWebMsgIndex++,msg);
         return mWebMsgIndex-1;
@@ -223,16 +270,36 @@ public class ContentsFragment extends Fragment {
         //受信要求
         getContext().sendBroadcast(intent.setAction(NaroReceiver.ACTION_NOVELCONTENT));
     }
-
-
+    void setBackColor(int color){
+        if(mBackColor != color){
+            mBackColor = color;
+            NovelDB db = new NovelDB(getContext());
+            db.setSetting("backColor", color);
+            db.close();
+            updateStyle();
+        }
+    }
+    void setTextColor(int color){
+        if(mTextColor != color){
+            mTextColor = color;
+            NovelDB db = new NovelDB(getContext());
+            db.setSetting("fontColor", color);
+            db.close();
+            updateStyle();
+        }
+    }
     void setFontSize(int size){
         if(mFontSize != size){
             mFontSize = size;
             NovelDB db = new NovelDB(getContext());
             db.setSetting("fontSize",size);
             db.close();
+            updateStyle();
         }
-        //setStyle(".title","font-size",mFontSize+"pt");
+    }
+    void updateStyle(){
         setStyle(".all","font-size",mFontSize+"pt");
+        setStyle("body","color",String.format("#%06x",mTextColor&0xffffff));
+        setStyle("body","background-color",String.format("#%06x",mBackColor&0xffffff));
     }
 }

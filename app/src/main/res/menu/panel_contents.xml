@@ -10,6 +10,14 @@
         android:icon="@android:drawable/ic_menu_zoom"
         android:id="@+id/menu_zoom_down"/>
 
+    <item android:title="テキスト\nカラー"
+        android:icon="@android:drawable/ic_menu_gallery"
+        android:id="@+id/menu_set_textcolor"/>
+
+    <item android:title="背景\nカラー"
+        android:icon="@android:drawable/ic_menu_gallery"
+        android:id="@+id/menu_set_backcolor"/>
+
     <item android:title="しおりを\n挟む"
         android:icon="@android:drawable/sym_action_chat"
         android:id="@+id/menu_set_bookmark2"/>

@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import jp.ac.chiba_fjb.x14b_c.naroreader.MainActivity;
 import jp.ac.chiba_fjb.x14b_c.naroreader.R;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelBody;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelBookmark;
@@ -145,14 +146,12 @@ public class NaroReceiver extends BroadcastReceiver {
                         LogService.output(context,"ブックマーク情報の読み込み開始");
                         final List<NovelBookmark> bookmarks = TbnReader.getBookmark(hash);
 
-
-
                         //DBに保存
                         NovelDB db = new NovelDB(context);
                         Map<String, NovelBookmark> map = db.getBookmarkMap();
                         db.addBookmark(bookmarks);
                         db.close();
-
+                        //更新チェック
                         for(final NovelBookmark b : bookmarks){
                             NovelBookmark old = map.get(b.getCode());
                             if(old == null || b.getUpdate().getTimeInMillis() >  old.getUpdate().getTimeInMillis() ){
@@ -165,7 +164,7 @@ public class NaroReceiver extends BroadcastReceiver {
                                         db.close();
 
                                         PendingIntent pending = PendingIntent.getActivity(context,0,
-                                                new Intent(context,NaroReceiver.class),0);
+                                                new Intent(context,MainActivity.class),0);
                                         final Notify notify = new Notify(context,234,pending,R.layout.status_layout,R.mipmap.ic_launcher);
                                         notify.setRemoteImage(R.id.imageNotify, R.mipmap.ic_launcher, 0);
                                         notify.setRemoteText(R.id.textTitle,context.getString(R.string.app_name));
@@ -183,11 +182,9 @@ public class NaroReceiver extends BroadcastReceiver {
                                 });
                             }
                         }
-
-
                         LogService.output(context,"アップデートチェックを完了");
-                        //更新完了通知
-                        context.sendBroadcast(new Intent().setAction(NOTIFI_BOOKMARK).putExtra("result",true));
+                        //ノベル情報の更新
+                        updateNovelInfoBookmark(context);
                     }
                 }.start();
                 //次回タイマー起動

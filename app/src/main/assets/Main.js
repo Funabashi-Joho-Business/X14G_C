@@ -7,6 +7,10 @@ function addText(tag,msg){
     node.innerHTML += msg;
 }
 function setStyle(tag,name,value){
-    var node = document.querySelector(tag);
+    var node;
+    if(tag == "body")
+        node = document.body;
+    else
+        node = document.querySelector(tag);
     node.style[name] = value;
 }
