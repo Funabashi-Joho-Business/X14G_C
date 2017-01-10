@@ -3,7 +3,6 @@ package jp.ac.chiba_fjb.x14b_c.naroreader.Titles;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,7 +17,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
 import jp.ac.chiba_fjb.x14b_c.naroreader.MainActivity;
-import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NaroReceiver;
 import jp.ac.chiba_fjb.x14b_c.naroreader.R;
 
 /**
@@ -99,6 +97,7 @@ public class SearchPanelFragment extends Fragment implements View.OnClickListene
 
             Bundle bundle = new Bundle();
             bundle.putString("params",sb.toString());
+            bundle.putInt("writer",0);
            ((MainActivity)getActivity()).changeFragment(SearchFragment.class,bundle);
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();

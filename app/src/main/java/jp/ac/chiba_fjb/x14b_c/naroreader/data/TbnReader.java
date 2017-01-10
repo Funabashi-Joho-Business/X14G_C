@@ -1,7 +1,5 @@
 package jp.ac.chiba_fjb.x14b_c.naroreader.data;
 
-import android.text.Html;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -456,6 +454,7 @@ public class TbnReader {
     public static NovelInfo getNovelInfo(String ncode){
         String address = String.format("http://api.syosetu.com/novelapi/api/?out=json&gzip=5&ncode=%s",ncode);
         NovelInfo[] json = Json.send(address,null,NovelInfo[].class);
+        decodeHtml(json);
         if(json != null && json.length > 1)
             return json[1];
         return null;
@@ -474,6 +473,7 @@ public class TbnReader {
 
         String address = String.format("http://api.syosetu.com/novelapi/api/?out=json&lim=500&gzip=5&ncode=%s",sb.toString());
         NovelInfo[] json = Json.send(address,null,NovelInfo[].class);
+        decodeHtml(json);
         if(json != null && json.length > 1){
 			List<NovelInfo> list = new ArrayList(Arrays.asList(json));
 	        list.remove(0);
@@ -484,12 +484,23 @@ public class TbnReader {
     public static List<NovelInfo> getNovelInfoFromParam(String params){
         String address = String.format("http://api.syosetu.com/novelapi/api/?%s",params);
         NovelInfo[] json = Json.send(address,null,NovelInfo[].class);
+        decodeHtml(json);
         if(json != null && json.length > 1){
             List<NovelInfo> list = new ArrayList(Arrays.asList(json));
             list.remove(0);
             return list;
         }
         return null;
+    }
+    public static void decodeHtml(NovelInfo[] list){
+        if(list == null)
+            return;
+        for(int i=1;i<list.length;i++){
+            NovelInfo info = list[i];
+            info.title = decodeHtml(info.title);
+            info.writer = decodeHtml(info.writer);
+            info.story = decodeHtml(info.story);
+        }
     }
 
 

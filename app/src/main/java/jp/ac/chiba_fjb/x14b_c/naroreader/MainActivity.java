@@ -1,7 +1,6 @@
 package jp.ac.chiba_fjb.x14b_c.naroreader;
 
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
@@ -20,7 +19,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.MenuItem;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
 
 import com.google.android.gms.ads.AdRequest;
@@ -32,11 +30,11 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import jp.ac.chiba_fjb.x14b_c.naroreader.Titles.BookmarkFragment;
-import jp.ac.chiba_fjb.x14b_c.naroreader.Titles.HistoryFragment;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Other.LogFragment;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NaroReceiver;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NovelDB;
+import jp.ac.chiba_fjb.x14b_c.naroreader.Titles.BookmarkFragment;
+import jp.ac.chiba_fjb.x14b_c.naroreader.Titles.HistoryFragment;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Titles.RankingFragment;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Titles.SearchFragment;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelInfo;
@@ -182,8 +180,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 if( f.getArguments() != null && budle!=null)
                     f.getArguments().putAll(budle);
             }
-            FrameLayout toolFrame = (FrameLayout)findViewById(R.id.toolFrame);
-            toolFrame.removeAllViews();
+
 
             //フラグ面tのの切り替え処理
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
@@ -199,6 +196,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 ft.addToBackStack(c.getSimpleName());
             ft.commit();
 
+            FrameLayout toolFrame = (FrameLayout)findViewById(R.id.toolFrame);
+            toolFrame.removeAllViews();
             showAppBar(true);
 
         } catch (Exception e) {
@@ -211,13 +210,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void onBackPressed() {
         //メニューが開いていたら閉じる
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if(drawer.isDrawerOpen(Gravity.LEFT))
+        if (drawer.isDrawerOpen(Gravity.LEFT))
             drawer.closeDrawer(Gravity.LEFT);
         else {
-            FrameLayout toolFrame = (FrameLayout)findViewById(R.id.toolFrame);
+            FrameLayout toolFrame = (FrameLayout) findViewById(R.id.toolFrame);
             toolFrame.removeAllViews();
             showAppBar(true);
-            super.onBackPressed();
+            if (!getSupportFragmentManager().popBackStackImmediate()) {
+                super.onBackPressed();
+            }
         }
     }
 
@@ -334,6 +335,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         sb.append(n);
                     }
                     Bundle bundle = new Bundle();
+                    bundle.putInt("writer",0);
                     bundle.putString("params", "out=json&gzip=5&ncode=" + sb.toString());
                     changeFragment(SearchFragment.class, bundle);
                 } else
