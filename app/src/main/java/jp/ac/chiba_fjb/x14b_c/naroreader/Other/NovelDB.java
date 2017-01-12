@@ -171,6 +171,12 @@ public class NovelDB extends AppDB {
         String sql = String.format("delete from t_novel_history where ncode = '%s'",STR(ncode));
         exec(sql);
     }
+
+    public void alldelNovelHistory(){
+        String sql = String.format("delete from t_novel_history");
+        exec(sql);
+    }
+
     public List<String> getNovelHistory(){
         List<String> list = new ArrayList<String>();
         String sql = String.format("select * from t_novel_history where his_date desc");

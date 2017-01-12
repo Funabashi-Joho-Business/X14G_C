@@ -6,6 +6,9 @@
     <item android:title="履歴削除\n"
         android:icon="@android:drawable/ic_menu_delete"
         android:id="@+id/menu_history_del"/>
+    <item android:title="履歴を全権削除"
+        android:icon="@android:drawable/ic_notification_clear_all"
+        android:id="@+id/menu_history_alldel"/>
     <item android:title="ブック\nマーク"
           android:icon="@android:drawable/ic_menu_add"
           android:id="@+id/menu_bookmark_add"/>

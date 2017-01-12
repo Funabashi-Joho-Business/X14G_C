@@ -1,4 +1,4 @@
-package jp.ac.chiba_fjb.x14b_c.naroreader.SubTitle;
+package jp.ac.chiba_fjb.x14b_c.naroreader.Subtitle;
 
 
 import android.support.v7.widget.RecyclerView;

@@ -27,7 +27,7 @@ import jp.ac.chiba_fjb.x14b_c.naroreader.Other.BottomDialog;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NaroReceiver;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NovelDB;
 import jp.ac.chiba_fjb.x14b_c.naroreader.R;
-import jp.ac.chiba_fjb.x14b_c.naroreader.SubTitle.SubtitleFragment;
+import jp.ac.chiba_fjb.x14b_c.naroreader.Subtitle.SubtitleFragment;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelInfo;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.TbnReader;
 
@@ -129,6 +129,9 @@ public class HistoryFragment extends Fragment implements TitleAdapter.OnItemClic
 			case R.id.menu_history_del:
 				delHistory();
 				break;
+			case R.id.menu_history_alldel:
+				alldelHistory();
+				break;
 			default:
 				((MainActivity)getActivity()).enterMenu(item.getItemId(),mNCode);
 				break;
@@ -146,6 +149,15 @@ public class HistoryFragment extends Fragment implements TitleAdapter.OnItemClic
 		update();
 		output("履歴削除完了");
 	}
+
+	void alldelHistory(){
+		NovelDB db = new NovelDB(getContext());
+			db.alldelNovelHistory();
+		db.close();
+		update();
+		output("履歴削除完了");
+	}
+
 	void addBookmark(){
 		Snackbar.make(getView(),"ブックマーク追加中", Snackbar.LENGTH_SHORT).show();
 		new Thread(){
