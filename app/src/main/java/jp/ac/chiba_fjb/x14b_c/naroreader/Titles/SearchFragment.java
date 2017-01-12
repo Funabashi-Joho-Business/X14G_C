@@ -20,12 +20,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.SeekBar;
-import android.widget.TextView;
 
 import java.util.List;
 
-import jp.ac.chiba_fjb.x14b_c.naroreader.AddBookmarkFragment;
 import jp.ac.chiba_fjb.x14b_c.naroreader.MainActivity;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Other.BottomDialog;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NaroReceiver;

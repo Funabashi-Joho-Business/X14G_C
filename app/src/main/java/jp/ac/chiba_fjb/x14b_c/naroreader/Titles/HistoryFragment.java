@@ -21,7 +21,6 @@ import android.view.ViewGroup;
 
 import java.util.Set;
 
-import jp.ac.chiba_fjb.x14b_c.naroreader.AddBookmarkFragment;
 import jp.ac.chiba_fjb.x14b_c.naroreader.MainActivity;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Other.BottomDialog;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NaroReceiver;
