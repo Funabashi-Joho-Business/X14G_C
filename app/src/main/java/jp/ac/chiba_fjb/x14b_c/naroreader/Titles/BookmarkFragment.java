@@ -147,6 +147,9 @@ public class BookmarkFragment extends Fragment implements TitleAdapter.OnItemCli
                 bottomDialog.setMenu(R.menu.panel_bookmark,this);
                 bottomDialog.show(getFragmentManager(), null);
                 break;
+            case R.id.menu_bookmark_del_list:
+                delBookmarks();
+                break;
             case R.id.menu_download:
                 download();
                 break;
@@ -198,7 +201,11 @@ public class BookmarkFragment extends Fragment implements TitleAdapter.OnItemCli
         ArrayList<String> list = new ArrayList<String>(checks);
         NaroReceiver.download(getContext(),list);
     }
-
+    void delBookmarks(){
+        Set<String> checks = mAdapter.getChecks();
+        ArrayList<String> list = new ArrayList<String>(checks);
+        NaroReceiver.delBookmark(getContext(),list);
+    }
 
     void output(final String msg){
         getActivity().runOnUiThread(new Runnable() {

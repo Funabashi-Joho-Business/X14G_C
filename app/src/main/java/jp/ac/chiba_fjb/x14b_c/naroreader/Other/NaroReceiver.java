@@ -33,6 +33,7 @@ import to.pns.lib.Notify;
 public class NaroReceiver extends BroadcastReceiver {
     public static final String ACTION_BOOKMARK = "ACTION_BOOKMARK"; //このクラスが処理すべき命令
     public static final String NOTIFI_BOOKMARK = "NOTIFI_BOOKMARK"; //処理終了後の通知
+    public static final String ACTION_DEL_BOOKMARK = "ACTION_DEL_BOOKMARK"; //ブックマーク削除
 
     public static final String ACTION_SET_BOOKMARK2 = "ACTION_SET_BOOKMARK2"; //しおり設定
     public static final String NOTIFI_SET_BOOKMARK2 = "NOTIFI_SET_BOOKMARK2"; //しおり処理終了後の通知
@@ -113,6 +114,9 @@ public class NaroReceiver extends BroadcastReceiver {
     }
     public static void clearBookmark2(Context con,String ncode){
         con.sendBroadcast(new Intent(con,NaroReceiver.class).setAction(NaroReceiver.ACTION_CLEAR_BOOKMARK2).putExtra("ncode",ncode));
+    }
+    public static void delBookmark(Context con, ArrayList<String> list) {
+        con.sendBroadcast(new Intent(con,NaroReceiver.class).setAction(NaroReceiver.ACTION_DEL_BOOKMARK).putExtra("ncodes",list));
     }
     @Override
     public void onReceive(final Context context, final Intent intent) {
@@ -238,6 +242,52 @@ public class NaroReceiver extends BroadcastReceiver {
                             LogService.output(context,"ログイン失敗");
                             return;
                         }
+                        LogService.output(context,"ブックマーク情報の読み込み開始");
+                        //取得したブックマーク情報をDBに保存
+                        List<NovelBookmark> bookmarks = TbnReader.getBookmark(hash);
+                        //DBを利用
+                        NovelDB db = new NovelDB(context);
+                        db.addBookmark(bookmarks);
+                        db.close();
+                        LogService.output(context,"ブックマーク情報の読み込み完了");
+                        //更新完了通知
+                        context.sendBroadcast(new Intent().setAction(NOTIFI_BOOKMARK).putExtra("result",true));
+                        //作品情報を取得
+                        updateNovelInfoBookmark(context);
+                    }
+                }.start();
+                break;
+            case ACTION_DEL_BOOKMARK:
+                new Thread(){
+                    @Override
+                    public void run() {
+                        List<String> ncodes = (List<String>) intent.getSerializableExtra("ncodes");
+                        NovelDB settingDB = new NovelDB(context);
+                        String id = settingDB.getSetting("loginId","");
+                        String pass = settingDB.getSetting("loginPass","");
+                        settingDB.close();
+                        //ログイン処理
+                        String hash = TbnReader.getLoginHash(id,pass);
+
+                        if(hash == null) {
+                            context.sendBroadcast(new Intent().setAction(NOTIFI_BOOKMARK).putExtra("result",false));
+                            LogService.output(context,"ログイン失敗");
+                            return;
+                        }
+
+                        for(String ncode : ncodes){
+                            if(TbnReader.clearBookmark(hash,ncode))
+                                LogService.output(context,ncode+"ブックマーク削除");
+                            else
+                                LogService.output(context,ncode+"ブックマーク削除失敗");
+                            try {
+                                Thread.sleep(50);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        }
+
+
                         LogService.output(context,"ブックマーク情報の読み込み開始");
                         //取得したブックマーク情報をDBに保存
                         List<NovelBookmark> bookmarks = TbnReader.getBookmark(hash);
