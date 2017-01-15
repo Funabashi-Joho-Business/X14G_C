@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:background="#000000">
 
     <ImageView
         android:contentDescription="ICON"
@@ -27,14 +28,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="タイトル" />
+            android:text="タイトル"
+            android:textColor="#ffffff" />
 
         <TextView
             android:id="@+id/textMsg"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="メッセージ" />
+            android:text="メッセージ"
+            android:textColor="#ffffff" />
 
     </LinearLayout>
 

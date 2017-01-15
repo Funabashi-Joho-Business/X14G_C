@@ -250,6 +250,8 @@ public class ContentsFragment extends Fragment {
     public String getMsg(int i){
         String msg = mMapMsg.get(i);
         mMapMsg.remove(i);
+        if(msg == null)
+            return "";
         return msg;
     }
 
