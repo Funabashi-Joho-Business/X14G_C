@@ -475,4 +475,20 @@ public class NovelDB extends AppDB {
         c.close();
         return list;
     }
+    public void optimisation(){
+        String sql;
+        sql = "delete from t_novel_sub where ncode not in(select ncode from t_bookmark union select ncode from t_novel_history)";
+        exec(sql);
+        sql = "delete from t_novel_content where ncode not in(select ncode from t_bookmark union select ncode from t_novel_history)";
+        exec(sql);
+        sql = "delete from t_novel_read where ncode not in(select ncode from t_bookmark union select ncode from t_novel_history)";
+        exec(sql);
+        sql = "delete from t_novel_info where ncode not in(\n" +
+                "                select ncode from t_bookmark union\n" +
+                "                select ncode from t_novel_history union\n" +
+                "                select ncode from t_novel_ranking_info union\n" +
+                "                select ncode from t_novel_search)";
+        exec(sql);
+        vacuum();
+    }
 }

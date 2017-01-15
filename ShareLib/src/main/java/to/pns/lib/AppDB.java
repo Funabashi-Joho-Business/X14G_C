@@ -3,6 +3,7 @@ package to.pns.lib;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 
 import java.io.BufferedReader;
@@ -85,6 +86,7 @@ public abstract class AppDB extends SQLite {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE m_setting(s_name text,s_value text);");
     }
+
 
 
     public static String createSqlCreateClass(Class c,String className,String... primary){
