@@ -23,10 +23,12 @@ import android.widget.SpinnerAdapter;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import java.text.NumberFormat;
+
 import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NaroReceiver;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NovelDB;
 
-public class ConfigFragment extends Fragment  {
+public class ConfigFragment extends Fragment implements View.OnClickListener {
 
 
     private String mUserId;
@@ -51,15 +53,19 @@ public class ConfigFragment extends Fragment  {
         String pass = settingDB.getSetting("loginPass","");
         boolean updateCheck = settingDB.getSetting("updateCheck",false);
         int updateTime = settingDB.getSetting("updateTime",60);
+        long fileSize = settingDB.getFileSize()/1024;
         settingDB.close();
 
         mUserId = id;
+
+        NumberFormat nf = NumberFormat.getNumberInstance();
 
         ((TextView) view.findViewById(R.id.LoginID)).setText(id);
         ((TextView) view.findViewById(R.id.loginPass)).setText(pass);
         ((Switch)view.findViewById(R.id.switchUpdateCheck)).setChecked(updateCheck);
         ((EditText)view.findViewById(R.id.editUpdateTime)).setText(""+updateTime);
-
+        ((TextView) view.findViewById(R.id.textFileSize)).setText(nf.format(fileSize)+"KB");
+        view.findViewById(R.id.buttonFix).setOnClickListener(this);
         return view;
     }
 
@@ -112,5 +118,18 @@ public class ConfigFragment extends Fragment  {
             getContext().sendBroadcast(new Intent(getContext(),NaroReceiver.class).setAction(NaroReceiver.ACTION_UPDATE_SETTING));
         }
         return true;
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch(v.getId()){
+            case R.id.buttonFix:
+                NovelDB db = new NovelDB(getContext());
+                db.optimisation();
+                NumberFormat nf = NumberFormat.getNumberInstance();
+                ((TextView) getView().findViewById(R.id.textFileSize)).setText(nf.format(db.getFileSize()/1024)+"KB");
+                db.close();
+                break;
+        }
     }
 }
