@@ -1,12 +1,14 @@
 package jp.ac.chiba_fjb.x14b_c.naroreader.Titles;
 
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.RadioGroup;
@@ -95,6 +97,11 @@ public class SearchPanelFragment extends Fragment implements View.OnClickListene
                 sb.append("&type="+typeCode);
             }
 
+            //ソフトキーボードを非表示
+            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+
+            //検索開始
             Bundle bundle = new Bundle();
             bundle.putString("params",sb.toString());
             bundle.putInt("writer",0);
