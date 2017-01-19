@@ -28,10 +28,12 @@ import com.google.android.gms.ads.AdView;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import jp.ac.chiba_fjb.x14b_c.naroreader.Other.BottomDialog;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Other.LogFragment;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NaroReceiver;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NovelDB;
@@ -170,6 +172,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         try {
             //フラグメントの作成
             Fragment f;
+            f = getSupportFragmentManager().findFragmentByTag(BottomDialog.class.getName());
+            if(f != null)
+                ((BottomDialog)f).getDialog().cancel();
+
             f = getSupportFragmentManager().findFragmentByTag(c.getSimpleName());
             if(f==null) {
                 f = (Fragment) c.newInstance();
@@ -264,7 +270,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 .show();
     }
 
-    public void enterMenu(int id,String ncode){
+    public boolean enterMenu(int id,String ncode){
         Uri uri;
         Intent i;
 
@@ -301,6 +307,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 RankPointFragment f = new RankPointFragment();
                 f.setArguments(bn);
                 f.show(getSupportFragmentManager(),"");
+                break;
+            case R.id.menu_download:
+                ArrayList<String> list = new ArrayList();
+                list.add(ncode);
+                NaroReceiver.download(this,list);
                 break;
             case R.id.menu_clear_bookmark2:
                 NaroReceiver.clearBookmark2(this,ncode);
@@ -351,6 +362,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
 
         }
-
+        return false;
     }
 }

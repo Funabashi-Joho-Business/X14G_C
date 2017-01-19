@@ -147,15 +147,14 @@ public class BookmarkFragment extends Fragment implements TitleAdapter.OnItemCli
                 bottomDialog.setMenu(R.menu.panel_bookmark,this);
                 bottomDialog.show(getFragmentManager(), null);
                 break;
-            case R.id.menu_bookmark_del_list:
+            case R.id.menu_list_bookmark_del:
                 delBookmarks();
                 break;
-            case R.id.menu_download:
+            case R.id.menu_list_download:
                 download();
                 break;
             default:
-                ((MainActivity)getActivity()).enterMenu(item.getItemId(),mNCode);
-                break;
+                return ((MainActivity)getActivity()).enterMenu(item.getItemId(),mNCode);
         }
 
         return false;
@@ -191,7 +190,7 @@ public class BookmarkFragment extends Fragment implements TitleAdapter.OnItemCli
         mNCode = info.ncode;
         BottomDialog bottomDialog = new BottomDialog();
         bottomDialog.setMenu(R.menu.panel_novel,this);
-        bottomDialog.show(getFragmentManager(), null);
+        bottomDialog.show(getFragmentManager(), BottomDialog.class.getName());
     }
 
 

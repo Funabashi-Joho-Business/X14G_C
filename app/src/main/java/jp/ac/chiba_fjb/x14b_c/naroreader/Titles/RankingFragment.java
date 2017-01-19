@@ -342,17 +342,16 @@ public class RankingFragment extends Fragment implements AdapterView.OnItemSelec
         mNCode = info.ncode;
         BottomDialog bottomDialog = new BottomDialog();
         bottomDialog.setMenu(R.menu.panel_novel,this);
-        bottomDialog.show(getFragmentManager(), null);
+        bottomDialog.show(getFragmentManager(), BottomDialog.class.getName());
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()){
             default:
-                ((MainActivity)getActivity()).enterMenu(item.getItemId(),mNCode);
-                break;
+                return ((MainActivity)getActivity()).enterMenu(item.getItemId(),mNCode);
         }
 
-        return false;
+//        return true;
     }
 
 }

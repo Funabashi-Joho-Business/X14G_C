@@ -123,7 +123,7 @@ public class HistoryFragment extends Fragment implements TitleAdapter.OnItemClic
 			case R.id.menu_more:
 				BottomDialog bottomDialog = new BottomDialog();
 				bottomDialog.setMenu(R.menu.panel_history,this);
-				bottomDialog.show(getFragmentManager(), null);
+				bottomDialog.show(getFragmentManager(), BottomDialog.class.getName());
 				break;
 			case R.id.menu_history_del:
 				delHistory();
@@ -132,8 +132,7 @@ public class HistoryFragment extends Fragment implements TitleAdapter.OnItemClic
 				alldelHistory();
 				break;
 			default:
-				((MainActivity)getActivity()).enterMenu(item.getItemId(),mNCode);
-				break;
+				return ((MainActivity)getActivity()).enterMenu(item.getItemId(),mNCode);
 		}
 
 		return false;
