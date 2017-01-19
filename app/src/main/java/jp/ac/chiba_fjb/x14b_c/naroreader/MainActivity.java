@@ -1,6 +1,7 @@
 package jp.ac.chiba_fjb.x14b_c.naroreader;
 
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
@@ -19,6 +20,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.MenuItem;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
 
 import com.google.android.gms.ads.AdRequest;
@@ -201,6 +203,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             else
                 ft.addToBackStack(c.getSimpleName());
             ft.commit();
+
+            //ソフトキーボードを非表示
+            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
 
             FrameLayout toolFrame = (FrameLayout)findViewById(R.id.toolFrame);
             toolFrame.removeAllViews();
