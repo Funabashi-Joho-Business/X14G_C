@@ -4,18 +4,16 @@ import android.os.Bundle;
 
 import org.junit.Test;
 
-import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Scanner;
 
-import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelBody;
+import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelBookmark;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelInfo;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelRanking;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelSeries;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelSubTitle;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.TbnReader;
-import to.pns.lib.AppDB;
 
 /**
  * Example local unit test, which will execute on the development machine (host).
@@ -256,10 +254,19 @@ public class ExampleUnitTest {
 		}
 	}
 	@Test
-	public void testBody(){
-		//NovelBody data = TbnReader.getNovelBody("n7133dp", 1);
-//		NovelBody data = TbnReader.getNovelBody("n0339ds", 0);
-//		System.out.println(data.preface);
+	public void testBoolmark(){
+		String userId = "";
+		String userPass = "";
+
+		String hash = TbnReader.getLoginHash(userId,userPass);
+		if(hash == null){
+			System.out.println("ログイン失敗");
+		}else {
+			System.out.format("ハッシュコード: %s\n", hash);
+
+			List<NovelBookmark> list = TbnReader.getBookmark(hash);
+
+		}
 
 
 

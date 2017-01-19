@@ -174,7 +174,7 @@ public class SubtitleFragment extends Fragment implements SubtitleAdapter.OnItem
             case R.id.menu_more:
                 BottomDialog bottomDialog = new BottomDialog();
                 bottomDialog.setMenu(R.menu.panel_subtitle,this);
-                bottomDialog.show(getFragmentManager(), null);
+                bottomDialog.show(getFragmentManager(), BottomDialog.class.getName());
                 break;
             case R.id.action_sort:
                 mSort = (mSort+1)%2;
@@ -184,11 +184,10 @@ public class SubtitleFragment extends Fragment implements SubtitleAdapter.OnItem
                 update();
                 break;
             default:
-                ((MainActivity)getActivity()).enterMenu(item.getItemId(),mNCode);
-                break;
+                return ((MainActivity)getActivity()).enterMenu(item.getItemId(),mNCode);
         }
 
-        return true;
+        return false;
     }
 
 

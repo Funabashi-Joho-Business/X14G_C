@@ -147,11 +147,10 @@ public class SearchFragment extends Fragment implements TitleAdapter.OnItemClick
                 ((MainActivity)getActivity()).changeFragment(SearchPanelFragment.class);
                 break;
             default:
-                ((MainActivity)getActivity()).enterMenu(item.getItemId(),mNCode);
-                break;
+                return ((MainActivity)getActivity()).enterMenu(item.getItemId(),mNCode);
         }
 
-        return false;
+        return true;
     }
     public void update(){
         ((SwipeRefreshLayout) getView().findViewById(R.id.swipe_refresh)).setRefreshing(true);
@@ -196,7 +195,7 @@ public class SearchFragment extends Fragment implements TitleAdapter.OnItemClick
         mNCode = info.ncode;
         BottomDialog bottomDialog = new BottomDialog();
         bottomDialog.setMenu(R.menu.panel_novel,this);
-        bottomDialog.show(getFragmentManager(), null);
+        bottomDialog.show(getFragmentManager(), BottomDialog.class.getName());
     }
 
 

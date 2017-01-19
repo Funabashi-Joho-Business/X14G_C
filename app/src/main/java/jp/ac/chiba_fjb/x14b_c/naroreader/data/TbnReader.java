@@ -430,8 +430,8 @@ public class TbnReader {
                     content = getContent("http://syosetu.com/favnovelmain/list/?nowcategory="+(i+1),hash);
 
                 p = Pattern.compile(
-                        "<a class=\"title\" href=\"http://ncode.syosetu.com/(.+?)/\">(.+?)</a>.+?更新日：(.+?)\n.*?"+
-                        "<span class=\"no\">\n(?:<a href=\"http://ncode.syosetu.com/.+?/(.+?)/\">|\n)",Pattern.DOTALL);
+                        "<a class=\"title\" href=\"http://ncode.syosetu.com/(.+?)/\">(.+?)</a>.+?更新日：(.+?)\n\n"+
+                        "(?=<span class=\"no\">\n(?:<a href=\"http://ncode.syosetu.com/.+?/(.+?)/\">|\n)|</p>\n)",Pattern.DOTALL);
                 m = p.matcher(content);
 
                 while(m.find()){
