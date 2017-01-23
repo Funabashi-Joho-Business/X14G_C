@@ -5,11 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewCompat;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -18,8 +15,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
-import android.widget.Spinner;
-import android.widget.SpinnerAdapter;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -52,6 +47,7 @@ public class ConfigFragment extends Fragment implements View.OnClickListener {
         String id = settingDB.getSetting("loginId","");
         String pass = settingDB.getSetting("loginPass","");
         boolean updateCheck = settingDB.getSetting("updateCheck",false);
+        boolean autoMark = settingDB.getSetting("autoMark",false);
         int updateTime = settingDB.getSetting("updateTime",60);
         long fileSize = settingDB.getFileSize()/1024;
         settingDB.close();
@@ -64,6 +60,7 @@ public class ConfigFragment extends Fragment implements View.OnClickListener {
         ((TextView) view.findViewById(R.id.loginPass)).setText(pass);
         ((Switch)view.findViewById(R.id.switchUpdateCheck)).setChecked(updateCheck);
         ((EditText)view.findViewById(R.id.editUpdateTime)).setText(""+updateTime);
+        ((Switch)view.findViewById(R.id.switchAutoMark)).setChecked(autoMark);
         ((TextView) view.findViewById(R.id.textFileSize)).setText(nf.format(fileSize)+"KB");
         view.findViewById(R.id.buttonFix).setOnClickListener(this);
         return view;
@@ -97,11 +94,13 @@ public class ConfigFragment extends Fragment implements View.OnClickListener {
             TextView pass = (TextView) getView().findViewById(R.id.loginPass);
             boolean updateCheck = ((Switch)getView().findViewById(R.id.switchUpdateCheck)).isChecked();
             int updateTime = Integer.parseInt(((EditText)getView().findViewById(R.id.editUpdateTime)).getText().toString());
+            boolean autoMark = ((Switch)getView().findViewById(R.id.switchAutoMark)).isChecked();
             NovelDB db = new NovelDB(getContext());
             db.setSetting("loginId",id.getText().toString());
             db.setSetting("loginPass",pass.getText().toString());
             db.setSetting("updateCheck",updateCheck);
             db.setSetting("updateTime",updateTime);
+            db.setSetting("autoMark",autoMark);
 
             if(!mUserId.equals(id.getText().toString())){
                 //違うIDが設定されたら、ブックマークをクリア
