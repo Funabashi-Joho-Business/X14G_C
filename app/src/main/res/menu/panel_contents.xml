@@ -34,7 +34,7 @@
         android:icon="@android:drawable/ic_menu_add"
         android:id="@+id/menu_bookmark_add"/>
 
-    <item android:title="ブックマ\n解除"
+    <item android:title="ブックマ\nーク解除"
         android:icon="@android:drawable/ic_menu_delete"
         android:id="@+id/menu_bookmark_del"/>
 
