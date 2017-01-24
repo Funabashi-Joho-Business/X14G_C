@@ -5,7 +5,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -30,7 +29,6 @@ import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NovelDB;
 import jp.ac.chiba_fjb.x14b_c.naroreader.R;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelContent;
 import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelInfo;
-import jp.ac.chiba_fjb.x14b_c.naroreader.data.TbnReader;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -78,6 +76,12 @@ public class ContentsFragment extends Fragment {
 
         }
 
+        @Override
+        public boolean shouldOverrideUrlLoading(WebView view, String url) {
+            Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+            startActivity(i);
+            return true;
+        }
 
     };
 

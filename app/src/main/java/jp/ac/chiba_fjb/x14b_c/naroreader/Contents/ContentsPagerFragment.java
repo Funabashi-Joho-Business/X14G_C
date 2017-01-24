@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import com.google.android.gms.ads.AdView;
 
 import jp.ac.chiba_fjb.x14b_c.naroreader.Other.BottomDialog;
+import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NaroReceiver;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NovelDB;
 import jp.ac.chiba_fjb.x14b_c.naroreader.R;
 
@@ -37,7 +38,13 @@ public class ContentsPagerFragment extends Fragment implements ViewPager.OnPageC
 	void setReaded(int index){
 		Bundle bundle = getArguments();
 		NovelDB db = new NovelDB(getContext());
-		db.setNovelReaded(bundle.getString("ncode"),index);
+		String ncode = bundle.getString("ncode");
+		if(ncode != null) {
+			db.setNovelReaded(ncode, index);
+			boolean autoMark = db.getSetting("autoMark", false);
+			if (autoMark)
+				NaroReceiver.setBookmark2(getContext(), ncode, index);
+		}
 		db.close();
 	}
 
