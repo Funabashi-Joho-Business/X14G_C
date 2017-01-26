@@ -1,0 +1,140 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+     xmlns:tools="http://schemas.android.com/tools"
+     android:layout_height="match_parent"
+     tools:context="jp.ac.chiba_fjb.x14b_c.naroencounter.to.pns.naroencounter.RankPointFragment"
+     android:layout_width="match_parent"
+    android:gravity="center">
+
+    <!-- TODO: Update blank fragment layout -->
+
+    <LinearLayout
+        android:padding="10dp"
+        android:background="@drawable/dialog_bg"
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:text="文法・文章評価"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:background="#FFFAC7DC" />
+
+        <RadioGroup
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:id="@+id/RgBunpou"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:text="1pt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/Rb1"
+                android:layout_weight="1" />
+
+            <RadioButton
+                android:text="2pt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/Rb2"
+                android:layout_weight="1" />
+
+            <RadioButton
+                android:text="3pt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/Rb3"
+                android:layout_weight="1" />
+
+            <RadioButton
+                android:text="4pt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:id="@+id/Rb4" />
+
+            <RadioButton
+                android:text="5pt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/Rb5"
+                android:layout_weight="1" />
+
+        </RadioGroup>
+
+        <TextView
+            android:text="物語(ストーリー)評価"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:background="#FFFAC7DC" />
+
+        <RadioGroup
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:id="@+id/RgStory"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:text="1pt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/Rs1"
+                android:layout_weight="1" />
+
+            <RadioButton
+                android:text="2pt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/Rs2"
+                android:layout_weight="1" />
+
+            <RadioButton
+                android:text="3pt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/Rs3"
+                android:layout_weight="1" />
+
+            <RadioButton
+                android:text="4pt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/Rs4"
+                android:layout_weight="1" />
+
+            <RadioButton
+                android:text="5pt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/Rs5"
+                android:layout_weight="1" />
+
+        </RadioGroup>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <Button
+                android:text="キャンセル"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:id="@+id/button1" />
+
+            <Button
+                android:text="評価"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/button2"
+                android:layout_weight="1" />
+        </LinearLayout>
+
+    </LinearLayout>
+</LinearLayout>

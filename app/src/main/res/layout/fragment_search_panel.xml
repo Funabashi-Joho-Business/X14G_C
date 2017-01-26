@@ -1,0 +1,313 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:context="to.pns.naroencounter.Titles.SearchPanelFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/bar_margin">
+
+        <ImageButton
+            android:layout_width="match_parent"
+            app:srcCompat="@android:drawable/ic_search_category_default"
+            android:id="@+id/imageSearch"
+            style="@android:style/Widget.ImageButton"
+            android:layout_height="wrap_content" />
+
+        <android.support.v4.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:text="件数"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#aa88aaff"
+                    android:layout_margin="1dp" />
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:text="10"
+                        android:layout_height="wrap_content"
+                        android:layout_width="32dp"
+                        android:padding="2dp"
+                        android:id="@+id/textLimit" />
+
+                    <SeekBar
+                        style="@style/Widget.AppCompat.SeekBar.Discrete"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:max="49"
+                        android:progress="0"
+                        android:id="@+id/seekLimit"
+                        android:layout_weight="1" />
+
+                </LinearLayout>
+
+                <TextView
+                    android:text="検索ワード"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#aa88aaff"
+                    android:layout_margin="1dp" />
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPersonName"
+                    android:ems="10"
+                    android:id="@+id/editWord"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:text="検索除外ワード"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#aa88aaff"
+                    android:layout_margin="1dp" />
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPersonName"
+                    android:ems="10"
+                    android:id="@+id/editExclusion"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:text="ソート"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#aa88aaff"
+                    android:layout_margin="1dp" />
+
+                <RadioGroup
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:id="@+id/groupSort">
+
+                    <RadioButton
+                        android:text="新着"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/radioSort0"
+                        android:layout_weight="1"
+                        android:checked="true" />
+
+                    <RadioButton
+                        android:text="評価ポイント"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/radioSort1"
+                        android:layout_weight="1"
+                        android:checked="false" />
+
+                    <RadioButton
+                        android:text="ユニークユーザ"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/radioSort2"
+                        android:layout_weight="1" />
+                </RadioGroup>
+
+                <TextView
+                    android:text="検索対象"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#aa88aaff"
+                    android:layout_margin="1dp" />
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <CheckBox
+                        android:text="タイトル"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/checkTarget0"
+                        android:layout_weight="1"
+                        android:checked="true" />
+
+                    <CheckBox
+                        android:text="あらすじ"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/checkTarget1"
+                        android:layout_weight="1"
+                        android:checked="true" />
+
+                    <CheckBox
+                        android:text="キーワード"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/checkTarget2"
+                        android:layout_weight="1"
+                        android:checked="true" />
+
+                    <CheckBox
+                        android:text="作者名"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/checkTarget3"
+                        android:layout_weight="1"
+                        android:checked="true" />
+                </LinearLayout>
+
+                <TextView
+                    android:text="ジャンル"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#aa88aaff"
+                    android:layout_margin="1dp"
+                    android:id="@+id/textView10" />
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <CheckBox
+                        android:text="恋愛"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/checkGenre0"
+                        android:layout_weight="1"
+                        android:checked="true" />
+
+                    <CheckBox
+                        android:text="ファンタジー"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/checkGenre1"
+                        android:layout_weight="1"
+                        android:checked="true" />
+
+                    <CheckBox
+                        android:text="文芸"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/checkGenre2"
+                        android:layout_weight="1"
+                        android:checked="true" />
+
+                </LinearLayout>
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1">
+
+                        <CheckBox
+                            android:text="ＳＦ　"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/checkGenre3"
+                            android:layout_weight="1"
+                            android:checked="true" />
+
+                        <CheckBox
+                            android:text="ノンジャンル"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/checkBox4"
+                            android:layout_weight="1"
+                            android:checked="true" />
+
+                        <CheckBox
+                            android:text="その他"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/checkGenre5"
+                            android:layout_weight="1"
+                            android:checked="true" />
+
+                    </LinearLayout>
+
+                <TextView
+                    android:text="タイプ"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#aa88aaff"
+                    android:layout_margin="1dp" />
+
+                <RadioGroup
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:id="@+id/groupType">
+
+                    <RadioButton
+                        android:text="全て"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/radioButton1"
+                        android:layout_weight="1"
+                        android:checked="true"
+                        android:tag="re"
+                        android:textSize="13sp" />
+
+                    <RadioButton
+                        android:text="短編"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/radioButton3"
+                        android:layout_weight="1"
+                        android:checked="false"
+                        android:tag="t"
+                        android:textSize="13sp" />
+
+                    <RadioButton
+                        android:text="長編"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/radioButton4"
+                        android:layout_weight="1"
+                        android:checked="false"
+                        android:tag="r"
+                        android:textSize="13sp" />
+
+                    <RadioButton
+                        android:text="長編完結"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/radioButton5"
+                        android:layout_weight="1"
+                        android:tag="re"
+                        android:textSize="13sp" />
+
+                    <RadioButton
+                        android:text="短編＆完結"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/radioButton2"
+                        android:layout_weight="1"
+                        android:checked="false"
+                        android:tag="ter"
+                        android:textSize="13sp" />
+
+                </RadioGroup>
+
+            </LinearLayout>
+        </android.support.v4.widget.NestedScrollView>
+
+    </LinearLayout>
+
+</FrameLayout>

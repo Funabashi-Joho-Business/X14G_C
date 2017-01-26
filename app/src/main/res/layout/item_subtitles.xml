@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+    android:alpha="0.9">
+
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/layoutInfo">
+
+    </FrameLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="2dp"
+        android:id="@+id/layoutSubtitle">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="@color/colorPrimaryDark"
+            android:alpha="0.3"
+            android:layout_margin="10dp">
+
+        </FrameLayout>
+
+        <LinearLayout
+            android:background="#aaffffaa"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="2dp"
+            android:paddingRight="2dp">
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="2dp"
+                android:layout_gravity="center"
+                android:background="#44ff8888">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@drawable/ic_book3"
+                    android:id="@+id/imageView2"
+                    android:layout_centerInParent="true"
+                    android:alpha="0.4" />
+
+                <TextView
+                    android:text="1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/textNo"
+                    android:textSize="18sp"
+                    android:layout_centerInParent="true" />
+            </RelativeLayout>
+
+            <LinearLayout android:orientation="vertical"
+                          android:layout_width="match_parent"
+                          android:layout_height="wrap_content"
+
+                >
+
+                <TextView
+                    android:text="サブタイトル"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/textTitle"
+                    android:textStyle="normal|bold"
+                    android:background="#aaaaffaa"
+                    android:textSize="14sp"
+                    android:padding="2dp" />
+
+
+                <TableLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" >
+
+                        <TextView
+                            android:text="公開日"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="4dp"
+                            android:layout_marginLeft="4dp" />
+
+                        <TextView
+                            android:text="1900年01月02日"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/textRegDate"
+                            android:layout_weight="1"
+                            android:textSize="12sp"
+                            android:padding="2dp" />
+
+                        <TextView
+                            android:text="取得日"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="4dp"
+                            android:layout_marginLeft="4dp" />
+
+                        <TextView
+                            android:text="1900年01月02日"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/textRecvDate"
+                            android:layout_weight="1"
+                            android:textSize="12sp"
+                            android:padding="2dp" />
+
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" >
+
+                        <TextView
+                            android:text="改稿日"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="4dp"
+                            android:layout_marginLeft="4dp" />
+
+                        <TextView
+                            android:text="1900年01月02日"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/textUpdate"
+                            android:layout_weight="1"
+                            android:textSize="12sp"
+                            android:padding="2dp" />
+
+                        <TextView
+                            android:text="既読日"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="4dp"
+                            android:layout_marginLeft="4dp" />
+
+                        <TextView
+                                android:text="1900年01月02日"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                                android:textSize="12sp"
+                                android:padding="2dp"
+                            android:id="@+id/textAlreadyDate"
+                            android:textColor="@color/colorAccent" />
+
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <TextView
+                            android:text="サイズ"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="4dp"
+                            android:layout_marginLeft="4dp" />
+
+                        <TextView
+                            android:text="10KB/30KB"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/textSize"
+                            android:layout_weight="1"
+                            android:textSize="12sp"
+                            android:padding="2dp" />
+
+                        <TextView
+                            android:text="圧縮率"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="4dp"
+                            android:layout_marginLeft="4dp" />
+
+                        <TextView
+                            android:text="50%"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:textSize="12sp"
+                            android:padding="2dp"
+                            android:id="@+id/textCompress" />
+
+                    </TableRow>
+
+                </TableLayout>
+
+
+            </LinearLayout>
+        </LinearLayout>
+
+    </LinearLayout>
+
+</FrameLayout>

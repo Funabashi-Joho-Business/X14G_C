@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item android:title="履歴削除\n"
+        android:icon="@android:drawable/ic_menu_delete"
+        android:id="@+id/menu_history_del"/>
+    <item android:title="履歴\n全件削除"
+        android:icon="@android:drawable/ic_notification_clear_all"
+        android:id="@+id/menu_history_alldel"/>
+    <item android:title="ブック\nマーク"
+          android:icon="@android:drawable/ic_menu_add"
+          android:id="@+id/menu_bookmark_add"/>
+</menu>

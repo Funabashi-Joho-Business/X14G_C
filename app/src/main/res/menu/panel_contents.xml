@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item android:title="ズーム\nアップ"
+        android:icon="@android:drawable/ic_menu_zoom"
+        android:id="@+id/menu_zoom_up"/>
+
+    <item android:title="ズーム\nダウン"
+        android:icon="@android:drawable/ic_menu_zoom"
+        android:id="@+id/menu_zoom_down"/>
+
+    <item android:title="テキスト\nカラー"
+        android:icon="@android:drawable/ic_menu_gallery"
+        android:id="@+id/menu_set_textcolor"/>
+
+    <item android:title="背景\nカラー"
+        android:icon="@android:drawable/ic_menu_gallery"
+        android:id="@+id/menu_set_backcolor"/>
+
+    <item android:title="しおりを\n挟む"
+        android:icon="@android:drawable/sym_action_chat"
+        android:id="@+id/menu_set_bookmark2"/>
+
+    <item android:title="しおりを\n解除"
+        android:icon="@android:drawable/sym_action_chat"
+        android:id="@+id/menu_clear_bookmark2"/>
+
+    <item android:title="評価\n"
+        android:icon="@android:drawable/ic_menu_edit"
+        android:id="@+id/rank_point"/>
+
+    <item android:title="ブック\nマーク"
+        android:icon="@android:drawable/ic_menu_add"
+        android:id="@+id/menu_bookmark_add"/>
+
+    <item android:title="ブックマ\nーク解除"
+        android:icon="@android:drawable/ic_menu_delete"
+        android:id="@+id/menu_bookmark_del"/>
+
+    <item android:title="シリーズ\n検索"
+        android:icon="@android:drawable/ic_menu_search"
+        android:id="@+id/menu_search_series"/>
+
+    <item android:title="作者作品\n検索"
+        android:icon="@android:drawable/ic_menu_search"
+        android:id="@+id/menu_search_writer"/>
+
+    <item android:title="作者情報\n"
+        android:icon="@android:drawable/ic_menu_search"
+        android:id="@+id/menu_info_writer"/>
+
+    <item android:title="感想\n"
+        android:icon="@android:drawable/sym_action_chat"
+        android:id="@+id/menu_bbs"/>
+
+    <item android:title="レビュー\n"
+        android:icon="@android:drawable/sym_action_chat"
+        android:id="@+id/menu_review"/>
+
+    <item android:title="アクセス\n集計"
+        android:icon="@android:drawable/sym_action_chat"
+        android:id="@+id/menu_access"/>
+</menu>
