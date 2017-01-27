@@ -169,10 +169,10 @@ public class NaroReceiver extends BroadcastReceiver {
 
                                         PendingIntent pending = PendingIntent.getActivity(context,0,
                                                 new Intent(context,MainActivity.class),0);
-                                        final Notify notify = new Notify(context,234,pending,R.layout.status_layout,R.mipmap.ic_launcher);
-                                        notify.setRemoteImage(R.id.imageNotify, R.mipmap.ic_launcher, 0);
+                                        final Notify notify = new Notify(context,234,pending,R.layout.status_layout,R.drawable.ic_launcher);
+                                        notify.setRemoteImage(R.id.imageNotify, R.drawable.ic_launcher, 0);
                                         notify.setRemoteText(R.id.textTitle,context.getString(R.string.app_name));
-                                        notify.setIcon(R.mipmap.ic_launcher,0);
+                                        notify.setIcon(R.drawable.ic_launcher,0);
 
                                         String dateString = new SimpleDateFormat("yyyy年MM月dd日(E)").format(b.getUpdate().getTime());
                                         String msg;
@@ -443,10 +443,10 @@ public class NaroReceiver extends BroadcastReceiver {
                             //ステータスバー表示用
                             PendingIntent pending = PendingIntent.getBroadcast(context,0,
                                     new Intent(context,NaroReceiver.class).setAction(ACTION_NOVELCONTENT_STOP),0);
-                            final Notify notify = new Notify(context,123,pending,R.layout.status_layout,R.mipmap.ic_launcher);
+                            final Notify notify = new Notify(context,123,pending,R.layout.status_layout,R.drawable.ic_launcher);
                             notify.setRemoteText(R.id.textTitle,context.getString(R.string.app_name));
-                            notify.setRemoteImage(R.id.imageNotify, R.mipmap.ic_launcher, 0);
-                            notify.setIcon(R.mipmap.ic_launcher,0);
+                            notify.setRemoteImage(R.id.imageNotify, R.drawable.ic_launcher, 0);
+                            notify.setIcon(R.drawable.ic_launcher,0);
 
                             notify.output("受信開始",false);
 
