@@ -74,6 +74,12 @@
                         android:id="@+id/loginPass"
                         android:layout_weight="1" />
 
+                    <Button
+                        android:text="認証テスト"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/buttonTest" />
+
                 </TableRow>
 
                 <TableRow

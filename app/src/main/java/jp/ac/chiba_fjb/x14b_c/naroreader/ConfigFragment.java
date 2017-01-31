@@ -1,6 +1,7 @@
 package jp.ac.chiba_fjb.x14b_c.naroreader;
 
 
+import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -22,6 +23,7 @@ import java.text.NumberFormat;
 
 import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NaroReceiver;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NovelDB;
+import jp.ac.chiba_fjb.x14b_c.naroreader.data.TbnReader;
 
 public class ConfigFragment extends Fragment implements View.OnClickListener {
 
@@ -63,6 +65,7 @@ public class ConfigFragment extends Fragment implements View.OnClickListener {
         ((Switch)view.findViewById(R.id.switchAutoMark)).setChecked(autoMark);
         ((TextView) view.findViewById(R.id.textFileSize)).setText(nf.format(fileSize)+"KB");
         view.findViewById(R.id.buttonFix).setOnClickListener(this);
+        view.findViewById(R.id.buttonTest).setOnClickListener(this);
         return view;
     }
 
@@ -128,6 +131,30 @@ public class ConfigFragment extends Fragment implements View.OnClickListener {
                 NumberFormat nf = NumberFormat.getNumberInstance();
                 ((TextView) getView().findViewById(R.id.textFileSize)).setText(nf.format(db.getFileSize()/1024)+"KB");
                 db.close();
+                break;
+            case R.id.buttonTest:
+                final String id = ((EditText)getView().findViewById(R.id.LoginID)).getText().toString();
+                final String pass = ((EditText)getView().findViewById(R.id.loginPass)).getText().toString();
+
+                new Thread(){
+                    @Override
+                    public void run() {
+                        //ログイン処理
+                        final String hash = TbnReader.getLoginHash(id,pass);
+                        boolean flag = false;
+                        if (hash != null){
+                            flag = true;
+                        }
+
+                        final boolean finalFlag = flag;
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Snackbar.make(getActivity().findViewById(R.id.coordinator), finalFlag ?"認証成功":"認証失敗", Snackbar.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                }.start();
                 break;
         }
     }
