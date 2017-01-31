@@ -165,6 +165,8 @@ public class NaroReceiver extends BroadcastReceiver {
                                     public void run() {
                                         NovelDB db = new NovelDB(context);
                                         NovelInfo info = db.getNovelInfo(b.getCode());
+                                        boolean updateLight = db.getSetting("updateLight",false);
+                                        boolean updateVib = db.getSetting("updateVib",false);
                                         db.close();
 
                                         PendingIntent pending = PendingIntent.getActivity(context,0,
@@ -181,6 +183,10 @@ public class NaroReceiver extends BroadcastReceiver {
                                         else
                                             msg = String.format("「%s」が%sに更新",b.getCode(),dateString);
                                         notify.setRemoteText(R.id.textMsg,msg);
+                                        if(updateLight)
+                                            notify.setLight(0xff88ff00);
+                                        if(updateVib)
+                                            notify.setVibrate();
                                         notify.update(true);
                                     }
                                 });

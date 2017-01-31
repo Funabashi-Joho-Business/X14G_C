@@ -49,6 +49,8 @@ public class ConfigFragment extends Fragment implements View.OnClickListener {
         String pass = settingDB.getSetting("loginPass","");
         boolean updateCheck = settingDB.getSetting("updateCheck",false);
         boolean autoMark = settingDB.getSetting("autoMark",false);
+        boolean updateLight = settingDB.getSetting("updateLight",false);
+        boolean updateVib = settingDB.getSetting("updateVib",false);
         int updateTime = settingDB.getSetting("updateTime",60);
         long fileSize = settingDB.getFileSize()/1024;
         settingDB.close();
@@ -62,6 +64,8 @@ public class ConfigFragment extends Fragment implements View.OnClickListener {
         ((Switch)view.findViewById(R.id.switchUpdateCheck)).setChecked(updateCheck);
         ((EditText)view.findViewById(R.id.editUpdateTime)).setText(""+updateTime);
         ((Switch)view.findViewById(R.id.switchAutoMark)).setChecked(autoMark);
+        ((Switch)view.findViewById(R.id.switchVib)).setChecked(updateVib);
+        ((Switch)view.findViewById(R.id.switchLight)).setChecked(updateLight);
         ((TextView) view.findViewById(R.id.textFileSize)).setText(nf.format(fileSize)+"KB");
         view.findViewById(R.id.buttonLogin).setOnClickListener(this);
         view.findViewById(R.id.buttonFix).setOnClickListener(this);
@@ -97,12 +101,19 @@ public class ConfigFragment extends Fragment implements View.OnClickListener {
             boolean updateCheck = ((Switch)getView().findViewById(R.id.switchUpdateCheck)).isChecked();
             int updateTime = Integer.parseInt(((EditText)getView().findViewById(R.id.editUpdateTime)).getText().toString());
             boolean autoMark = ((Switch)getView().findViewById(R.id.switchAutoMark)).isChecked();
+            boolean updateLight = ((Switch)getView().findViewById(R.id.switchLight)).isChecked();
+            boolean updateVib = ((Switch)getView().findViewById(R.id.switchVib)).isChecked();
+
             NovelDB db = new NovelDB(getContext());
             db.setSetting("loginId",id.getText().toString());
             db.setSetting("loginPass",pass.getText().toString());
             db.setSetting("updateCheck",updateCheck);
             db.setSetting("updateTime",updateTime);
             db.setSetting("autoMark",autoMark);
+            db.setSetting("updateVib",updateVib);
+            db.setSetting("updateLight",updateLight);
+
+
 
             if(!mUserId.equals(id.getText().toString())){
                 //違うIDが設定されたら、ブックマークをクリア
