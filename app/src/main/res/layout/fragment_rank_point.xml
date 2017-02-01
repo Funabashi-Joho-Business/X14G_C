@@ -19,7 +19,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="18sp"
-            android:background="#FFFAC7DC" />
+            android:background="#AA4444BB"
+            android:padding="3dp"
+            android:textColor="#F0FFFFFF"/>
 
         <RadioGroup
             android:layout_width="match_parent"
@@ -70,7 +72,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="18sp"
-            android:background="#FFFAC7DC" />
+            android:background="#AA4444BB"
+            android:padding="3dp"
+            android:elevation="1dp"
+            android:textColor="#F0FFFFFF"/>
 
         <RadioGroup
             android:layout_width="match_parent"
