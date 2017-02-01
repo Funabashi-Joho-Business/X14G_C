@@ -161,4 +161,17 @@ public class ConfigFragment extends Fragment implements View.OnClickListener {
                 break;
         }
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        ((MainActivity)getActivity()).setAppBarScroll(false);
+    }
+
+    @Override
+    public void onPause() {
+        ((MainActivity)getActivity()).setAppBarScroll(true);
+        super.onPause();
+    }
+
 }

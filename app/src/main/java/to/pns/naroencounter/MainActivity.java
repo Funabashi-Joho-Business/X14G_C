@@ -244,14 +244,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     }
     public void setAppBarScroll(boolean flag) {
+        showAppBar(flag);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         int a = ((AppBarLayout.LayoutParams) toolbar.getLayoutParams()).getScrollFlags();
+        AppBarLayout.LayoutParams p = (AppBarLayout.LayoutParams) toolbar.getLayoutParams();
         if (flag)
-            ((AppBarLayout.LayoutParams) toolbar.getLayoutParams()).setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL|AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS);
+            p.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL|AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS);
         else {
-            ((AppBarLayout.LayoutParams) toolbar.getLayoutParams()).setScrollFlags(0);
+            p.setScrollFlags(0);
         }
-        showAppBar(!flag);
+        toolbar.setLayoutParams(p);
+
     }
 
     @Override
