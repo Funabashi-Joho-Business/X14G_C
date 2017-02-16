@@ -47,7 +47,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         LogService.output(getApplicationContext(),"アプリ起動");
 
+<<<<<<< HEAD
+        public SectionsPagerAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            // getItem is called to instantiate the fragment for the given page.
+            // Return a PlaceholderFragment (defined as a static inner class below).
+            return PlaceholderFragment.newInstance(position + 1);
+        }
+=======
     }
+>>>>>>> 8d14d110d6d299b94a001e9bf6efdb6cba897543
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -72,8 +85,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
         }
 
+<<<<<<< HEAD
+        @Override
+        public CharSequence getPageTitle(int position) {
+            switch (position) {
+                case 0:
+                    return "SECTION 1";
+                case 1:
+                    return "SECTION 2";
+                case 2:
+                    return "SECTION 3";
+            }
+            return null;
+        }
+=======
        ((DrawerLayout) findViewById(R.id.drawer_layout)).closeDrawers();
         return true;
+>>>>>>> 8d14d110d6d299b94a001e9bf6efdb6cba897543
     }
 
     boolean firstFlag = true;

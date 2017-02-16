@@ -21,6 +21,52 @@ import jp.ac.chiba_fjb.x14b_c.naroreader.data.TbnReader;
  * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
  */
 public class ExampleUnitTest {
+<<<<<<< HEAD
+    //@Test
+    public void testBookmark() throws Exception {
+        String userId = "";
+        String userPass = "";
+
+        String hash = TbnReader.getLoginHash(userId,userPass);
+        if(hash == null){
+            System.out.println("ログイン失敗");
+        }else{
+            System.out.format("ハッシュコード: %s\n",hash);
+        }
+
+        SimpleDateFormat f = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
+
+        List<NovelBookmark> list = TbnReader.getBookmark(hash);
+        for(NovelBookmark b : list){
+            System.out.format("%s %02d %s %s\n",b.getCode(),b.getCategory(),f.format(b.getUpdate().getTime()),b.getName());
+        }
+    }
+    //@Test
+    public void testSetBookmark() throws Exception {
+        String userId = "";
+        String userPass = "";
+
+        String hash = TbnReader.getLoginHash(userId,userPass);
+        if(hash == null){
+            System.out.println("ログイン失敗");
+        }else{
+            System.out.format("ハッシュコード: %s\n",hash);
+
+            if(TbnReader.setBookmark(hash,"n1973dd"))
+                System.out.println("ブックマーク成功");
+            else
+                System.out.println("ブックマーク失敗");
+        }
+
+    }
+    //@Test
+    public void testNovelInfo(){
+        NovelInfo info = TbnReader.getNovelInfo("n7733dl");
+        if(info != null){
+            System.out.format("%s\n%s\n",info.title,info.story);
+        }
+    }
+=======
 	//@Test
 	public void testBookmark() throws Exception {
 		String userId = "";
@@ -128,6 +174,7 @@ public class ExampleUnitTest {
 	}
 
 
+>>>>>>> 8d14d110d6d299b94a001e9bf6efdb6cba897543
     //@Test
 	public void getRankList(){
 

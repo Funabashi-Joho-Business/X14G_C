@@ -8,11 +8,18 @@ import java.util.Calendar;
 
 public class NovelBookmark {
     public NovelBookmark(String ncode,String name,int category,Calendar update){
+<<<<<<< HEAD
+        mNCode = ncode;
+        mName = name;
+        mUpdate = update;
+        mCategory = category;
+=======
         //書籍情報を取り込む
         mNCode = ncode;         //作品コード
         mName = name;           //作品名
         mUpdate = update;       //更新日
         mCategory = category;   //カテゴリ
+>>>>>>> 8d14d110d6d299b94a001e9bf6efdb6cba897543
     }
     String mNCode;
     String mName;

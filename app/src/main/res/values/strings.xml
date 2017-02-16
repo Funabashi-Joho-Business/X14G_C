@@ -2,6 +2,8 @@
     <string name="app_name">NaroReader</string>
     <string name="action_settings">Settings</string>
     <string name="section_format">Hello World from section: %1$d</string>
+<<<<<<< HEAD
+=======
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -30,4 +32,5 @@
         <item>#000</item>
         <item>#60F</item>
     </string-array>
+>>>>>>> 8d14d110d6d299b94a001e9bf6efdb6cba897543
 </resources>
