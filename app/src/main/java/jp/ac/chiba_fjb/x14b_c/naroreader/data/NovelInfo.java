@@ -5,25 +5,26 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.util.Date;
 
+import to.pns.lib.AppDB;
+
 /**
  * なろうAPIによる小説データ保存用
  */
 @JsonIgnoreProperties(ignoreUnknown=true)
 public class NovelInfo {
-
-
     public String title;
     public String ncode;
     public int userid;
     public String writer;
+    @AppDB.Zippack
     public String story;
     public int biggenre;
     public int genre;
     public String gensaku;
     public String keyword;
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "Asia/Tokyo")
     public Date general_firstup;
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "Asia/Tokyo")
     public Date general_lastup;
     public int novel_type;
     public int end;
@@ -45,9 +46,9 @@ public class NovelInfo {
     public int all_hyoka_cnt;
     public int sasie_cnt;
     public int kaiwaritu;
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "Asia/Tokyo")
     public Date novelupdated_at;
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "Asia/Tokyo")
     public Date updated_at;
 
 

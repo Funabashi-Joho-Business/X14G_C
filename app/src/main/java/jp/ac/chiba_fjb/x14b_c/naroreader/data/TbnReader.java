@@ -22,6 +22,13 @@ import java.util.regex.Pattern;
 
 
 public class TbnReader {
+    static String decodeHtml(String src){
+        return src.replaceAll("&#39;" , "'" )
+                .replaceAll("&quot;", "\"")
+                .replaceAll("&gt;"  , ">" )
+                .replaceAll("&lt;"  , "<" )
+                .replaceAll("&amp;" , "&" );
+    }
 
     //クッキーの分解
     public static Map getCookie(HttpURLConnection con){
@@ -94,6 +101,7 @@ public class TbnReader {
             URL url = new URL(adr);
             HttpURLConnection con = (HttpURLConnection)url.openConnection();
             con.setDoOutput(true);
+            con.setInstanceFollowRedirects(true);
             con.setRequestMethod("POST");
             con.setConnectTimeout(3000);
             con.setReadTimeout(3000);
@@ -239,15 +247,103 @@ public class TbnReader {
         }
         return null;
     }
+    public static boolean setEvaluation(String hash,String ncode,int bunsyopoint,int storypoint){
+        NovelInfo info = getNovelInfo(ncode);
+        if(info == null)
+            return false;
 
+        String address;
+        if(info.novel_type == 1)
+            address = String.format("http://ncode.syosetu.com/%s/%d/",ncode,info.general_all_no);
+        else
+            address = String.format("http://ncode.syosetu.com/%s/",ncode);
+        WebData webData = getContent2(address,hash,null,null);
+        if(webData == null)
+            return false;
 
+        Pattern p = Pattern.compile("name=\"token\" value=\"(.*?)\"");
+        Matcher m = p.matcher(webData.content);
+        if(!m.find())
+            return false;
+        String token = m.group(1);
+        System.out.println(token);
+
+        address = String.format("http://ncode.syosetu.com/novelpoint/register/ncode/%d/?token=%s&bunsyopoint=%d&storypoint=%d",convertNcode(ncode),token,bunsyopoint,storypoint);
+        getContent(address,hash);
+
+        return true;
+    }
+    public static List<NovelEvaluation> getEvaluation(String hash){
+        int id = getUserID(hash);
+        if(id == 0)
+            return null;
+
+        String address = String.format("http://mypage.syosetu.com/mypagenovelhyoka/list/userid/%d/",id);
+        String content = getContent(address);
+        if(content == null)
+            return null;
+
+        List<NovelEvaluation> list = new ArrayList<NovelEvaluation>();
+
+        Pattern p = Pattern.compile("<a href=\"http://ncode.syosetu.com/(.*?)/\">.*?ストーリー評価：(\\d?+)pt.*?文章評価：(\\d?+)pt",Pattern.DOTALL);
+        Matcher m = p.matcher(content);
+        while(m.find()){
+            NovelEvaluation e = new NovelEvaluation();
+            e.ncode = m.group(1);
+            e.storypoint = Integer.parseInt(m.group(2));
+            e.bunsyopoint = Integer.parseInt(m.group(3));
+            list.add(e);
+        }
+        return list;
+    }
+    public static NovelEvaluation getEvaluation(String hash,String ncode){
+        int id = getUserID(hash);
+        if(id == 0)
+            return null;
+
+        String address = String.format("http://mypage.syosetu.com/mypagenovelhyoka/list/userid/%d/",id);
+        String content = getContent(address);
+        if(content == null)
+            return null;
+
+        Pattern p = Pattern.compile("<a href=\"http://ncode.syosetu.com/(.*?)/\">.*?ストーリー評価：(\\d?+)pt.*?文章評価：(\\d?+)pt",Pattern.DOTALL);
+        Matcher m = p.matcher(content);
+        while(m.find()){
+            if(m.group(1).toUpperCase().equals(ncode)){
+                NovelEvaluation e = new NovelEvaluation();
+                e.ncode = m.group(1).toUpperCase();
+                e.storypoint = Integer.parseInt(m.group(2));
+                e.bunsyopoint = Integer.parseInt(m.group(3));
+                return e;
+            }
+        }
+        return null;
+    }
     //ブックマークの設定
     //hash ログイントークン
     //ncode ノベルコード
     public static boolean setBookmark(String hash,String ncode){
         String address = String.format("http://ncode.syosetu.com/novelview/infotop/ncode/%s/",ncode);
         String content = getContent(address,hash);
-        Pattern p = Pattern.compile("<li class=\"booklist\"><a href=\"(.*?)\">ブックマークに追加</a>");
+        if(content == null)
+            return false;
+        Pattern p = Pattern.compile("<li class=\"booklist\"><a href=\"(.*?)\">ブックマーク");
+        Matcher m = p.matcher(content);
+        if(m.find()) {
+            content = getContent(m.group(1),hash);
+            return true;
+        }
+        return false;
+    }
+    //しおりの設定
+    //hash ログイントークン
+    //ncode ノベルコード
+    public static boolean setBookmark2(String hash,String ncode,int index){
+        String address = String.format("http://ncode.syosetu.com/%s/%d/",ncode,index);
+        String content = getContent(address,hash);
+        if(content == null)
+            return false;
+        Pattern p = Pattern.compile("<a href=\"(.*?)\">しおりを挿む");
         Matcher m = p.matcher(content);
         if(m.find()) {
             content = getContent(m.group(1),hash);
@@ -275,7 +371,31 @@ public class TbnReader {
         }
         return false;
     }
-
+    public static boolean clearBookmark2(String hash,String ncode){
+        int uid = getUserID(hash);
+        int code = convertNcode(ncode);
+        String address = String.format("http://syosetu.com/favnovelmain/updateinput/useridfavncode/%d_%s/",uid,code);
+        WebData webData = getContent2(address,hash,null,null);
+        if(webData == null)
+            return false;
+        Pattern p = Pattern.compile("<form action=\"(.*?)\" method=\"post\">");
+        Matcher m = p.matcher(webData.content);
+        if(m.find()) {
+            HashMap<String,String> param = new HashMap<String,String>();
+            param.put("shiori_del","しおりを解除する");
+            webData = getContent2("http://syosetu.com/"+m.group(1),hash,param,webData.cookie);
+            return true;
+        }
+        return false;
+    }
+    public static int getUserID(String hash){
+        String content = getContent("http://syosetu.com/user/top/",hash);
+        Pattern p = Pattern.compile("\\[ID:(.*?)\\] でログイン中</li>",Pattern.DOTALL);
+        Matcher m = p.matcher(content);
+        if(m.find())
+            return Integer.parseInt(m.group(1));
+        return 0;
+    }
     //ブックマークの取得
     //hash ログイントークン
     public static List<NovelBookmark> getBookmark(String hash) {
@@ -309,14 +429,17 @@ public class TbnReader {
                 if(i > 0)
                     content = getContent("http://syosetu.com/favnovelmain/list/?nowcategory="+(i+1),hash);
 
-                p = Pattern.compile("<a class=\"title\" href=\"http://ncode.syosetu.com/(.+?)/\">(.+?)</a>.+?更新日：(.+?)\n",Pattern.DOTALL);
+                p = Pattern.compile(
+                        "<a class=\"title\" href=\"http://ncode.syosetu.com/(.+?)/\">(.+?)</a>.+?更新日：(.+?)\n\n"+
+                        "(?=<span class=\"no\">\n(?:<a href=\"http://ncode.syosetu.com/.+?/(.+?)/\">|\n)|</p>\n)",Pattern.DOTALL);
                 m = p.matcher(content);
 
                 while(m.find()){
 
                         Calendar cal = Calendar.getInstance();
                         cal.setTime(sdf.parse(m.group(3)));
-                        NovelBookmark bookmark = new NovelBookmark(m.group(1),m.group(2),i+1,cal);
+                        int bm = m.group(4) != null?Integer.parseInt(m.group(4)):0;
+                        NovelBookmark bookmark = new NovelBookmark(m.group(1).toUpperCase(),i+1,cal,bm);
                         list.add(bookmark);
                 }
 
@@ -329,14 +452,15 @@ public class TbnReader {
         return null;
     }
     public static NovelInfo getNovelInfo(String ncode){
-        String address = String.format("http://api.syosetu.com/novelapi/api/?out=json&ncode=%s",ncode);
+        String address = String.format("http://api.syosetu.com/novelapi/api/?out=json&gzip=5&ncode=%s",ncode);
         NovelInfo[] json = Json.send(address,null,NovelInfo[].class);
+        decodeHtml(json);
         if(json != null && json.length > 1)
             return json[1];
         return null;
     }
     public static List<NovelInfo> getNovelInfo(List<String> ncodeList){
-	    if(ncodeList.size() == 0)
+	    if(ncodeList == null || ncodeList.size() == 0)
 		    return null;
 
         StringBuilder sb = new StringBuilder();
@@ -347,8 +471,9 @@ public class TbnReader {
         }
 
 
-        String address = String.format("http://api.syosetu.com/novelapi/api/?out=json&lim=500&ncode=%s",sb.toString());
+        String address = String.format("http://api.syosetu.com/novelapi/api/?out=json&lim=500&gzip=5&ncode=%s",sb.toString());
         NovelInfo[] json = Json.send(address,null,NovelInfo[].class);
+        decodeHtml(json);
         if(json != null && json.length > 1){
 			List<NovelInfo> list = new ArrayList(Arrays.asList(json));
 	        list.remove(0);
@@ -356,24 +481,28 @@ public class TbnReader {
         }
         return null;
     }
-
-    //キーワード検索用
-    public static NovelInfo[] getKeyword(String word){
-        String address = String.format("http://api.syosetu.com/novelapi/api/?out=json&word=%s",word);
-        NovelInfo[] Keyword = Json.send(address,null,NovelInfo[].class);
-        if(Keyword != null && Keyword.length > 1)
-            return Keyword;
+    public static List<NovelInfo> getNovelInfoFromParam(String params){
+        String address = String.format("http://api.syosetu.com/novelapi/api/?%s",params);
+        NovelInfo[] json = Json.send(address,null,NovelInfo[].class);
+        decodeHtml(json);
+        if(json != null && json.length > 1){
+            List<NovelInfo> list = new ArrayList(Arrays.asList(json));
+            list.remove(0);
+            return list;
+        }
         return null;
     }
-
-    //評価ソート用
-    public static NovelInfo getOrder(String order){
-        String address = String.format("http://api.syosetu.com/novelapi/api/?out=json&order=%s",order);
-        NovelInfo[] evorder = Json.send(address,null,NovelInfo[].class);
-        if(evorder != null && evorder.length > 1)
-            return evorder[1];
-        return null;
+    public static void decodeHtml(NovelInfo[] list){
+        if(list == null)
+            return;
+        for(int i=1;i<list.length;i++){
+            NovelInfo info = list[i];
+            info.title = decodeHtml(info.title);
+            info.writer = decodeHtml(info.writer);
+            info.story = decodeHtml(info.story);
+        }
     }
+
 
     //本文の取得
     //ncode ノベルコード
@@ -390,15 +519,23 @@ public class TbnReader {
             return null;
 
 
-        Pattern p = Pattern.compile("(?:<p class=\"novel_title\">(.*?)</p>|<p class=\"novel_subtitle\">(.*?)</p>).*?<div id=\"novel_honbun\" class=\"novel_view\">(.*?)</div>.*?<!--novel_color-->\n\n\n(.*?)\n\n<div class=\"koukoku_auto\">", Pattern.DOTALL);
+        Pattern p = Pattern.compile(
+                "(?:<p class=\"novel_title\">(.*?)</p>|<p class=\"novel_subtitle\">(.*?)</p>).*?"+
+                "(?:<!--novel_writername-->)*?\n\n\n"+
+                "(?:<div id=\"novel_p\" class=\"novel_view\">(.*?)</div>|\n).*?"+
+                "<div id=\"novel_honbun\" class=\"novel_view\">(.*?)</div>\n\n"+
+                "(?:<div id=\"novel_a\" class=\"novel_view\">(.*?)</div>|\n).*?"+
+                "<!--novel_color-->\n\n\n(.*?)\n\n<div class=\"koukoku_auto\">", Pattern.DOTALL);
         Matcher m = p.matcher(content);
         if (!m.find())
             return null;
 
         NovelBody body = new NovelBody();
         body.title = m.group(1)!=null?m.group(1):m.group(2);
-        body.body =  m.group(3);
-        body.ranking = m.group(4);
+        body.preface = m.group(3);
+        body.body =  m.group(4);
+        body.trailer =  m.group(5);
+        body.tag = m.group(6);
 
         return body;
     }
@@ -431,6 +568,9 @@ public class TbnReader {
     //サブタイトルの取得
     //ncode ノベルコード
     public static List<NovelSubTitle> getSubTitle(String ncode){
+        return getSubTitle(ncode,null);
+    }
+    public static List<NovelSubTitle> getSubTitle(String ncode,String[] scode){
         String address;
         address = String.format("http://ncode.syosetu.com/%s/", ncode);
 
@@ -438,16 +578,24 @@ public class TbnReader {
         if (content == null)
             return null;
 
+        //シリーズ情報を取得
+        if(scode != null){
+            Pattern p = Pattern.compile("<p class=\"series_title\"><a href=\"/(.*?)/\">");
+            Matcher m = p.matcher(content);
+            if (m.find()){
+                scode[0] = m.group(1);
+            }
+        }
+
+        //サブタイトル情報を取得
         ArrayList<NovelSubTitle> list = new ArrayList<NovelSubTitle>();
-
         SimpleDateFormat format = new SimpleDateFormat("yyyy年 MM月 dd日");
-
         Pattern p = Pattern.compile("<dd class=\"subtitle\"><a href=\".*?\">(.*?)</a></dd>.*?<dt class=\"long_update\">\n(.*?)\n.*?(?=<span title=\"(.*?) 改稿\">|).*?</dl>", Pattern.DOTALL);
         Matcher m = p.matcher(content);
         try {
             while (m.find()){
                 NovelSubTitle subTitle = new NovelSubTitle();
-                subTitle.title = m.group(1);
+                subTitle.title = decodeHtml(m.group(1));
                 subTitle.date = format.parse(m.group(2));
                 if(m.group(3) != null)
                 subTitle.update = format.parse(m.group(3));
@@ -457,11 +605,21 @@ public class TbnReader {
         } catch (ParseException e) {
             return null;
         }
-        if(list.size() == 0)
-            return null;
+        if(list.size() == 0) {
+            //短編処理
+            NovelInfo novelInfo = getNovelInfo(ncode);
+            if(novelInfo == null)
+                return null;
+
+            NovelSubTitle subTitle = new NovelSubTitle();
+            subTitle.title = novelInfo.title;
+            subTitle.date = novelInfo.general_firstup;
+            if(!novelInfo.general_firstup.equals(novelInfo.novelupdated_at))
+                subTitle.update = novelInfo.novelupdated_at;
+            list.add(subTitle);
+        }
         return list;
     }
-
     //シリーズコードの取得
     //ncode ノベルコード
     public static String getSeries(String ncode){
@@ -490,22 +648,26 @@ public class TbnReader {
             return null;
 
         NovelSeries series = new NovelSeries();
+        series.scode = scode;
 
         Pattern p = Pattern.compile("<div class=\"series_title\">(.*?)</div>.*?作成ユーザ：<a href=\"http://mypage.syosetu.com/(.*?)/\">.*?<div class=\"novel_ex\">(.*?)</div>", Pattern.DOTALL);
         Matcher m = p.matcher(content);
         if(!m.find())
             return null;
-        series.title = m.group(1);
-        series.info = m.group(2);
+        series.title = decodeHtml(m.group(1));
+        series.writer = Integer.parseInt(m.group(2));
+        series.info =decodeHtml(m.group(3));
         series.novelList = new ArrayList<String>();
 
         p = Pattern.compile("<div class=\"title\"><a href=\"/(.*?)/\">");
         m = p.matcher(content);
         while (m.find()){
-            series.novelList.add(m.group(1));
+            series.novelList.add(m.group(1).toUpperCase());
         }
         return series;
     }
+
+
     public static List<NovelRanking> getRanking(int f1,int f2,int f3){
         String address;
         address = getRankingUrl(f1,f2,f3);
@@ -520,28 +682,14 @@ public class TbnReader {
 
 
         Pattern p = Pattern.compile(
-                "<a class=\"tl\" id=\"best\\d*?\" target=\"_blank\" href=\"http://ncode.syosetu.com/(.*?)/\">(.*?)</a>.*?"+
-                "小説情報</a>／作者：<a href=\"http://mypage.syosetu.com/(\\d*?)/\">(.*?)</a>.*?" +
-                "<span class=\"attention\">(.*?)</span>.*?"+
-                "(?:(?:連載中|完結済)\n<br />\\(全(\\d*?)部分\\).*?|短編\n).*?" +
-                "<td class=\"ex\">\n(.*?)\n</td>.*?" +
-                "<td>\n(.*?)\n</td>.*?" +
-                "<td>\n最終更新日：(.*?)\n.*?" +
-                "<span class=\"marginleft\">(.*?)文字</span>", Pattern.DOTALL);
+                "<a class=\"tl\" id=\"best\\d*?\" target=\"_blank\" href=\"http://ncode.syosetu.com/(.*?)/\">.*?"+
+                "<span class=\"attention\">(.*?)</span>.*?", Pattern.DOTALL);
         Matcher m = p.matcher(content);
         try {
             while (m.find()){
                 NovelRanking ranking = new NovelRanking();
-                ranking.ncode = m.group(1);
-                ranking.title = m.group(2);
-                ranking.writerId = Integer.parseInt(m.group(3));
-                ranking.writerName = m.group(4);
-                ranking.point = NumberFormat.getInstance().parse(m.group(5)).intValue();
-                ranking.novelCount = m.group(6)==null?1:Integer.parseInt(m.group(6));
-                ranking.info = m.group(7);
-                ranking.genre = m.group(8);
-                ranking.update = format.parse(m.group(9));
-                ranking.textCount = NumberFormat.getInstance().parse(m.group(10)).intValue();
+                ranking.ncode = m.group(1).toUpperCase();
+                ranking.point = NumberFormat.getInstance().parse(m.group(2)).intValue();
                 list.add(ranking);
             }
         } catch (Exception e) {
@@ -551,6 +699,7 @@ public class TbnReader {
         return list;
 
     }
+
     public static String getRankingUrl(int f1,int f2,int f3){
         final String[] RANKING_FILTER1_URL=
             {

@@ -3,6 +3,7 @@ package to.pns.lib;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDatabaseLockedException;
@@ -22,8 +23,23 @@ public abstract class SQLite extends SQLiteOpenHelper
 			mDataBase.close();
 		super.close();
 	}
-	public void insert(String tableName, ContentValues v){
-		mDataBase.insert(tableName,null,v);
+	public long getFileSize(){
+		if(mDataBase == null)
+			mDataBase = getReadableDatabase();
+		return DatabaseUtils.longForQuery(mDataBase, "PRAGMA page_size;", null)*DatabaseUtils.longForQuery(mDataBase, "PRAGMA page_count;", null);
+	}
+
+	public long insert(String tableName, ContentValues v){
+		return mDataBase.insert(tableName,null,v);
+	}
+	public long replace(String tableName, ContentValues v){
+		if(mDataBase == null || mDataBase.isReadOnly())
+		{
+			if(mDataBase != null)
+				mDataBase.close();
+			mDataBase = getWritableDatabase();
+		}
+		return mDataBase.replace(tableName,null,v);
 	}
 	public boolean isTable(String name)
 	{
@@ -86,6 +102,7 @@ public abstract class SQLite extends SQLiteOpenHelper
 		//シングルクオートをシングルクオート二つにエスケーブ
 		return str.replaceAll("'", "''");
 	}
+
 	public void begin()
 	{
 		exec("begin;");

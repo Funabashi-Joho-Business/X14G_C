@@ -1,21 +1,34 @@
 package jp.ac.chiba_fjb.x14b_c.naroreader;
 
 
-
+import android.content.ClipData;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.Spinner;
-import android.widget.SpinnerAdapter;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
+import android.widget.Switch;
+import android.widget.TextView;
 
+import java.text.NumberFormat;
+
+import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NaroReceiver;
 import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NovelDB;
+import jp.ac.chiba_fjb.x14b_c.naroreader.data.TbnReader;
 
 public class ConfigFragment extends Fragment implements View.OnClickListener {
 
+
+    private String mUserId;
 
     public ConfigFragment() {
         // Required empty public constructor
@@ -25,89 +38,124 @@ public class ConfigFragment extends Fragment implements View.OnClickListener {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
-        Toolbar toolbar = (Toolbar)getActivity().findViewById(R.id.toolbar);
         // タイトルを設定
-        toolbar.setTitle("設定");
-
+        getActivity().setTitle("設定");
 
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_config, container, false);
 
-        Spinner s1 = (Spinner) view.findViewById(R.id.spinner);
-        Spinner s2 = (Spinner) view.findViewById(R.id.spinner3);
-        Spinner s3 = (Spinner) view.findViewById(R.id.spinner4);
-
-        Button b1 = (Button) view.findViewById(R.id.config4);
-        Button b2 = (Button) view.findViewById(R.id.config5);
-        b1.setOnClickListener(this);
-        b2.setOnClickListener(this);
 
         NovelDB settingDB = new NovelDB(getContext());
-        String ss1 = settingDB.getSetting("fontSize");
-        String ss2 = settingDB.getSetting("fontColor");
-        String ss3 = settingDB.getSetting("BackColor");
+        String id = settingDB.getSetting("loginId","");
+        String pass = settingDB.getSetting("loginPass","");
+        boolean updateCheck = settingDB.getSetting("updateCheck",false);
+        boolean autoMark = settingDB.getSetting("autoMark",false);
+        int updateTime = settingDB.getSetting("updateTime",60);
+        long fileSize = settingDB.getFileSize()/1024;
         settingDB.close();
 
-        setSelection(s1,ss1);
-        setSelection(s2,ss2);
-        setSelection(s3,ss3);
+        mUserId = id;
 
+        NumberFormat nf = NumberFormat.getNumberInstance();
+
+        ((TextView) view.findViewById(R.id.LoginID)).setText(id);
+        ((TextView) view.findViewById(R.id.loginPass)).setText(pass);
+        ((Switch)view.findViewById(R.id.switchUpdateCheck)).setChecked(updateCheck);
+        ((EditText)view.findViewById(R.id.editUpdateTime)).setText(""+updateTime);
+        ((Switch)view.findViewById(R.id.switchAutoMark)).setChecked(autoMark);
+        ((TextView) view.findViewById(R.id.textFileSize)).setText(nf.format(fileSize)+"KB");
+        view.findViewById(R.id.buttonFix).setOnClickListener(this);
+        view.findViewById(R.id.buttonTest).setOnClickListener(this);
         return view;
     }
 
+
+
+
+
     @Override
-    public void onClick(View view) {
-        switch (view.getId()){
-            case R.id.config4: //ログインダイアログ
-                // ダイアログを表示する
-
-
-                LoginFragment newFragment = new LoginFragment();
-                newFragment.setOnEditUserListener(new LoginFragment.OnEditUserListener() {
-                    @Override
-                    public void onEditUser(String id, String pass) {
-                        NovelDB settingDB = new NovelDB(getContext());
-                        settingDB.setSetting("loginId",id);
-                        settingDB.setSetting("loginPass",pass);
-                        settingDB.close();
-                    }
-                });
-                newFragment.show(getFragmentManager(),null);
-
-                break;
-            case R.id.config5: //設定の保存
-                Spinner s1 = (Spinner) getView().findViewById(R.id.spinner);
-                Spinner s2 = (Spinner) getView().findViewById(R.id.spinner3);
-                Spinner s3 = (Spinner) getView().findViewById(R.id.spinner4);
-
-                String t1 = (String)s1.getSelectedItem();
-                String t2 = (String)s2.getSelectedItem();
-                String t3 = (String)s3.getSelectedItem();
-
-                settingSave(t1,t2,t3);
-                break;
-        }
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        setHasOptionsMenu(true);
     }
 
-    public void settingSave(String fontSize,String fontColor,String backColor){
-        NovelDB settingDB = new NovelDB(getContext());
-
-        settingDB.setSetting("fontSize",fontSize);
-        settingDB.setSetting("fontColor",fontColor);
-        settingDB.setSetting("backColor",backColor);
-
-        settingDB.close();
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        //super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.config, menu);
     }
 
-    public static void setSelection(Spinner spinner, String item) {
-        SpinnerAdapter adapter = spinner.getAdapter();
-        int index = 0;
-        for (int i = 0; i < adapter.getCount(); i++) {
-            if (adapter.getItem(i).equals(item)) {
-                index = i; break;
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.menu_save) {
+            //ソフトキーボードを非表示
+            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+
+            TextView id = (TextView) getView().findViewById(R.id.LoginID);
+            TextView pass = (TextView) getView().findViewById(R.id.loginPass);
+            boolean updateCheck = ((Switch)getView().findViewById(R.id.switchUpdateCheck)).isChecked();
+            int updateTime = Integer.parseInt(((EditText)getView().findViewById(R.id.editUpdateTime)).getText().toString());
+            boolean autoMark = ((Switch)getView().findViewById(R.id.switchAutoMark)).isChecked();
+            NovelDB db = new NovelDB(getContext());
+            db.setSetting("loginId",id.getText().toString());
+            db.setSetting("loginPass",pass.getText().toString());
+            db.setSetting("updateCheck",updateCheck);
+            db.setSetting("updateTime",updateTime);
+            db.setSetting("autoMark",autoMark);
+
+            if(!mUserId.equals(id.getText().toString())){
+                //違うIDが設定されたら、ブックマークをクリア
+                db = new NovelDB(getContext());
+                db.clearBookmark();
+                db.close();
+                mUserId = id.getText().toString();
+                //ブックマークをネットから取得
+                getContext().sendBroadcast(new Intent(getContext(),NaroReceiver.class).setAction(NaroReceiver.ACTION_BOOKMARK));
             }
+            db.close();
+            Snackbar.make(getView(), "保存完了", Snackbar.LENGTH_SHORT).show();
+            //設定更新を通知
+            getContext().sendBroadcast(new Intent(getContext(),NaroReceiver.class).setAction(NaroReceiver.ACTION_UPDATE_SETTING));
         }
-        spinner.setSelection(index);
+        return true;
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch(v.getId()){
+            case R.id.buttonFix:
+                NovelDB db = new NovelDB(getContext());
+                db.optimisation();
+                NumberFormat nf = NumberFormat.getNumberInstance();
+                ((TextView) getView().findViewById(R.id.textFileSize)).setText(nf.format(db.getFileSize()/1024)+"KB");
+                db.close();
+                break;
+            case R.id.buttonTest:
+                final String id = ((EditText)getView().findViewById(R.id.LoginID)).getText().toString();
+                final String pass = ((EditText)getView().findViewById(R.id.loginPass)).getText().toString();
+
+                new Thread(){
+                    @Override
+                    public void run() {
+                        //ログイン処理
+                        final String hash = TbnReader.getLoginHash(id,pass);
+                        boolean flag = false;
+                        if (hash != null){
+                            flag = true;
+                        }
+
+                        final boolean finalFlag = flag;
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Snackbar.make(getActivity().findViewById(R.id.coordinator), finalFlag ?"認証成功":"認証失敗", Snackbar.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                }.start();
+                break;
+        }
     }
 }

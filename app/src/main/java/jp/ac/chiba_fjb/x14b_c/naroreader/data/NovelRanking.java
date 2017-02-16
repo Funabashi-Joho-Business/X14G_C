@@ -7,13 +7,5 @@ import java.util.Date;
  */
 public class NovelRanking {
     public String ncode;
-    public String title;
-    public String writerName;
-    public int writerId;
-    public Date update;
-    public String info;
-    public int novelCount;
     public int point;
-    public int textCount;
-    public String genre;
 }

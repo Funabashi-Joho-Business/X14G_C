@@ -250,7 +250,7 @@ public class SlantingScrollView extends ViewGroup
 		int rangeY = getScrollRangeY();
 		mScrollRangeFlag = true;
 		int minWidth = 0;
-		int minHeight = (int)(400*getResources().getDisplayMetrics().density);
+		int minHeight = 0;//(int)(400*getResources().getDisplayMetrics().density);
 		int height;
 
 

@@ -1,0 +1,30 @@
+body{
+    min-height:100%;
+}
+div.title{
+    text-align: center;
+    font-weight: bold;
+    margin-top: 1em;
+    margin-bottom: 1em;
+    font-size: 120%;
+}
+div.body{
+    font-size: 100%;
+}
+div.all{
+    min-height:100hv;
+}
+div.preface{
+    font-style:oblique;
+    margin-bottom: 1em;
+}
+div.trailer{
+    font-style:oblique;
+    margin-top: 2em;
+}
+div.space{
+    height: 5ex;
+}
+img{
+    width: 100%;
+}

@@ -7,7 +7,8 @@ import android.support.test.runner.AndroidJUnit4;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static org.junit.Assert.*;
+import jp.ac.chiba_fjb.x14b_c.naroreader.Other.NovelDB;
+import jp.ac.chiba_fjb.x14b_c.naroreader.data.NovelInfo;
 
 /**
  * Instrumentation test, which will execute on an Android device.
@@ -20,6 +21,8 @@ public class ExampleInstrumentedTest {
     public void useAppContext() throws Exception {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
-        assertEquals("jp.ac.chiba_fjb.x14b_c.naroreader", appContext.getPackageName());
+        NovelDB db = new NovelDB(appContext);
+        NovelInfo list = db.getNovelInfo("n7975cr");
+        db.close();
     }
 }

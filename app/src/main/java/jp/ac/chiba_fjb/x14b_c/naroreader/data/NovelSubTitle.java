@@ -7,7 +7,12 @@ import java.util.Date;
  */
 
 public class NovelSubTitle {
+    public int index;
     public String title;
     public Date date;
     public Date update;
+    public Date readDate;
+    public Date contentDate;
+    public int originalSize;
+    public int compressionSize;
 }
